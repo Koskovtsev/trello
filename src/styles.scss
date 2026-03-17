@@ -1,0 +1,37 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+
+    font-family: "Gloria Hallelujah", "Playpen Sans", cursive;
+}
+
+.App {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+    header {
+        background-color: rgb(232, 252, 176);
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        font-size: 30px;
+    }
+
+    footer {
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 40px;
+        font-weight: 500;
+        background-color: rgb(132, 245, 245);
+    }
+}
