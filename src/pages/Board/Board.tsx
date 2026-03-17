@@ -42,7 +42,7 @@ export function Board(): JSX.Element {
           <List key={elem.id} title={elem.title} cards={elem.cards} />
         ))}
         <wired-button elevation="2" className="board__add-button">
-          + Додати список
+          <span className="button__add_title">+ Додати список</span>
         </wired-button>
       </div>
     </div>
