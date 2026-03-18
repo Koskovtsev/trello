@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Board } from './pages/Board/Board';
 import { Home } from './pages/Board/Home';
 import './styles.scss';
-import { Layout } from './pages/Board/components/Layout';
+import { Layout } from './pages/Board/Layout';
 
 function App(): JSX.Element {
   return (
@@ -11,7 +11,7 @@ function App(): JSX.Element {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="board" element={<Board />} />
+          <Route path="/board/:boardId" element={<Board />} />
         </Route>
       </Routes>
     </div>

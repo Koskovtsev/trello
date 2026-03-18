@@ -5,10 +5,10 @@ interface HatchProps {
 }
 
 export function RenderBackground({ color = '#555' }: HatchProps): JSX.Element {
-  const strokeWidth = 0.2;
-  const gap = 4.5;
-  const width = 150;
-  const height = 150;
+  const strokeWidth = 0.4;
+  const gap = 3.5;
+  const width = 200;
+  const height = 200;
 
   const paths = useMemo(() => {
     const lines: string[] = [];
@@ -39,6 +39,29 @@ export function RenderBackground({ color = '#555' }: HatchProps): JSX.Element {
       }
       lines.push(linePath);
     }
+    for (let i = -width; i < height + width; i += step) {
+      let x = 0; // Починаємо зліва
+      let y = i;
+      let linePath = `M ${x} ${y}`;
+
+      while (x < width && y < height) {
+        const nextX = x + 10; // Рухаємось вправо
+        const nextY = y + 10; // Рухаємось вниз
+        const cX = x + 5 + (Math.random() - 0.5) * jitter * 4;
+        const cY = y + 5 + (Math.random() - 0.5) * jitter * 4;
+
+        linePath += ` Q ${cX} ${cY}, ${nextX} ${nextY}`;
+        x = nextX;
+        y = nextY;
+
+        if (Math.random() > 0.97) {
+          x += 2;
+          y += 2;
+          linePath += ` M ${x} ${y}`;
+        }
+      }
+      lines.push(linePath);
+    }
     return lines;
   }, [gap]);
 
@@ -58,8 +81,8 @@ export function RenderBackground({ color = '#555' }: HatchProps): JSX.Element {
     >
       <defs>
         <filter id="pencil">
-          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="1" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="1" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="2" />
         </filter>
       </defs>
       <g filter="url(#pencil)" stroke={color} strokeWidth={strokeWidth} fill="none" strokeLinecap="round" opacity="0.6">

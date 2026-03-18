@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Board } from './components/Board/Board';
 import { IBoard } from '../../common/interfaces/IBoard';
 import './components/Board/board.scss';
+import './home.scss';
 
 export function Home(): JSX.Element {
   const [boards] = useState<IBoard[]>([
@@ -12,13 +13,16 @@ export function Home(): JSX.Element {
   ]);
 
   return (
-    <div className="board__preview_list">
-      {boards.map((elem) => (
-        <Board key={elem.id} id={elem.id} title={elem.title} custom={elem.custom} />
-      ))}
-      <wired-button elevation="2" className="Board__add-button">
-        <span className="button__add_title">+ Додати дошку</span>
-      </wired-button>
-    </div>
+    <>
+      <span className="home__page_title">Мої дошки</span>
+      <div className="board__preview_list">
+        {boards.map((elem) => (
+          <Board key={elem.id} id={elem.id} title={elem.title} custom={elem.custom} />
+        ))}
+        <wired-button elevation="2" className="Board__add-button">
+          <span className="button__add_title">+ Додати дошку</span>
+        </wired-button>
+      </div>
+    </>
   );
 }

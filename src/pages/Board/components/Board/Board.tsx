@@ -1,11 +1,12 @@
 import { IBoard } from '../../../../common/interfaces/IBoard';
-import { RenderBackground } from '../RenderBackground';
+// import { RenderBackground } from '../RenderBackground';
+import { PencilWrapper } from '../PencilWrapper';
 
 export function Board({ title, custom }: IBoard): JSX.Element {
   return (
-    <div className="home__board_item">
-      <RenderBackground color={custom?.background} />
+    <PencilWrapper className="home__board_item" color={custom.background}>
+      {/* <RenderBackground color={custom?.background} /> */}
       {title}
-    </div>
+    </PencilWrapper>
   );
 }

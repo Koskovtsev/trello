@@ -5,7 +5,7 @@ export function Layout(): JSX.Element {
     <>
       <header className="App-header">
         <p>this is a Header</p>
-        <Link to="/board">Board</Link>
+        <Link to="/">Home</Link>
       </header>
       <main>
         <Outlet />

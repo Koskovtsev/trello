@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { IList } from '../../common/interfaces/IList';
 import { List } from './components/List/List';
 // import { IList } from '../../common/interfaces/IList';
@@ -34,9 +35,13 @@ export function Board(): JSX.Element {
     },
   ]);
 
+  const { boardId } = useParams<{ boardId: string }>();
+
   return (
     <div className="board">
-      <span className="board__title">{title}</span>
+      <span className="board__title">
+        {title} | {boardId}
+      </span>
       <div className="board__list">
         {lists.map((elem) => (
           <List key={elem.id} title={elem.title} cards={elem.cards} />
