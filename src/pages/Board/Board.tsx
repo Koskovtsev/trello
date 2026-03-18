@@ -40,7 +40,7 @@ export function Board(): JSX.Element {
   return (
     <div className="board">
       <span className="board__title">
-        {title} | {boardId}
+        {title} № {boardId}
       </span>
       <div className="board__list">
         {lists.map((elem) => (
