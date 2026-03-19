@@ -7,7 +7,7 @@ interface PencilWrapperProps {
   color: string;
   className: string;
 }
-
+// THIS FUNCTION WAS GENERETED BY GEMINI
 export function PencilWrapper(props: PencilWrapperProps): JSX.Element {
   const { children, color = '#555', className = '' } = props;
 

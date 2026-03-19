@@ -3,7 +3,7 @@ import { PencilWrapper } from '../PencilWrapper';
 
 export function Board({ title, custom }: IBoard): JSX.Element {
   return (
-    <PencilWrapper className="home__board_item" color={custom.background}>
+    <PencilWrapper className="home__board_item" color={custom?.background || 'back'}>
       {title}
     </PencilWrapper>
   );

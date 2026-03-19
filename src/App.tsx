@@ -1,4 +1,3 @@
-// import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Board } from './pages/Board/Board';
 import { Home } from './pages/Board/Home';

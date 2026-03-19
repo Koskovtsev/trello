@@ -5,6 +5,7 @@ interface BorderProps {
   strokeWidth: number;
 }
 
+// THIS FUNCTION WAS GENERETED BY GEMINI
 export function RenderBorders(props: BorderProps): JSX.Element {
   const { color = '#333', strokeWidth = 1.0 } = props;
 
@@ -15,7 +16,6 @@ export function RenderBorders(props: BorderProps): JSX.Element {
     const lines: string[] = [];
     const jitter = 0.5;
     const overlap = 5;
-
     function drawHandDrawnLine(startX: number, startY: number, endX: number, endY: number): string {
       let d = `M ${startX} ${startY}`;
       const segments = 5;

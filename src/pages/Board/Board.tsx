@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { IList } from '../../common/interfaces/IList';
 import { List } from './components/List/List';
-// import { IList } from '../../common/interfaces/IList';
-// import { List } from './components/List/List';
 import 'wired-elements';
 import './components/Board/board.scss';
 

@@ -1,0 +1,30 @@
+.form__add {
+
+    input,
+    button {
+        box-sizing: border-box;
+    }
+
+    .form__add_input {
+        display: block;
+        width: 100%;
+        background-color: rgb(74, 74, 75);
+
+        font-size: 20px;
+        color: #dddddd;
+
+        &::placeholder {
+            color: #9c9c9c;
+            ;
+        }
+    }
+    .add-board-button {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+        font-size: 20px;
+        cursor: pointer;
+        font-weight: bold;
+    
+    }
+}
