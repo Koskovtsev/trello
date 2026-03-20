@@ -5,18 +5,25 @@
         box-sizing: border-box;
     }
 
-    .form__add_input {
+    .form__add_title, .form__add_color {
+
         display: block;
         width: 100%;
+        min-width: 290px;
         background-color: rgb(74, 74, 75);
-
+        margin-top: 5px;
+        
+    }
+    .form__add_title{
         font-size: 20px;
         color: #dddddd;
-
         &::placeholder {
             color: #9c9c9c;
             ;
-        }
+        } 
+    }
+    .form__add_color{
+        height: 40px;
     }
     .add-board-button {
         display: block;

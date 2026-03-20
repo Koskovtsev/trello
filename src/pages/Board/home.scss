@@ -3,3 +3,21 @@
     width: 100%;
     text-align: center;
 }
+
+.board__preview_list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    // height: 300px;
+    justify-content: flex-start;
+    padding: 30px;
+    overflow-x: auto;
+    flex-shrink: 0;
+    gap: 60px;
+    scroll-behavior: smooth;
+
+    .board__add-button {
+        min-width: 200px;
+        max-height: 40px;
+    }
+}

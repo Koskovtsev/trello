@@ -45,6 +45,8 @@ export function PencilWrapper(props: PencilWrapperProps): JSX.Element {
         style={{
           position: 'relative',
           zIndex: 1,
+          display: 'flex',
+          justifyContent: 'space-around',
         }}
       >
         {children}
