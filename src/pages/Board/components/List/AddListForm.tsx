@@ -1,24 +1,37 @@
-// import { FormEvent, useState } from 'react';
-// import { IList } from '../../../../common/interfaces/IList';
+import { FormEvent, useState } from 'react';
+import { postList } from '../../../../api/boardsService';
 
-// interface IAddListFormProps {
-//     onListAdded(list: IList): void;
-// }
+interface IAddListFormProps {
+  onListAdded(): void;
+  position: number;
+  boardId: number;
+}
 
-// export function AddListForm({ onListAdded }: IAddListFormProps): JSX.Element {
-//     const [title, setTitle] = useState('');
-//     const [color, setColor] = useState<string>('#000000');
-//     async function handleSubmit(e: FormEvent): Promise<void> { }
-//     return (
-//         <form className="form__add_list" onSubmit={handleSubmit}>
-//             <input
-//                 type="text"
-//                 className="input_list_title"
-//                 value={title}
-//                 onChange={(e) => setTitle(e.target.value)}
-//                 onBlur={handleSubmit}
-//             />
-//             <input type="color" value={color} className="form__add_color" onChange={(e) => setColor(e.target.value)} />
-//         </form>
-//     );
-// }
+export function AddListForm({ onListAdded, position, boardId }: IAddListFormProps): JSX.Element {
+  const [title, setTitle] = useState('');
+  async function handleSubmit(e: FormEvent): Promise<void> {
+    e.preventDefault();
+    if (title.trim()) {
+      const dataToSend = { title, position };
+      const response = await postList(dataToSend, boardId);
+      if (response === 'Created') {
+        onListAdded();
+        setTitle('');
+      }
+    }
+  }
+  return (
+    <form className="form__add_list" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        className="input_list_title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        onBlur={handleSubmit}
+      />
+      <button type="submit" className="button__add_list">
+        Додати список
+      </button>
+    </form>
+  );
+}

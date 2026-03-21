@@ -1,5 +1,6 @@
 import { IBoard } from '../common/interfaces/IBoard';
 import { IBoardData } from '../common/interfaces/IBoardData';
+import { IList } from '../common/interfaces/IList';
 import api from './request';
 
 interface ICreateBoardResponse {
@@ -29,4 +30,9 @@ export async function putBoardUpdates(boardData: IBoard): Promise<string> {
 
 export async function getBoard(id: number): Promise<IBoardData> {
   return api.get<IBoardData, IBoardData>(`board/${id}`);
+}
+
+export async function postList(list: IList, boardId: number): Promise<string> {
+  const response = await api.post<{ id: number }, { result: string }>(`board/${boardId}/list`, list);
+  return response.result;
 }

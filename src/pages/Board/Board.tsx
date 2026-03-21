@@ -5,16 +5,18 @@ import { IBoardData } from '../../common/interfaces/IBoardData';
 import { getBoard, putBoardUpdates } from '../../api/boardsService';
 import { IList } from '../../common/interfaces/IList';
 import { List } from './components/List/List';
-// import { AddListForm } from './components/List/AddListForm';
-import { AddBoardForm } from './components/AddBoard/AddBoardForm';
+import { AddListForm } from './components/List/AddListForm';
+// import { AddBoardForm } from './components/AddBoard/AddBoardForm';
 import './components/Board/board.scss';
 
 export function Board(): JSX.Element {
   const [title, setTitle] = useState('');
+  const [refreshList, setRefreshList] = useState(false);
   const [isChangeTitle, setIsChangeTitle] = useState(false);
   const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [lists, setLists] = useState<IList[]>([]);
+  // const [position, setPosition] = useState(0);
   const { boardId } = useParams<{ boardId: string }>();
   const id = Number(boardId);
 
@@ -26,12 +28,13 @@ export function Board(): JSX.Element {
   useEffect(() => {
     async function getList(): Promise<void> {
       const boardData = await getNewTitle();
-      const [boardLists] = boardData.lists;
-      setLists([...lists, boardLists]);
+      // const [boardLists] = boardData.lists;
+      setLists(boardData.lists);
       setNewTitle(boardData.title);
+      // setPosition(lists.length + 1);
     }
     getList();
-  }, [boardId]);
+  }, [boardId, refreshList]);
   async function handleSubmitTitle(e: React.SyntheticEvent): Promise<void> {
     e.preventDefault();
     e.stopPropagation();
@@ -45,8 +48,8 @@ export function Board(): JSX.Element {
       setIsChangeTitle(false);
     }
   }
-  const handleListAdded = (newList: IList): void => {
-    setLists([...lists, newList]);
+  const handleListAdded = (): void => {
+    setRefreshList((prev) => !prev);
     setVisibleAddListForm(false);
   };
   return (
@@ -69,14 +72,14 @@ export function Board(): JSX.Element {
       )}
       <div className="board__list">
         {lists.map((elem) => (
-          <List key={elem.id} title={elem.title} cards={elem.cards} />
+          <List key={elem.id} {...elem} />
         ))}
         {!isVisibleAddListForm && (
           <button className="board__add-button" onClick={() => setVisibleAddListForm(true)}>
             + Додайде ще один список
           </button>
         )}
-        {isVisibleAddListForm && <AddBoardForm onBoardAdded={handleListAdded} />}
+        {isVisibleAddListForm && <AddListForm onListAdded={handleListAdded} position={lists.length + 1} boardId={id} />}
       </div>
     </div>
   );
