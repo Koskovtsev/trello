@@ -27,7 +27,7 @@ export function Home(): JSX.Element {
   const handleAddBoard = async (): Promise<void> => {
     setVisibleAddBoardForm(true);
     // eslint-disable-next-line no-console
-    console.log('Кнопка натиснута!');
+    // console.log('Кнопка натиснута!');
   };
   const removeBoard = (id: number): void => {
     setBoards(boards.filter((elem) => elem.id !== id));

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 import { PencilWrapper } from '../PencilWrapper';
 import { deleteBoard, putBoardUpdates } from '../../../../api/boardsService';
@@ -30,7 +30,7 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
     console.log(`Редагування натиснуте! id: ${id}`);
     setIsChangeTitle(true);
   }
-  async function handleSubmit(e: FormEvent): Promise<void> {
+  async function handleSubmit(e: React.SyntheticEvent): Promise<void> {
     e.preventDefault();
     e.stopPropagation();
     if (newTitle?.trim()) {
@@ -42,6 +42,9 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
       if (id) {
         updateBoardTitle(id, newTitle);
       }
+    } else {
+      setNewTitle(title);
+      setIsChangeTitle(false);
     }
   }
 
@@ -63,6 +66,7 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
               e.preventDefault();
             }}
             onChange={(e) => setNewTitle(e.target.value)}
+            onBlur={handleSubmit}
           />
         </form>
       )}

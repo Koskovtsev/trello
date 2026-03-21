@@ -1,6 +1,6 @@
 export interface IBoard {
   id?: number;
-  title?: string;
+  title: string;
   custom?: {
     background?: string;
   };

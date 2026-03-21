@@ -12,15 +12,14 @@ export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element 
   const [color, setColor] = useState<string>('#000000');
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
-    // const boardColor = color || '#000000';
     if (title.trim()) {
       // eslint-disable-next-line no-console
-      console.log(`додаємо нову дошку з назвою ${title} and a color is ${color}`);
+      // console.log(`додаємо нову дошку з назвою ${title} and a color is ${color}`);
       const dataToSend: IBoard = { title, custom: { background: color } };
       const id = await postNewBoard(dataToSend);
       if (id) {
         // eslint-disable-next-line no-console
-        console.log(`все пройшло ок`);
+        // console.log(`все пройшло ок`);
         const newFullBoardObject: IBoard = { id, title, custom: { background: color } };
         onBoardAdded(newFullBoardObject);
         setTitle('');
@@ -33,14 +32,14 @@ export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element 
       <form className="form__add" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Введіть назву списку..."
-          // value={title}
+          placeholder="Введіть назву дошки..."
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="form__add_title"
         />
         <input type="color" value={color} className="form__add_color" onChange={(e) => setColor(e.target.value)} />
         <button type="submit" className="add-board-button">
-          Додати список
+          Додати дошку
         </button>
       </form>
     </PencilWrapper>
