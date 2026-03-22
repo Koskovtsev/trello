@@ -1,5 +1,6 @@
 import { IBoard } from '../common/interfaces/IBoard';
 import { IBoardData } from '../common/interfaces/IBoardData';
+import { ICard } from '../common/interfaces/ICard';
 import { IList } from '../common/interfaces/IList';
 import api from './request';
 
@@ -34,5 +35,10 @@ export async function getBoard(id: number): Promise<IBoardData> {
 
 export async function postList(list: IList, boardId: number): Promise<string> {
   const response = await api.post<{ id: number }, { result: string }>(`board/${boardId}/list`, list);
+  return response.result;
+}
+
+export async function postCard(card: ICard, boardId: number): Promise<string> {
+  const response = await api.post<{ id: number }, { result: string }>(`board/${boardId}/card`, card);
   return response.result;
 }

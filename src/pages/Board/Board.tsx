@@ -28,10 +28,8 @@ export function Board(): JSX.Element {
   useEffect(() => {
     async function getList(): Promise<void> {
       const boardData = await getNewTitle();
-      // const [boardLists] = boardData.lists;
       setLists(boardData.lists);
       setNewTitle(boardData.title);
-      // setPosition(lists.length + 1);
     }
     getList();
   }, [boardId, refreshList]);
@@ -51,6 +49,9 @@ export function Board(): JSX.Element {
   const handleListAdded = (): void => {
     setRefreshList((prev) => !prev);
     setVisibleAddListForm(false);
+  };
+  const handleCardAdded = (): void => {
+    setRefreshList((prev) => !prev);
   };
   return (
     <div className="board">
@@ -72,14 +73,16 @@ export function Board(): JSX.Element {
       )}
       <div className="board__list">
         {lists.map((elem) => (
-          <List key={elem.id} {...elem} />
+          <List key={elem.id} {...elem} onCardAdded={handleCardAdded} boardId={id} />
         ))}
         {!isVisibleAddListForm && (
           <button className="board__add-button" onClick={() => setVisibleAddListForm(true)}>
             + Додайде ще один список
           </button>
         )}
-        {isVisibleAddListForm && <AddListForm onListAdded={handleListAdded} position={lists.length + 1} boardId={id} />}
+        {isVisibleAddListForm && (
+          <AddListForm key={id} onListAdded={handleListAdded} position={lists.length + 1} boardId={id} />
+        )}
       </div>
     </div>
   );
