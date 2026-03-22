@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { IList } from '../../../../common/interfaces/IList';
-// import { ICard } from '../../../../common/interfaces/ICard';
 import { Card } from '../Card/Card';
 import './list.scss';
 import { AddCardForm } from '../Card/AddCardForm';
+import { deleteList } from '../../../../api/boardsService';
 
 interface IAddCardChangesProps extends IList {
   onCardAdded(): void;
@@ -19,9 +19,20 @@ export function List({ id, title, cards, onCardAdded, boardId }: IAddCardChanges
     onCardAdded();
     setVisibleAddCardForm(false);
   };
+  async function handleDeleteList(): Promise<void> {
+    const response = await deleteList(boardId, listId);
+    if (response === 'Deleted') {
+      onCardAdded();
+    }
+  }
   return (
     <div className="list">
-      <h2 className="list__title">{title}</h2>
+      <div className="list__header">
+        <h2 className="list__title">{title}</h2>
+        <button className="icon__delete_button" aria-label="Delete" onClick={handleDeleteList}>
+          <i className="fa fa-trash" />
+        </button>
+      </div>
       <ul className="list__cards">{cards?.map((elem) => <Card key={elem.id} {...elem} />)}</ul>
       {isVisibleAddCardForm && (
         <AddCardForm

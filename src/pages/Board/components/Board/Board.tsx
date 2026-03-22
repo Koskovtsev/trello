@@ -50,29 +50,31 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
 
   return (
     <PencilWrapper className="home__board_item" color={custom?.background || 'black'}>
-      {!isChangeTitle && (
-        <span className="board__item_title" onClick={handleChangeTitle}>
-          {title}
-        </span>
-      )}
-      {isChangeTitle && (
-        <form className="fomr__change_title" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="input_change_title"
-            value={newTitle}
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-            onChange={(e) => setNewTitle(e.target.value)}
-            onBlur={handleSubmit}
-          />
-        </form>
-      )}
-      <button className="button__board_delete" onClick={handleDeleteBoard}>
-        видалити
-      </button>
+      <div className="home__header">
+        {!isChangeTitle && (
+          <span className="board__item_title" onClick={handleChangeTitle}>
+            {title}
+          </span>
+        )}
+        {isChangeTitle && (
+          <form className="fomr__change_title" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              className="input_change_title"
+              value={newTitle}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              onChange={(e) => setNewTitle(e.target.value)}
+              onBlur={handleSubmit}
+            />
+          </form>
+        )}
+        <button className="icon__delete_button" aria-label="Delete" onClick={handleDeleteBoard}>
+          <i className="fa fa-trash" />
+        </button>
+      </div>
     </PencilWrapper>
   );
 }

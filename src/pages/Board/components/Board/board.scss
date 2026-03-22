@@ -1,4 +1,3 @@
-
 .board__title {
     display: inline-block;
     width: 100%;
@@ -30,6 +29,11 @@
         border-radius: 10px;
     }
 
+    .home__header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
 
     .button__add_title {
         text-transform: lowercase;
