@@ -1,89 +1,80 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 import { IBoard } from '../../common/interfaces/IBoard';
-import { IBoardData } from '../../common/interfaces/IBoardData';
-import { getBoard, putBoardUpdates } from '../../api/boardsService';
-import { IList } from '../../common/interfaces/IList';
-import { List } from './components/List/List';
-import { AddListForm } from './components/List/AddListForm';
-// import { AddBoardForm } from './components/AddBoard/AddBoardForm';
-import './components/Board/board.scss';
+import { PencilWrapper } from './components/PencilWrapper';
+import { deleteBoard, putBoardUpdates } from '../../api/boardsService';
 
-export function Board(): JSX.Element {
-  const [title, setTitle] = useState('');
-  const [refreshList, setRefreshList] = useState(false);
+interface IBoardProps extends IBoard {
+  removeDeletedBoard(id: number): void;
+  updateBoardTitle(id: number, newTitle: string): void;
+}
+
+export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle }: IBoardProps): JSX.Element {
   const [isChangeTitle, setIsChangeTitle] = useState(false);
-  const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
-  const [newTitle, setNewTitle] = useState('');
-  const [lists, setLists] = useState<IList[]>([]);
-  // const [position, setPosition] = useState(0);
-  const { boardId } = useParams<{ boardId: string }>();
-  const id = Number(boardId);
-
-  async function getNewTitle(): Promise<IBoardData> {
-    const boardData = await getBoard(id);
-    setTitle(boardData.title);
-    return boardData;
-  }
-  useEffect(() => {
-    async function getList(): Promise<void> {
-      const boardData = await getNewTitle();
-      setLists(boardData.lists);
-      setNewTitle(boardData.title);
+  const [newTitle, setNewTitle] = useState<string | undefined>(title);
+  async function handleDeleteBoard(e: React.MouseEvent<HTMLButtonElement>): Promise<void> {
+    e.stopPropagation();
+    e.preventDefault();
+    // eslint-disable-next-line no-console
+    console.log(`Кнопка натиснута! id: ${id}`);
+    if (id) {
+      const response = await deleteBoard(id);
+      if (response === 'Deleted') {
+        removeDeletedBoard(id);
+      }
     }
-    getList();
-  }, [boardId, refreshList]);
-  async function handleSubmitTitle(e: React.SyntheticEvent): Promise<void> {
+  }
+  function handleChangeTitle(e: React.MouseEvent<HTMLSpanElement>): void {
+    e.stopPropagation();
+    e.preventDefault();
+    // eslint-disable-next-line no-console
+    console.log(`Редагування натиснуте! id: ${id}`);
+    setIsChangeTitle(true);
+  }
+  async function handleSubmit(e: React.SyntheticEvent): Promise<void> {
     e.preventDefault();
     e.stopPropagation();
     if (newTitle?.trim()) {
-      const newBoard: IBoard = { id, title: newTitle };
-      await putBoardUpdates(newBoard);
-      await getNewTitle();
+      const newBoard: IBoard = { id, title: newTitle, custom };
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(newBoard));
+      putBoardUpdates(newBoard);
       setIsChangeTitle(false);
+      if (id) {
+        updateBoardTitle(id, newTitle);
+      }
     } else {
       setNewTitle(title);
       setIsChangeTitle(false);
     }
   }
-  const handleListAdded = (): void => {
-    setRefreshList((prev) => !prev);
-    setVisibleAddListForm(false);
-  };
-  const handleCardAdded = (): void => {
-    setRefreshList((prev) => !prev);
-  };
+
   return (
-    <div className="board">
-      {!isChangeTitle && (
-        <span className="board__title" onClick={() => setIsChangeTitle(true)}>
-          {title}
-        </span>
-      )}
-      {isChangeTitle && (
-        <form className="fomr__change_title" onSubmit={handleSubmitTitle}>
-          <input
-            type="text"
-            className="input_change_title"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            onBlur={handleSubmitTitle}
-          />
-        </form>
-      )}
-      <div className="board__list">
-        {lists.map((elem) => (
-          <List key={elem.id} {...elem} onCardAdded={handleCardAdded} boardId={id} />
-        ))}
-        {!isVisibleAddListForm && (
-          <button className="board__add-button" onClick={() => setVisibleAddListForm(true)}>
-            + Додайде ще один список
-          </button>
+    <PencilWrapper className="home__board_item" color={custom?.background || 'black'}>
+      <div className="home__header">
+        {!isChangeTitle && (
+          <span className="board__item_title" onClick={handleChangeTitle}>
+            {title}
+          </span>
         )}
-        {isVisibleAddListForm && (
-          <AddListForm key={id} onListAdded={handleListAdded} position={lists.length + 1} boardId={id} />
+        {isChangeTitle && (
+          <form className="fomr__change_title" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              className="input_change_title"
+              value={newTitle}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              onChange={(e) => setNewTitle(e.target.value)}
+              onBlur={handleSubmit}
+            />
+          </form>
         )}
+        <button className="icon__delete_button" aria-label="Delete" onClick={handleDeleteBoard}>
+          <i className="fa fa-trash" />
+        </button>
       </div>
-    </div>
+    </PencilWrapper>
   );
 }

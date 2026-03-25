@@ -47,3 +47,8 @@ export async function deleteList(boardId: number, listId: number): Promise<strin
   const response = await api.delete<unknown, { result: string }>(`board/${boardId}/list/${listId}`);
   return response.result;
 }
+
+export async function putListUpdates(listData: IList, boardId: number, listId: number): Promise<string> {
+  const response = await api.put<{ id: number }, { result: string }>(`board/${boardId}/list/${listId}`, listData);
+  return response.result;
+}

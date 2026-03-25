@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getBoards } from '../../api/boardsService';
-import { Board } from './components/Board/Board';
+import { Board } from './Board';
 import { IBoard } from '../../common/interfaces/IBoard';
 import { AddBoardForm } from './components/AddBoard/AddBoardForm';
-import './components/Board/board.scss';
+import './board.scss';
 import './home.scss';
 
 export function Home(): JSX.Element {
@@ -24,11 +24,11 @@ export function Home(): JSX.Element {
     }
     fetchBoards();
   }, []);
-  const handleAddBoard = async (): Promise<void> => {
-    setVisibleAddBoardForm(true);
-    // eslint-disable-next-line no-console
-    // console.log('Кнопка натиснута!');
-  };
+  // const handleAddBoard = async (): Promise<void> => {
+  //   setVisibleAddBoardForm(true);
+  //   // eslint-disable-next-line no-console
+  //   // console.log('Кнопка натиснута!');
+  // };
   const removeBoard = (id: number): void => {
     setBoards(boards.filter((elem) => elem.id !== id));
   };
@@ -58,7 +58,7 @@ export function Home(): JSX.Element {
         ))}
         {isVisibleAddBoardForm && <AddBoardForm onBoardAdded={handleBoardAdded} />}
         {!isVisibleAddBoardForm && (
-          <button className="board__add-button" onClick={handleAddBoard}>
+          <button className="board__add_button" onClick={() => setVisibleAddBoardForm(true)}>
             <span className="button__add_title">+ Додати дошку</span>
           </button>
         )}

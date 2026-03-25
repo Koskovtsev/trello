@@ -3,32 +3,52 @@ import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
 import './list.scss';
 import { AddCardForm } from '../Card/AddCardForm';
+import { ChangeTitleForm } from '../Board/ChangeTitleForm';
 import { deleteList } from '../../../../api/boardsService';
 
 interface IAddCardChangesProps extends IList {
-  onCardAdded(): void;
+  onListChanged(): void;
   boardId: number;
 }
-export function List({ id, title, cards, onCardAdded, boardId }: IAddCardChangesProps): JSX.Element {
+export function List({ id, title, cards, onListChanged, boardId }: IAddCardChangesProps): JSX.Element {
+  const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
-  // const [cards, setCards] = useState<ICard[]>([]);
-  const listId = id || 0;
   // eslint-disable-next-line no-console
   // console.log(`айді той шо приходть в ліст: ${id}`);
   const handleCardAdded = (): void => {
-    onCardAdded();
+    onListChanged();
     setVisibleAddCardForm(false);
   };
+  const handleTitleChanged = (isChanged: boolean): void => {
+    if (isChanged) {
+      onListChanged();
+    }
+    setVisibleChangeTitleForm(false);
+  };
   async function handleDeleteList(): Promise<void> {
-    const response = await deleteList(boardId, listId);
+    const response = await deleteList(boardId, id ?? 0);
     if (response === 'Deleted') {
-      onCardAdded();
+      onListChanged();
     }
   }
   return (
     <div className="list">
       <div className="list__header">
-        <h2 className="list__title">{title}</h2>
+        {!isVisibleChangeTitleForm && (
+          <h2 className="list__title" onClick={() => setVisibleChangeTitleForm(true)}>
+            {title}
+          </h2>
+        )}
+        {isVisibleChangeTitleForm && (
+          <ChangeTitleForm
+            key={id}
+            onTitleChanged={handleTitleChanged}
+            listId={id ?? 0}
+            boardId={boardId}
+            currentTitle={title ?? ''}
+            type="list"
+          />
+        )}
         <button className="icon__delete_button" aria-label="Delete" onClick={handleDeleteList}>
           <i className="fa fa-trash" />
         </button>
@@ -37,11 +57,11 @@ export function List({ id, title, cards, onCardAdded, boardId }: IAddCardChanges
       {isVisibleAddCardForm && (
         <AddCardForm
           key={id}
-          title={title}
+          title={title ?? ''}
           onCardAdded={handleCardAdded}
           position={(cards?.length ?? 0) + 1}
           boardId={boardId}
-          list_id={listId}
+          list_id={id ?? 0}
         />
       )}
       <button className="button__add_card" onClick={() => setVisibleAddCardForm(true)}>

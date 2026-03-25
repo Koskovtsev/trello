@@ -22,7 +22,7 @@
     &__header {
         display: flex;
         justify-content: space-between;
-        align-items: center; 
+        align-items: center;
         width: 100%;
         margin-bottom: 10px;
     }
@@ -33,5 +33,22 @@
         gap: 10px;
         margin: 0;
         font-size: 20px;
+    }
+}
+
+.edit-title,
+.list__title {
+    font-size: 25px;
+    display: inline-flex;
+
+    &__input {
+        flex-shrink: 1;
+        width: auto;
+        background-color: #a55656; // Колір як при ховері
+        outline: none; // Прибираємо стандартне синє виділення браузера
+
+        &:focus {
+            border-color: #ac7474; // Або інший колір, щоб підкреслити редагування
+        }
     }
 }
