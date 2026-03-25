@@ -7,22 +7,32 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 10px;
+    padding: 12px;
     border-radius: 10px;
     box-sizing: border-box;
 
     &__title {
+        width: 100%;
         margin: 0;
+        // margin-top: 1px;
         font-size: 20px;
-        display: flex;
-        flex-direction: column;
         gap: 10px;
+        padding-left: 10px;
+        border: 2px solid transparent;
+
+        &:hover {
+            background-color: rgba(153, 153, 153, 0.6);
+            border: 2px solid black;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
     }
 
     &__header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         width: 100%;
         margin-bottom: 10px;
     }
@@ -34,21 +44,82 @@
         margin: 0;
         font-size: 20px;
     }
-}
 
-.edit-title,
-.list__title {
-    font-size: 25px;
-    display: inline-flex;
+    .form__add_list {
+        height: 20px;
+        margin: 5px 0;
+    }
 
-    &__input {
-        flex-shrink: 1;
-        width: auto;
-        background-color: #a55656; // Колір як при ховері
-        outline: none; // Прибираємо стандартне синє виділення браузера
+    .input_list_title {
+        height: 20px;
+        border-radius: 5px;
+    }
 
-        &:focus {
-            border-color: #ac7474; // Або інший колір, щоб підкреслити редагування
+    .button__add_list,
+    .button__add_card {
+        background-color: transparent;
+        border: solid 1px transparent;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        height: 25px;
+        margin: 10px 0;
+        border-radius: 5px;
+        text-align: start;
+
+        &:hover {
+            background-color: rgba(153, 153, 153, 0.6);
+            border: solid 1px black;
+            transition: transform 0.2s;
         }
     }
+
+    .button__add_card {
+       border: solid 1px transparent;
+    }
+
+    .button__add_list {
+        background-color: #838282;
+        border: solid 1px black;
+
+        &:hover {
+            background-color: #acacac;
+            transition: transform 0.2s;
+        }
+    }
+}
+
+.board__list .list .edit-title {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    flex: 1;
+    height: auto;
+    background-color: transparent !important;
+
+    &__input {
+        border: 2px solid transparent;
+        font-size: 20px;
+        font-family: inherit;
+        font-weight: 700;
+        height: 40px;
+        padding-left: 10px;
+        margin: 2px 0;
+        border-radius: 10px;
+        width: 100%;
+        background-color: transparent !important;
+        color: black;
+        outline: none;
+        transition: all 0.2s ease;
+
+        &:focus {
+            color: black;
+            background-color: rgba(153, 153, 153, 0.6) !important;
+            transition: transform 0.2s;
+        }
+    }
+}
+
+.board__list .list .board__title_wrapper {
+    background-color: transparent !important;
 }

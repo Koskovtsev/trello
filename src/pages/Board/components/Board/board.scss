@@ -38,6 +38,7 @@
 
         &:hover {
             background-color: #939393;
+            transition: transform 0.2s;
         }
     }
 
@@ -66,7 +67,21 @@
 
             &:focus {
                 border-color: #333; // Або інший колір, щоб підкреслити редагування
+                transition: transform 0.2s;
             }
+        }
+    }
+
+    &__add_button {
+        cursor: pointer;
+        height: 40px;
+        font-weight: 600;
+        border-radius: 10px;
+         background-color: #979797; 
+        &:hover {
+             background-color: #777777;
+            // background-color: rgba(10, 10, 10, 0.2);
+              transition: transform 0.2s;
         }
     }
 }

@@ -68,7 +68,7 @@ export function Board(): JSX.Element {
         ))}
         {!isVisibleAddListForm && (
           <button className="board__add_button" onClick={() => setVisibleAddListForm(true)}>
-            + Додайде ще один список
+            ➕ Додайде ще один список
           </button>
         )}
         {isVisibleAddListForm && (

@@ -65,7 +65,7 @@ export function List({ id, title, cards, onListChanged, boardId }: IAddCardChang
         />
       )}
       <button className="button__add_card" onClick={() => setVisibleAddCardForm(true)}>
-        + додати карту
+        ➕ додати картку
       </button>
     </div>
   );

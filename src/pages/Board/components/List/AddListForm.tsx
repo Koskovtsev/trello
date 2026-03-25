@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { postList } from '../../../../api/boardsService';
+import './list.scss';
 
 interface IAddListFormProps {
   onListAdded(): void;
@@ -21,17 +22,20 @@ export function AddListForm({ onListAdded, position, boardId }: IAddListFormProp
     }
   }
   return (
-    <form className="form__add_list" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        className="input_list_title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        onBlur={handleSubmit}
-      />
-      <button type="submit" className="button__add_list">
-        Додати список
-      </button>
-    </form>
+    <div className="list">
+      <form className="form__add_list" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="input_list_title"
+          placeholder="Введіть назву списку..."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onBlur={handleSubmit}
+        />
+        <button type="submit" className="button__add_list">
+          Додати список
+        </button>
+      </form>
+    </div>
   );
 }

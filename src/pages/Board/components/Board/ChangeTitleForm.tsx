@@ -60,9 +60,9 @@ export function ChangeTitleForm(props: IChangeTitleFormProps): JSX.Element {
   return (
     <form className="edit-title" onSubmit={handleSubmitTitle}>
       <input
+        className="edit-title__input"
         ref={inputRef}
         type="text"
-        className="edit-title__input"
         value={newTitle}
         onChange={(e) => setNewTitle(e.target.value)}
         onBlur={handleSubmitTitle}
