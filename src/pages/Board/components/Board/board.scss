@@ -46,7 +46,7 @@
         padding: 20px;
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: flex-start;
         flex-wrap: nowrap;
         gap: 10px;
         align-items: flex-start;
@@ -62,11 +62,11 @@
         &__input {
             flex-shrink: 1;
             width: auto;
-            background-color: #949393; // Колір як при ховері
-            outline: none; // Прибираємо стандартне синє виділення браузера
+            background-color: #949393; 
+            outline: none;
 
             &:focus {
-                border-color: #333; // Або інший колір, щоб підкреслити редагування
+                border-color: #333; 
                 transition: transform 0.2s;
             }
         }
@@ -76,11 +76,11 @@
         cursor: pointer;
         height: 40px;
         font-weight: 600;
+        min-width: 160px;
         border-radius: 10px;
          background-color: #979797; 
         &:hover {
              background-color: #777777;
-            // background-color: rgba(10, 10, 10, 0.2);
               transition: transform 0.2s;
         }
     }

@@ -1,34 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { IBoardData } from '../../../../common/interfaces/IBoardData';
+// import { IBoardData } from '../../../../common/interfaces/IBoardData';
 import { getBoard } from '../../../../api/boardsService';
-import { IList } from '../../../../common/interfaces/IList';
 import { List } from '../List/List';
 import { AddListForm } from '../List/AddListForm';
 import { ChangeTitleForm } from './ChangeTitleForm';
 import './board.scss';
+import { IBoard } from '../../../../common/interfaces/IBoard';
 
 export function Board(): JSX.Element {
-  const [title, setTitle] = useState('');
+  const [boardData, setBoradData] = useState<IBoard | null>(null);
+  // const [title, setTitle] = useState('');
   const [refreshList, setRefreshList] = useState(false);
   const [isChangeTitle, setIsChangeTitle] = useState(false);
   const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
-  const [lists, setLists] = useState<IList[]>([]);
+  // const [lists, setLists] = useState<IList[]>([]);
   const { boardId } = useParams<{ boardId: string }>();
   const id = Number(boardId);
 
-  async function getNewTitle(): Promise<IBoardData> {
-    const boardData = await getBoard(id);
-    setTitle(boardData.title);
-    return boardData;
-  }
+  // async function getNewTitle(): Promise<IBoardData> {
+  //   const data = await getBoard(id);
+  //   setTitle(data.title);
+  //   return data;
+  // }
   useEffect(() => {
-    async function getList(): Promise<void> {
-      const boardData = await getNewTitle();
-      setLists(boardData.lists);
+    async function fetchBoard(): Promise<void> {
+      try {
+        const data = await getBoard(id);
+        setBoradData(data);
+      } catch (error) {
+        // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
+        console.log(require('../../../../assets/textur_yellow.jpg'));
+      }
     }
-    getList();
+    fetchBoard();
   }, [boardId, refreshList]);
+  const lists = boardData?.lists ?? [];
+  const title = boardData?.title ?? '';
   const handleListAdded = (): void => {
     setRefreshList((prev) => !prev);
     setVisibleAddListForm(false);

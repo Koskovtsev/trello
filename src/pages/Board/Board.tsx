@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { IBoard } from '../../common/interfaces/IBoard';
 import { PencilWrapper } from './components/PencilWrapper';
 import { deleteBoard, putBoardUpdates } from '../../api/boardsService';
+import './board.scss';
 
 interface IBoardProps extends IBoard {
   removeDeletedBoard(id: number): void;
@@ -15,7 +16,7 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
     e.stopPropagation();
     e.preventDefault();
     // eslint-disable-next-line no-console
-    console.log(`Кнопка натиснута! id: ${id}`);
+    // console.log(`Кнопка натиснута! id: ${id}`);
     if (id) {
       const response = await deleteBoard(id);
       if (response === 'Deleted') {
@@ -27,7 +28,7 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
     e.stopPropagation();
     e.preventDefault();
     // eslint-disable-next-line no-console
-    console.log(`Редагування натиснуте! id: ${id}`);
+    // console.log(`Редагування натиснуте! id: ${id}`);
     setIsChangeTitle(true);
   }
   async function handleSubmit(e: React.SyntheticEvent): Promise<void> {
@@ -36,7 +37,7 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
     if (newTitle?.trim()) {
       const newBoard: IBoard = { id, title: newTitle, custom };
       // eslint-disable-next-line no-console
-      console.log(JSON.stringify(newBoard));
+      // console.log(JSON.stringify(newBoard));
       putBoardUpdates(newBoard);
       setIsChangeTitle(false);
       if (id) {
@@ -52,15 +53,15 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
     <PencilWrapper className="home__board_item" color={custom?.background || 'black'}>
       <div className="home__header">
         {!isChangeTitle && (
-          <span className="board__item_title" onClick={handleChangeTitle}>
+          <span className="home__board_item-title" onClick={handleChangeTitle}>
             {title}
           </span>
         )}
         {isChangeTitle && (
-          <form className="fomr__change_title" onSubmit={handleSubmit}>
+          <form className="home__form_change-title" onSubmit={handleSubmit}>
             <input
               type="text"
-              className="input_change_title"
+              className="home__input_change-title"
               value={newTitle}
               onClick={(e) => {
                 e.stopPropagation();
@@ -71,7 +72,7 @@ export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle 
             />
           </form>
         )}
-        <button className="icon__delete_button" aria-label="Delete" onClick={handleDeleteBoard}>
+        <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
           <i className="fa fa-trash" />
         </button>
       </div>

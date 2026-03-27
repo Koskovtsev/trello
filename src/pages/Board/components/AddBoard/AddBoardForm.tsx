@@ -38,7 +38,7 @@ export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element 
           className="form__add_title"
         />
         <input type="color" value={color} className="form__add_color" onChange={(e) => setColor(e.target.value)} />
-        <button type="submit" className="add-board-button">
+        <button type="submit" className="board__button_add-item">
           Додати дошку
         </button>
       </form>

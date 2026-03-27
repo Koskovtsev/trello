@@ -1,8 +1,8 @@
 .list {
-    background-image: url('../../../../assets/textur.jpg');
 
-    width: 200px;
-    min-height: 130px;
+    min-width: 200px;
+    max-width: 200px;
+    min-height: 160px;
     font-size: 10px;
     display: flex;
     flex-direction: column;
@@ -35,6 +35,7 @@
         align-items: flex-start;
         width: 100%;
         margin-bottom: 10px;
+
     }
 
     &__cards {
@@ -53,6 +54,31 @@
     .input_list_title {
         height: 20px;
         border-radius: 5px;
+    }
+
+    .color-picker {
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: 5px; 
+        width: 100%; 
+        height: auto; 
+        padding: 0;
+        margin: 10px 0;
+        list-style: none;
+
+        .color_box {
+            width: 50px;
+            height: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.1s ease;
+
+            &:hover {
+                transform: scale(1.2);
+                border-color: #fff;
+            }
+        }
     }
 
     .button__add_list,
@@ -75,7 +101,12 @@
     }
 
     .button__add_card {
-       border: solid 1px transparent;
+        border: solid 1px transparent;
+    }
+
+    .button__wrapper {
+        display: flex;
+        justify-content: space-between;
     }
 
     .button__add_list {
@@ -86,6 +117,33 @@
             background-color: #acacac;
             transition: transform 0.2s;
         }
+    }
+}
+
+.list__button_custom-icon {
+    width: 25px;
+    height: 25px;
+    background: transparent;
+    border: none;          
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: scale(1.2); 
+        opacity: 0.8;
+    }
+
+    .icon-wrapper {
+        width: 25px;
+        height: 25px;
+        background-image:  url('../../../../assets/color-picker-icon.png');
+        display: block;
+        background-size: contain;
     }
 }
 
