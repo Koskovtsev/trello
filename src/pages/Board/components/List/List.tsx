@@ -7,22 +7,33 @@ import { AddCardForm } from '../Card/AddCardForm';
 import { ChangeTitleForm } from '../Board/ChangeTitleForm';
 import { deleteList } from '../../../../api/boardsService';
 import { TextureList } from './TextureList';
+import { IBoard } from '../../../../common/interfaces/IBoard';
 
 interface IAddCardChangesProps extends IList {
   onListChanged(): void;
+  boardData: IBoard;
   boardId: number;
+  onTextureUpdate(listId: number, listTexture: string, freshData: IBoard): void;
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
-  const { id, title, cards, onListChanged, boardId, custom } = props;
+  const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate } = props;
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
-  const color = custom?.color ?? require('../../../../assets/textur_black.jpg');
-  const [currentTexture, setCurrentTexture] = useState(color);
+  const [currentTexture, setCurrentTexture] = useState<string | null>(
+    boardData.custom?.listTextures?.[id ?? 0] ?? null
+  );
   const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
-  // eslint-disable-next-line no-console
-  console.log(`колір: ${currentTexture}, кастом: ${JSON.stringify(props)}`);
-  // eslint-disable-next-line no-console
-  // console.log(`айді той шо приходть в ліст: ${id}`);
+  const handleNewTexture = (texture: string): void => {
+    if (texture === currentTexture) return;
+    setCurrentTexture(texture);
+    setVisibleChangeTexture(false);
+    // const texturedLists = boardData?.custom?.listTextures || {};
+    // eslint-disable-next-line no-console
+    // console.log(
+    //   `Натиснута кнопка "зміни кольору" айді для змін боард:${boardId}, список: ${id} БоардДата: ${JSON.stringify(boardData)} текстура на зараз ${currentTexture}`
+    // );
+    onTextureUpdate(id!, texture, boardData);
+  };
   const handleCardAdded = (): void => {
     onListChanged();
     setVisibleAddCardForm(false);
@@ -34,11 +45,17 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     setVisibleChangeTitleForm(false);
   };
   async function handleDeleteList(): Promise<void> {
-    const response = await deleteList(boardId, id ?? 0);
+    // eslint-disable-next-line no-console
+    // console.log(
+    //   `Натиснута кнопка "видалити список" айді для видалення боард:${boardId}, список: ${id} БоардДата: ${JSON.stringify(boardData)}`
+    // );
+    const response = await deleteList(boardId, id!);
     if (response === 'Deleted') {
       onListChanged();
     }
   }
+  // eslint-disable-next-line no-console
+  // console.log(`колір: ${currentTexture}`);
   return (
     <div className="list" style={{ backgroundImage: `url(${currentTexture})` }}>
       <div className="list__header">
@@ -65,7 +82,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
           <span className="icon-wrapper" />
         </button>
       </div>
-      {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={setCurrentTexture} />}
+      {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
       <ul className="list__cards">{cards?.map((elem) => <Card key={elem.id} {...elem} />)}</ul>
       {isVisibleAddCardForm && (
         <AddCardForm

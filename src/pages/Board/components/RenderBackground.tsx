@@ -5,10 +5,10 @@ interface HatchProps {
 }
 // THIS FUNCTION WAS GENERETED BY GEMINI
 export function RenderBackground({ color = '#555' }: HatchProps): JSX.Element {
-  const strokeWidth = 0.4;
+  const strokeWidth = 0.7;
   const gap = 3.5;
-  const width = 200;
-  const height = 200;
+  const width = 150;
+  const height = 150;
 
   const paths = useMemo(() => {
     const lines: string[] = [];

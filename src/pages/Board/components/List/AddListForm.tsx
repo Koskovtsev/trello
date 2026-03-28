@@ -4,7 +4,7 @@ import { TextureList } from './TextureList';
 import './list.scss';
 
 interface IAddListFormProps {
-  onListAdded(): void;
+  onListAdded(texture: string): void;
   position: number;
   boardId: number;
 }
@@ -17,12 +17,12 @@ export function AddListForm({ onListAdded, position, boardId }: IAddListFormProp
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
     if (title.trim()) {
-      const dataToSend = { title, position, custom: { color: currentTexture } };
+      const dataToSend = { title, position, custom: { listTextures: currentTexture } };
       // eslint-disable-next-line no-console
-      console.log(dataToSend);
+      // console.log(dataToSend);
       const response = await postList(dataToSend, boardId);
       if (response === 'Created') {
-        onListAdded();
+        onListAdded(currentTexture);
         setTitle('');
       }
     }
@@ -39,7 +39,7 @@ export function AddListForm({ onListAdded, position, boardId }: IAddListFormProp
           placeholder="Введіть назву списку..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onBlur={handleSubmit}
+          // onBlur={handleSubmit}
         />
         <TextureList key={boardId} onTexturePicked={setCurrentTexture} />
         <button type="submit" className="button__add_list">

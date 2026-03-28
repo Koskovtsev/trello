@@ -44,7 +44,7 @@ export async function postCard(card: ICard, boardId: number): Promise<string> {
 }
 
 export async function deleteList(boardId: number, listId: number): Promise<string> {
-  const response = await api.delete<unknown, { result: string }>(`board/${boardId}/list/${listId}`);
+  const response = await api.delete<{ id: number }, { result: string }>(`board/${boardId}/list/${listId}`);
   return response.result;
 }
 
