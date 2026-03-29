@@ -52,3 +52,8 @@ export async function putListUpdates(listData: IList, boardId: number, listId: n
   const response = await api.put<{ id: number }, { result: string }>(`board/${boardId}/list/${listId}`, listData);
   return response.result;
 }
+
+export async function putListsUpdates(listData: IList[], boardId: number): Promise<string> {
+  const response = await api.put<{ id: number }, { result: string }>(`board/${boardId}/list/`, listData);
+  return response.result;
+}

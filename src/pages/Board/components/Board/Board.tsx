@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getBoard, putBoardUpdates } from '../../../../api/boardsService';
+import { getBoard, putBoardUpdates, putListsUpdates } from '../../../../api/boardsService';
 import { List } from '../List/List';
 import { AddListForm } from '../List/AddListForm';
 import { ChangeTitleForm } from './ChangeTitleForm';
 import './board.scss';
 import { IBoard } from '../../../../common/interfaces/IBoard';
+import { IList } from '../../../../common/interfaces/IList';
 
 export function Board(): JSX.Element {
   const [boardData, setBoradData] = useState<IBoard | null>(null);
@@ -26,13 +27,11 @@ export function Board(): JSX.Element {
     }
     fetchBoard();
   }, [boardId, refreshList]);
-  const updateListTexture = async (listId: number, listTexture: string, freshData: IBoard): Promise<void> => {
-    const texturedLists = freshData?.custom?.listTextures || {};
+  const updateListTexture = async (texturedList: Record<string, string>, freshData: IBoard): Promise<void> => {
     const updatedCustom = {
       ...freshData.custom,
       listTextures: {
-        ...texturedLists,
-        [String(listId)]: listTexture,
+        ...texturedList,
       },
     };
     const response = await putBoardUpdates({
@@ -47,33 +46,64 @@ export function Board(): JSX.Element {
   const handleNewList = async (texture: string): Promise<void> => {
     if (!boardData) return;
     const data: IBoard = await getBoard(id);
-    const texturedLists = data?.custom?.listTextures || {};
+    const texturedLists = { ...(data?.custom?.listTextures || {}) };
     const newId = data.lists?.find(
       (list) => !texturedLists[String(list.id)] || texturedLists[String(list.id)] === null
     )?.id;
     // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
-    console.log(`newID: ${newId}}`);
+    // console.log(`newID: ${newId}}`);
     if (!newId) return;
     // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
-    console.log(
-      `Айді нового списка: ${newId}, список вже готових об'єктів айд-текстура: ${JSON.stringify(texturedLists)}, listTextures: ${JSON.stringify(boardData.custom?.listTextures)}`
-    );
-    await updateListTexture(newId, texture, data);
+    // console.log(
+    // `Айді нового списка: ${newId}, список вже готових об'єктів айд-текстура: ${JSON.stringify(texturedLists)}, listTextures: ${JSON.stringify(boardData.custom?.listTextures)}`
+    // );
+    const updatedTextureLists = {
+      ...texturedLists,
+      [String(newId)]: texture,
+    };
+    await updateListTexture(updatedTextureLists, data);
   };
 
   if (!boardData) {
     return <div className="loading">Завантаження...</div>;
   }
   const lists = boardData.lists ?? [];
+  // TODO видалить запис для відображення в консолі.
+  // lists.forEach((elem) => {
+  //   // eslint-disable-next-line no-console
+  //   console.log(
+  //     `list ID: ${elem.id}, list title: ${elem.title}, list position: ${elem.position}, boardData: ${JSON.stringify(boardData)}, id: ${id}`
+  //   );
+  // });
   const title = boardData.title ?? '';
   const handleListAdded = (texture: string): void => {
     handleNewList(texture);
     setVisibleAddListForm(false);
   };
-  const handleListChanged = (listId?: number): void => {
-    if (listId && listId > lists.length) {
+  const handleListChanged = async (position?: number, listId?: number): Promise<void> => {
+    if (position && position < lists.length) {
       // eslint-disable-next-line no-console
-      console.log(`колір: ${listId}`);
+      // console.log(`we are here!!! це іф тут треба щось робить: ${JSON.stringify(position)}, listId: ${listId}`);
+      const newPositionList = lists.reduce((acc: { id: number; position: number }[], list) => {
+        if (list.id === listId) return acc;
+        acc.push({ id: list.id!, position: acc.length + 1 });
+        return acc;
+      }, []);
+      // eslint-disable-next-line no-console
+      // console.log(`новий список ${JSON.stringify(newPositionList)}, айдіДошки:${boardData.id}`);
+      await putListsUpdates(newPositionList as IList[], id);
+      // if (response === 'Updated') {
+      // eslint-disable-next-line no-console
+      // console.log('all is good');
+      // }
+    }
+    // eslint-disable-next-line no-console
+    // console.log(`Pos: ${JSON.stringify(position)}`);
+    if (listId) {
+      const texturedLists = { ...(boardData?.custom?.listTextures || {}) };
+      if (delete texturedLists[listId]) {
+        updateListTexture(texturedLists, boardData);
+      }
     }
     setRefreshList((prev) => !prev);
   };

@@ -10,13 +10,13 @@ import { TextureList } from './TextureList';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 
 interface IAddCardChangesProps extends IList {
-  onListChanged(): void;
+  onListChanged(position?: number, listId?: number): void;
   boardData: IBoard;
   boardId: number;
-  onTextureUpdate(listId: number, listTexture: string, freshData: IBoard): void;
+  onTextureUpdate(texturedList: Record<string, string>, freshData: IBoard): void;
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
-  const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate } = props;
+  const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, position } = props;
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | null>(
@@ -27,12 +27,16 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     if (texture === currentTexture) return;
     setCurrentTexture(texture);
     setVisibleChangeTexture(false);
-    // const texturedLists = boardData?.custom?.listTextures || {};
+    const texturedLists = { ...(boardData?.custom?.listTextures || {}) };
+    const updatedTextureLists = {
+      ...texturedLists,
+      [String(id)]: texture,
+    };
     // eslint-disable-next-line no-console
     // console.log(
     //   `Натиснута кнопка "зміни кольору" айді для змін боард:${boardId}, список: ${id} БоардДата: ${JSON.stringify(boardData)} текстура на зараз ${currentTexture}`
     // );
-    onTextureUpdate(id!, texture, boardData);
+    onTextureUpdate(updatedTextureLists, boardData);
   };
   const handleCardAdded = (): void => {
     onListChanged();
@@ -51,7 +55,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     // );
     const response = await deleteList(boardId, id!);
     if (response === 'Deleted') {
-      onListChanged();
+      onListChanged(position, id);
     }
   }
   // eslint-disable-next-line no-console

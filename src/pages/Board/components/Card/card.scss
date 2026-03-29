@@ -1,5 +1,70 @@
 .list__cards {
-  list-style: none; 
-  padding: 0;       
+  list-style: none;
+  padding: 0;
   margin: 0;
+}
+
+.card__item {
+  display: flex;
+  justify-content: space-between;
+  background-color: #3f3f3f;
+  color: antiquewhite;
+  border: transparent 3px solid;
+  border-radius: 10px;
+
+  &:hover {
+    border: white 3px solid;
+    transition: transform 0.2s;
+
+    .card__checkbox {
+      opacity: 1;
+    }
+  }
+}
+
+.card__checkbox {
+  appearance: none; 
+  -webkit-appearance: none;
+  opacity: 0;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #afaeae;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  transition: opacity 0.4s ease;
+
+  &:hover {
+    border-color: #70b349; 
+    transform: scale(1.1); 
+  }
+
+  &::after {
+    content: '\f00c';
+    opacity: 0;
+    transition: opacity 0.1s 0.4s;
+    -webkit-text-stroke: 1px black;
+    font-family: 'Font Awesome 5 Free';
+    font-size: 11px;
+    font-weight: 1000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: black;
+    transition: none;
+  }
+
+  &:checked {
+    background-color: #70b349;
+    border-color: #70b349;
+    opacity: 1;
+    position: relative;
+  }
+
+  &:checked::after {
+    opacity: 1;
+    transition: opacity 0.2s ease 0.4s;
+  }
 }
