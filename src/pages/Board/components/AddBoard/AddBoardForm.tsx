@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { FormEvent, useState } from 'react';
 import { PencilWrapper } from '../PencilWrapper';
 import { postNewBoard } from '../../../../api/boardsService';
@@ -12,18 +13,19 @@ export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element 
   const [color, setColor] = useState<string>('#000000');
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
-    if (title.trim()) {
-      // eslint-disable-next-line no-console
-      // console.log(`додаємо нову дошку з назвою ${title} and a color is ${color}`);
+    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;
+    if (title.trim() && titleRegex.test(title)) {
       const dataToSend: IBoard = { title, custom: { background: color } };
-      const id = await postNewBoard(dataToSend);
-      if (id) {
-        // eslint-disable-next-line no-console
-        // console.log(`все пройшло ок`);
-        const newFullBoardObject: IBoard = { id, title, custom: { background: color } };
-        onBoardAdded(newFullBoardObject);
-        setTitle('');
-        setColor('#000000');
+      try {
+        const id = await postNewBoard(dataToSend);
+        if (id) {
+          const newFullBoardObject: IBoard = { id, title, custom: { background: color } };
+          onBoardAdded(newFullBoardObject);
+          setTitle('');
+          setColor('#000000');
+        }
+      } catch (error) {
+        toast.error('Error creating new board');
       }
     }
   }

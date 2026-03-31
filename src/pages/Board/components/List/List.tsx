@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useState } from 'react';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
@@ -32,10 +33,6 @@ export function List(props: IAddCardChangesProps): JSX.Element {
       ...texturedLists,
       [String(id)]: texture,
     };
-    // eslint-disable-next-line no-console
-    // console.log(
-    //   `Натиснута кнопка "зміни кольору" айді для змін боард:${boardId}, список: ${id} БоардДата: ${JSON.stringify(boardData)} текстура на зараз ${currentTexture}`
-    // );
     onTextureUpdate(updatedTextureLists, boardData);
   };
   const handleCardAdded = (): void => {
@@ -49,17 +46,17 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     setVisibleChangeTitleForm(false);
   };
   async function handleDeleteList(): Promise<void> {
-    // eslint-disable-next-line no-console
-    // console.log(
-    //   `Натиснута кнопка "видалити список" айді для видалення боард:${boardId}, список: ${id} БоардДата: ${JSON.stringify(boardData)}`
-    // );
-    const response = await deleteList(boardId, id!);
-    if (response === 'Deleted') {
-      onListChanged(position, id);
+    try {
+      const response = await deleteList(boardId, id!);
+      if (response === 'Deleted') {
+        onListChanged(position, id);
+      } else {
+        toast.error(`Error deleting list`);
+      }
+    } catch (error) {
+      toast.error(`Error deleting list`);
     }
   }
-  // eslint-disable-next-line no-console
-  // console.log(`колір: ${currentTexture}`);
   return (
     <div className="list" style={{ backgroundImage: `url(${currentTexture})` }}>
       <div className="list__header">
@@ -87,7 +84,11 @@ export function List(props: IAddCardChangesProps): JSX.Element {
         </button>
       </div>
       {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
-      <ul className="list__cards">{cards?.map((elem) => <Card key={elem.id} {...elem} />)}</ul>
+      <ul className="list__cards">
+        {cards?.map((elem) => (
+          <Card key={elem.id} {...elem} boardId={boardId} listId={id!} onListChanged={onListChanged} />
+        ))}
+      </ul>
       {isVisibleAddCardForm && (
         <AddCardForm
           key={id}

@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBoard, putBoardUpdates, putListsUpdates } from '../../../../api/boardsService';
@@ -21,8 +22,7 @@ export function Board(): JSX.Element {
         const data = await getBoard(id);
         setBoradData(data);
       } catch (error) {
-        // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
-        // console.log(require('../../../../assets/textur_yellow.jpg'));
+        toast.error(`Error getting board data`);
       }
     }
     fetchBoard();
@@ -34,47 +34,42 @@ export function Board(): JSX.Element {
         ...texturedList,
       },
     };
-    const response = await putBoardUpdates({
-      id,
-      title: freshData.title,
-      custom: updatedCustom,
-    } as IBoard);
-    if (response === 'Updated') {
-      setRefreshList((prev) => !prev);
+    try {
+      const response = await putBoardUpdates({
+        id,
+        title: freshData.title,
+        custom: updatedCustom,
+      } as IBoard);
+      if (response === 'Updated') {
+        setRefreshList((prev) => !prev);
+      }
+    } catch (error) {
+      toast.error(`Error updating list properties`);
     }
   };
   const handleNewList = async (texture: string): Promise<void> => {
     if (!boardData) return;
-    const data: IBoard = await getBoard(id);
-    const texturedLists = { ...(data?.custom?.listTextures || {}) };
-    const newId = data.lists?.find(
-      (list) => !texturedLists[String(list.id)] || texturedLists[String(list.id)] === null
-    )?.id;
-    // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
-    // console.log(`newID: ${newId}}`);
-    if (!newId) return;
-    // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
-    // console.log(
-    // `Айді нового списка: ${newId}, список вже готових об'єктів айд-текстура: ${JSON.stringify(texturedLists)}, listTextures: ${JSON.stringify(boardData.custom?.listTextures)}`
-    // );
-    const updatedTextureLists = {
-      ...texturedLists,
-      [String(newId)]: texture,
-    };
-    await updateListTexture(updatedTextureLists, data);
+    try {
+      const data: IBoard = await getBoard(id);
+      const texturedLists = { ...(data?.custom?.listTextures || {}) };
+      const newId = data.lists?.find(
+        (list) => !texturedLists[String(list.id)] || texturedLists[String(list.id)] === null
+      )?.id;
+      if (!newId) return;
+      const updatedTextureLists = {
+        ...texturedLists,
+        [String(newId)]: texture,
+      };
+      await updateListTexture(updatedTextureLists, data);
+    } catch (error) {
+      toast.error(`Error creating new list`);
+    }
   };
 
   if (!boardData) {
     return <div className="loading">Завантаження...</div>;
   }
   const lists = boardData.lists ?? [];
-  // TODO видалить запис для відображення в консолі.
-  // lists.forEach((elem) => {
-  //   // eslint-disable-next-line no-console
-  //   console.log(
-  //     `list ID: ${elem.id}, list title: ${elem.title}, list position: ${elem.position}, boardData: ${JSON.stringify(boardData)}, id: ${id}`
-  //   );
-  // });
   const title = boardData.title ?? '';
   const handleListAdded = (texture: string): void => {
     handleNewList(texture);
@@ -82,20 +77,16 @@ export function Board(): JSX.Element {
   };
   const handleListChanged = async (position?: number, listId?: number): Promise<void> => {
     if (position && position < lists.length) {
-      // eslint-disable-next-line no-console
-      // console.log(`we are here!!! це іф тут треба щось робить: ${JSON.stringify(position)}, listId: ${listId}`);
       const newPositionList = lists.reduce((acc: { id: number; position: number }[], list) => {
         if (list.id === listId) return acc;
         acc.push({ id: list.id!, position: acc.length + 1 });
         return acc;
       }, []);
-      // eslint-disable-next-line no-console
-      // console.log(`новий список ${JSON.stringify(newPositionList)}, айдіДошки:${boardData.id}`);
-      await putListsUpdates(newPositionList as IList[], id);
-      // if (response === 'Updated') {
-      // eslint-disable-next-line no-console
-      // console.log('all is good');
-      // }
+      try {
+        await putListsUpdates(newPositionList as IList[], id);
+      } catch (error) {
+        toast.error(`Error updating list properties`);
+      }
     }
     // eslint-disable-next-line no-console
     // console.log(`Pos: ${JSON.stringify(position)}`);

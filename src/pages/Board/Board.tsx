@@ -1,77 +1,32 @@
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { IBoard } from '../../common/interfaces/IBoard';
 import { PencilWrapper } from './components/PencilWrapper';
-import { deleteBoard, putBoardUpdates } from '../../api/boardsService';
+import { deleteBoard } from '../../api/boardsService';
 import './board.scss';
 
 interface IBoardProps extends IBoard {
+  id: number;
   removeDeletedBoard(id: number): void;
-  updateBoardTitle(id: number, newTitle: string): void;
 }
 
-export function Board({ id, title, custom, removeDeletedBoard, updateBoardTitle }: IBoardProps): JSX.Element {
-  const [isChangeTitle, setIsChangeTitle] = useState(false);
-  const [newTitle, setNewTitle] = useState<string | undefined>(title);
+export function Board({ id, title, custom, removeDeletedBoard }: IBoardProps): JSX.Element {
   async function handleDeleteBoard(e: React.MouseEvent<HTMLButtonElement>): Promise<void> {
     e.stopPropagation();
     e.preventDefault();
-    // eslint-disable-next-line no-console
-    // console.log(`Кнопка натиснута! id: ${id}`);
-    if (id) {
+    try {
       const response = await deleteBoard(id);
       if (response === 'Deleted') {
         removeDeletedBoard(id);
       }
-    }
-  }
-  function handleChangeTitle(e: React.MouseEvent<HTMLSpanElement>): void {
-    e.stopPropagation();
-    e.preventDefault();
-    // eslint-disable-next-line no-console
-    // console.log(`Редагування натиснуте! id: ${id}`);
-    setIsChangeTitle(true);
-  }
-  async function handleSubmit(e: React.SyntheticEvent): Promise<void> {
-    e.preventDefault();
-    e.stopPropagation();
-    if (newTitle?.trim()) {
-      const newBoard: IBoard = { id, title: newTitle, custom };
-      // eslint-disable-next-line no-console
-      // console.log(JSON.stringify(newBoard));
-      putBoardUpdates(newBoard);
-      setIsChangeTitle(false);
-      if (id) {
-        updateBoardTitle(id, newTitle);
-      }
-    } else {
-      setNewTitle(title);
-      setIsChangeTitle(false);
+    } catch (error) {
+      toast.error(`Error deleting board`);
     }
   }
 
   return (
     <PencilWrapper className="home__board_item" color={custom?.background || 'black'}>
       <div className="home__header">
-        {!isChangeTitle && (
-          <span className="home__board_item-title" onClick={handleChangeTitle}>
-            {title}
-          </span>
-        )}
-        {isChangeTitle && (
-          <form className="home__form_change-title" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="home__input_change-title"
-              value={newTitle}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-              onChange={(e) => setNewTitle(e.target.value)}
-              onBlur={handleSubmit}
-            />
-          </form>
-        )}
+        <span className="home__board_title">{title}</span>
         <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
           <i className="fa fa-trash" />
         </button>

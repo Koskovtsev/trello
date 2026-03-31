@@ -34,26 +34,31 @@ export async function getBoard(id: number): Promise<IBoardData> {
 }
 
 export async function postList(list: IList, boardId: number): Promise<string> {
-  const response = await api.post<{ id: number }, { result: string }>(`board/${boardId}/list`, list);
+  const response = await api.post<unknown, { result: string }>(`board/${boardId}/list`, list);
   return response.result;
 }
 
 export async function postCard(card: ICard, boardId: number): Promise<string> {
-  const response = await api.post<{ id: number }, { result: string }>(`board/${boardId}/card`, card);
+  const response = await api.post<unknown, { result: string }>(`board/${boardId}/card`, card);
   return response.result;
 }
 
 export async function deleteList(boardId: number, listId: number): Promise<string> {
-  const response = await api.delete<{ id: number }, { result: string }>(`board/${boardId}/list/${listId}`);
+  const response = await api.delete<unknown, { result: string }>(`board/${boardId}/list/${listId}`);
   return response.result;
 }
 
 export async function putListUpdates(listData: IList, boardId: number, listId: number): Promise<string> {
-  const response = await api.put<{ id: number }, { result: string }>(`board/${boardId}/list/${listId}`, listData);
+  const response = await api.put<unknown, { result: string }>(`board/${boardId}/list/${listId}`, listData);
   return response.result;
 }
 
 export async function putListsUpdates(listData: IList[], boardId: number): Promise<string> {
-  const response = await api.put<{ id: number }, { result: string }>(`board/${boardId}/list/`, listData);
+  const response = await api.put<unknown, { result: string }>(`board/${boardId}/list/`, listData);
+  return response.result;
+}
+
+export async function putCardUpdates(cardData: ICard, boardId: number, cardId: number): Promise<string> {
+  const response = await api.put<unknown, { result: string }>(`board/${boardId}/card/${cardId}`, cardData);
   return response.result;
 }

@@ -16,7 +16,7 @@ body {
         font-size: 40px;
         background-color: #727272;
 
-        
+
     }
 }
 
@@ -43,4 +43,9 @@ body {
         font-weight: 500;
         background-color: rgb(132, 245, 245);
     }
+}
+
+#nprogress .bar {
+    background: #ff3c00 !important;
+    height: 4px;
 }

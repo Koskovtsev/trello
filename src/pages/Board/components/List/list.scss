@@ -59,6 +59,7 @@
     .color-picker {
         display: flex; 
         flex-wrap: wrap; 
+        justify-content: space-around;
         gap: 5px; 
         width: 100%; 
         height: auto; 

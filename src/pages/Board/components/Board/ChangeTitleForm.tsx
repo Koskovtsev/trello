@@ -1,12 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { ICard } from '../../../../common/interfaces/ICard';
 import { IList } from '../../../../common/interfaces/IList';
-import { putBoardUpdates, putListUpdates } from '../../../../api/boardsService';
 import { IBoard } from '../../../../common/interfaces/IBoard';
+import { putBoardUpdates, putCardUpdates, putListUpdates } from '../../../../api/boardsService';
 
-type IChangeTitleFormProps = IBoardChangeProps | IListChangeProps;
+type IChangeTitleFormProps = IBoardChangeProps | IListChangeProps | ICardChangeProps;
 
 interface IBoardChangeProps extends IBaseProps {
   type: 'board';
+}
+
+interface ICardChangeProps extends IBaseProps {
+  type: 'card';
+  listId: number;
+  cardId: number;
 }
 
 interface IListChangeProps extends IBaseProps {
@@ -35,21 +43,32 @@ export function ChangeTitleForm(props: IChangeTitleFormProps): JSX.Element {
     if (isLoading) return;
     e.preventDefault();
     e.stopPropagation();
-    // TODO: зробить неактивну форму поки йдуть запити на сервер.
-    if (newTitle?.trim()) {
-      if (type === 'list') {
-        const { listId } = props;
-        const newBoard: IList = { title: newTitle };
-        setIsLoading(true);
-        await putListUpdates(newBoard, boardId, listId);
+    if (newTitle === currentTitle) {
+      onTitleChanged(false);
+      return;
+    }
+    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;
+    if (newTitle?.trim() && titleRegex.test(newTitle)) {
+      setIsLoading(true);
+      try {
+        if (type === 'list') {
+          const { listId } = props;
+          const newList: IList = { title: newTitle };
+          await putListUpdates(newList, boardId, listId);
+        }
+        if (type === 'board') {
+          const newBoard: IBoard = { id: boardId, title: newTitle };
+          await putBoardUpdates(newBoard);
+        }
+        if (type === 'card') {
+          const { listId, cardId } = props;
+          const newCard: ICard = { title: newTitle, list_id: listId };
+          await putCardUpdates(newCard, boardId, cardId);
+        }
         onTitleChanged(true);
-        setIsLoading(false);
-      }
-      if (type === 'board') {
-        const newBoard: IBoard = { id: boardId, title: newTitle };
-        setIsLoading(true);
-        await putBoardUpdates(newBoard);
-        onTitleChanged(true);
+      } catch (error) {
+        toast.error(`Error updating ${type} title.`);
+      } finally {
         setIsLoading(false);
       }
     } else {

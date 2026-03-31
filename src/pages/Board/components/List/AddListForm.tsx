@@ -1,6 +1,7 @@
+import toast from 'react-hot-toast';
 import { FormEvent, useState } from 'react';
 import { postList } from '../../../../api/boardsService';
-import { TextureList } from './TextureList';
+import { TextureList, textures } from './TextureList';
 import './list.scss';
 
 interface IAddListFormProps {
@@ -10,26 +11,24 @@ interface IAddListFormProps {
 }
 
 export function AddListForm({ onListAdded, position, boardId }: IAddListFormProps): JSX.Element {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const defaultColor = require('../../../../assets/textur_black.jpg');
   const [title, setTitle] = useState('');
-  const [currentTexture, setCurrentTexture] = useState(defaultColor);
+  const [currentTexture, setCurrentTexture] = useState(textures[8].url);
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
-    if (title.trim()) {
+    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;
+    if (title.trim() && titleRegex.test(title)) {
       const dataToSend = { title, position, custom: { listTextures: currentTexture } };
-      // eslint-disable-next-line no-console
-      // console.log(dataToSend);
-      const response = await postList(dataToSend, boardId);
-      if (response === 'Created') {
-        onListAdded(currentTexture);
-        setTitle('');
+      try {
+        const response = await postList(dataToSend, boardId);
+        if (response === 'Created') {
+          onListAdded(currentTexture);
+          setTitle('');
+        }
+      } catch (error) {
+        toast.error(`Error creating new list`);
       }
     }
   }
-
-  // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
-  // console.log(require('../../../../assets/textur_yellow.jpg'));
   return (
     <div className="list" style={{ backgroundImage: `url(${currentTexture})` }}>
       <form className="form__add_list" onSubmit={handleSubmit}>
@@ -39,7 +38,6 @@ export function AddListForm({ onListAdded, position, boardId }: IAddListFormProp
           placeholder="Введіть назву списку..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          // onBlur={handleSubmit}
         />
         <TextureList key={boardId} onTexturePicked={setCurrentTexture} />
         <button type="submit" className="button__add_list">
