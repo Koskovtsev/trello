@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 import { FormEvent, useState } from 'react';
-import { PencilWrapper } from '../PencilWrapper';
+import { TextureList, textures } from '../List/TextureList';
 import { postNewBoard } from '../../../../api/boardsService';
 import './addForm.scss';
 import { IBoard } from '../../../../common/interfaces/IBoard';
@@ -10,19 +10,19 @@ interface IAddBoardFormProps {
 }
 export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element {
   const [title, setTitle] = useState<string>('');
-  const [color, setColor] = useState<string>('#000000');
+  const [currentTexture, setCurrentTexture] = useState<string | null>(textures[8].url);
+  // const [color, setColor] = useState<string>(textures[8].url);
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
     const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;
     if (title.trim() && titleRegex.test(title)) {
-      const dataToSend: IBoard = { title, custom: { background: color } };
+      const dataToSend: IBoard = { title, custom: { background: currentTexture ?? textures[8].url } };
       try {
         const id = await postNewBoard(dataToSend);
         if (id) {
-          const newFullBoardObject: IBoard = { id, title, custom: { background: color } };
+          const newFullBoardObject: IBoard = { id, title, custom: { background: currentTexture ?? textures[8].url } };
           onBoardAdded(newFullBoardObject);
           setTitle('');
-          setColor('#000000');
         }
       } catch (error) {
         toast.error('Error creating new board');
@@ -30,7 +30,7 @@ export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element 
     }
   }
   return (
-    <PencilWrapper className="home__board_item" color={color || 'black'}>
+    <div className="home__board_item" style={{ backgroundImage: `url(${currentTexture})` }}>
       <form className="form__add" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -39,11 +39,11 @@ export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element 
           onChange={(e) => setTitle(e.target.value)}
           className="form__add_title"
         />
-        <input type="color" value={color} className="form__add_color" onChange={(e) => setColor(e.target.value)} />
+        <TextureList key={0} onTexturePicked={setCurrentTexture} />
         <button type="submit" className="board__button_add-item">
           Додати дошку
         </button>
       </form>
-    </PencilWrapper>
+    </div>
   );
 }

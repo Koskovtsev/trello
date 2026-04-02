@@ -1,9 +1,20 @@
 .board {
     box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    // overflow: hidden;
 
-    &__title_wrapper,
+    .color-picker {
+        max-width: 800px;
+        align-items: center;
+    }
+
     .edit-title {
-        background-color: #575757;
+        background-color: rgb(20, 20, 20, 0.3);
+
         height: 80px;
         display: flex;
         align-items: center;
@@ -12,6 +23,8 @@
 
     &__title_wrapper {
         padding: 0 20px;
+        display: flex;
+        flex-wrap: nowrap;
     }
 
     &__title,
@@ -43,6 +56,10 @@
     }
 
     &__list {
+        box-sizing: border-box;
+        flex: 1;
+        overflow-x: auto; // Дозволяє з'явитися скролу
+        scroll-behavior: smooth; // Щоб JS плавно котив, а не стрибав
         padding: 20px;
         display: flex;
         flex-direction: row;
@@ -50,6 +67,30 @@
         flex-wrap: nowrap;
         gap: 10px;
         align-items: flex-start;
+        min-height: 0;
+        width: 100%;
+
+       &::-webkit-scrollbar {
+        display: block;     // Примусово показуємо
+    }
+    &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1); // Світло-сірий фон
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #555;   // Темно-сірий колір, щоб було видно
+        border-radius: 10px;
+        border: 2px solid transparent; // Відступ від країв доріжки
+        background-clip: content-box;
+
+        &:hover {
+            background: #333; // Темнішає при наведенні
+        }
+    }
+
+    // Для Firefox (він не розуміє webkit)
+    scrollbar-width: auto;
+    scrollbar-color: #555 rgba(0, 0, 0, 0.1);
     }
 
     &__add_button {
@@ -62,11 +103,11 @@
         &__input {
             flex-shrink: 1;
             width: auto;
-            background-color: #949393; 
+            background-color: #949393;
             outline: none;
 
             &:focus {
-                border-color: #333; 
+                border-color: #333;
                 transition: transform 0.2s;
             }
         }
@@ -78,10 +119,19 @@
         font-weight: 600;
         min-width: 160px;
         border-radius: 10px;
-         background-color: #979797; 
+        background-color: #979797;
+
         &:hover {
-             background-color: #777777;
-              transition: transform 0.2s;
+            background-color: #777777;
+            transition: transform 0.2s;
         }
     }
+}
+
+.board__title_wrapper {
+    background-color: rgb(20, 20, 20, 0.2);
+    margin: 0;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }

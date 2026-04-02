@@ -89,15 +89,13 @@ export function Card(props: ICardChangeProps): JSX.Element {
         >
           <i className="fa fa-pencil-alt" />
         </button>
-        {!isVisibleMenuOptions && (
-          <button
-            className="button__menu_options"
-            aria-label="Change card title"
-            onClick={() => setVisibleMenuOptions(true)}
-          >
-            <i className="fas fa-ellipsis-h" />
-          </button>
-        )}
+        <button
+          className="button__menu_options"
+          aria-label="Show menu"
+          onClick={() => setVisibleMenuOptions((prev) => !prev)}
+        >
+          <i className="fas fa-ellipsis-h" />
+        </button>
         {isVisibleMenuOptions && (
           <div className="menu__options">
             <div className="menu__options_header">

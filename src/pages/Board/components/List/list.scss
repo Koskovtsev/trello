@@ -1,5 +1,5 @@
 .list {
-
+    flex-shrink: 0;
     min-width: 200px;
     max-width: 200px;
     min-height: 160px;
@@ -14,12 +14,21 @@
 
     &__title {
         width: 100%;
-        margin: 0;
+        margin: 0 !important;
         // margin-top: 1px;
+        flex: 1;
         font-size: 20px;
         gap: 10px;
         padding-left: 10px;
         border: 2px solid transparent;
+        box-sizing: border-box;
+        flex: 1; // Займає весь вільний простір
+        min-width: 0;
+        cursor: pointer;
+        white-space: normal; // Дозволяє звичайний перенос рядків
+        word-wrap: break-word; // Розриває дуже довгі слова, щоб не вилазили
+        overflow-wrap: break-word; // Сучасний стандарт для розриву слів
+        line-height: 1.2;
 
         &:hover {
             background-color: rgba(153, 153, 153, 0.6);
@@ -35,7 +44,8 @@
         justify-content: space-between;
         align-items: flex-start;
         width: 100%;
-        margin-bottom: 10px;
+
+
     }
 
     &__cards {
@@ -47,8 +57,7 @@
     }
 
     .form__add_list {
-        height: 20px;
-        margin: 5px 0;
+        height: 160px;
     }
 
     .input_list_title {
@@ -56,31 +65,6 @@
         border-radius: 5px;
     }
 
-    .color-picker {
-        display: flex; 
-        flex-wrap: wrap; 
-        justify-content: space-around;
-        gap: 5px; 
-        width: 100%; 
-        height: auto; 
-        padding: 0;
-        margin: 10px 0;
-        list-style: none;
-
-        .color_box {
-            width: 50px;
-            height: 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: transform 0.1s ease;
-
-            &:hover {
-                transform: scale(1.2);
-                border-color: #fff;
-            }
-        }
-    }
 
     .button__add_list,
     .button__add_card {
@@ -121,14 +105,19 @@
     }
 }
 
+.board__title_wrapper .list__button_custom-icon {
+    align-self: center;
+}
+
 .list__button_custom-icon {
+    align-self: flex-start;
     width: 25px;
     height: 25px;
     background: transparent;
-    border: none;          
+    border: none;
     cursor: pointer;
     padding: 0;
-    margin: 0;
+    margin: 0 0 0 5px !important;
     margin-top: 8px;
     display: flex;
     align-items: center;
@@ -136,14 +125,14 @@
     transition: transform 0.2s ease;
 
     &:hover {
-        transform: scale(1.2); 
+        transform: scale(1.2);
         opacity: 0.8;
     }
 
     .icon-wrapper {
         width: 25px;
         height: 25px;
-        background-image:  url('../../../../assets/color-picker-icon.png');
+        background-image: url('../../../../assets/color-picker-icon.png');
         display: block;
         background-size: contain;
     }
@@ -180,6 +169,32 @@
     }
 }
 
-.board__list .list .board__title_wrapper {
+.board__list .list {
     background-color: transparent !important;
+}
+
+.color-picker {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 5px;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    margin: 10px 0;
+    list-style: none;
+
+    .color_box {
+        width: 50px;
+        height: 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        transition: transform 0.1s ease;
+
+        &:hover {
+            transform: scale(1.2);
+            border-color: #fff;
+        }
+    }
 }

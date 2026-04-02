@@ -1,6 +1,5 @@
 import toast from 'react-hot-toast';
 import { IBoard } from '../../common/interfaces/IBoard';
-import { PencilWrapper } from './components/PencilWrapper';
 import { deleteBoard } from '../../api/boardsService';
 import './board.scss';
 
@@ -24,13 +23,11 @@ export function Board({ id, title, custom, removeDeletedBoard }: IBoardProps): J
   }
 
   return (
-    <PencilWrapper className="home__board_item" color={custom?.background || 'black'}>
-      <div className="home__header">
-        <span className="home__board_title">{title}</span>
-        <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
-          <i className="fa fa-trash" />
-        </button>
-      </div>
-    </PencilWrapper>
+    <div className="home__header" style={{ backgroundImage: `url(${custom?.background})`, backgroundColor: '#acacac' }}>
+      <span className="home__board_title">{title}</span>
+      <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
+        <i className="fa fa-trash" />
+      </button>
+    </div>
   );
 }

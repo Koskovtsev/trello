@@ -30,7 +30,7 @@ export function AddListForm({ onListAdded, position, boardId }: IAddListFormProp
     }
   }
   return (
-    <div className="list" style={{ backgroundImage: `url(${currentTexture})` }}>
+    <div className="list" style={{ backgroundImage: `url(${currentTexture})`, backgroundColor: '#acacac' }}>
       <form className="form__add_list" onSubmit={handleSubmit}>
         <input
           type="text"

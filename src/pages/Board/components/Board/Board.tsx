@@ -1,21 +1,33 @@
 import toast from 'react-hot-toast';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBoard, putBoardUpdates, putListsUpdates } from '../../../../api/boardsService';
 import { List } from '../List/List';
 import { AddListForm } from '../List/AddListForm';
 import { ChangeTitleForm } from './ChangeTitleForm';
 import './board.scss';
+import '../List/list.scss';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 import { IList } from '../../../../common/interfaces/IList';
+import { TextureList } from '../List/TextureList';
 
 export function Board(): JSX.Element {
   const [boardData, setBoradData] = useState<IBoard | null>(null);
   const [refreshList, setRefreshList] = useState(false);
+  const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
   const [isChangeTitle, setIsChangeTitle] = useState(false);
   const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
+  const [currentTexture, setCurrentTexture] = useState<string | undefined>(boardData?.custom?.background ?? undefined);
   const { boardId } = useParams<{ boardId: string }>();
+  const scrollToEnd = useRef<HTMLDivElement>(null);
+  const isInitialRender = useRef(true);
+  const prevListsLength = useRef(0);
   const id = Number(boardId);
+  useEffect(() => {
+    if (boardData?.custom?.background) {
+      setCurrentTexture(boardData.custom.background);
+    }
+  }, [boardData]);
   useEffect(() => {
     async function fetchBoard(): Promise<void> {
       try {
@@ -27,6 +39,24 @@ export function Board(): JSX.Element {
     }
     fetchBoard();
   }, [boardId, refreshList]);
+  const lists = boardData?.lists ?? [];
+  const title = boardData?.title ?? '';
+  useEffect(() => {
+    if (!boardData) return;
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      prevListsLength.current = lists.length;
+      return;
+    }
+    const isNewListAdded = lists.length > prevListsLength.current;
+    if (isVisibleAddListForm || isNewListAdded) {
+      if (scrollToEnd.current) {
+        scrollToEnd.current.scrollLeft = scrollToEnd.current.scrollWidth;
+      }
+      prevListsLength.current = lists.length;
+    }
+    prevListsLength.current = lists.length;
+  }, [isVisibleAddListForm, lists.length]);
   const updateListTexture = async (texturedList: Record<string, string>, freshData: IBoard): Promise<void> => {
     const updatedCustom = {
       ...freshData.custom,
@@ -66,15 +96,13 @@ export function Board(): JSX.Element {
     }
   };
 
-  if (!boardData) {
-    return <div className="loading">Завантаження...</div>;
-  }
-  const lists = boardData.lists ?? [];
-  const title = boardData.title ?? '';
   const handleListAdded = (texture: string): void => {
     handleNewList(texture);
     setVisibleAddListForm(false);
   };
+  if (!boardData) {
+    return <div className="loading">Завантаження...</div>;
+  }
   const handleListChanged = async (position?: number, listId?: number): Promise<void> => {
     if (position && position < lists.length) {
       const newPositionList = lists.reduce((acc: { id: number; position: number }[], list) => {
@@ -104,8 +132,38 @@ export function Board(): JSX.Element {
     }
     setIsChangeTitle(false);
   };
+  const handleNewTexture = async (texture: string): Promise<void> => {
+    if (texture === currentTexture) return;
+    setCurrentTexture(texture);
+    setVisibleChangeTexture(false);
+    const updatedCustom = {
+      ...boardData.custom,
+      background: texture,
+    };
+    try {
+      const response = await putBoardUpdates({
+        id,
+        title: boardData.title,
+        custom: updatedCustom,
+      } as IBoard);
+      if (response === 'Updated') {
+        setRefreshList((prev) => !prev);
+      }
+    } catch (error) {
+      toast.error('Error updating board properties.');
+    }
+  };
   return (
-    <div className="board">
+    <div
+      className="board"
+      ref={scrollToEnd}
+      style={{
+        backgroundImage: currentTexture?.includes('/') ? `url(${currentTexture})` : currentTexture,
+        backgroundColor: '#acacac', // Дефолтний фон, поки вантажиться картинка
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <div className="board__title_wrapper">
         {!isChangeTitle && (
           <div className="board__title" onClick={() => setIsChangeTitle(true)}>
@@ -121,6 +179,14 @@ export function Board(): JSX.Element {
             type="board"
           />
         )}
+        <button
+          className="list__button_custom-icon"
+          aria-label="Change Texture"
+          onClick={() => setVisibleChangeTexture((prev) => !prev)}
+        >
+          <span className="icon-wrapper" />
+        </button>
+        {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
       </div>
       <div className="board__list">
         {lists.map((elem) => (
@@ -139,7 +205,7 @@ export function Board(): JSX.Element {
           </button>
         )}
         {isVisibleAddListForm && (
-          <AddListForm key={id} onListAdded={handleListAdded} position={lists.length + 1} boardId={id} />
+          <AddListForm key={`form-${id}`} onListAdded={handleListAdded} position={lists.length + 1} boardId={id} />
         )}
       </div>
     </div>
