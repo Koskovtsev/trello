@@ -10,6 +10,8 @@ import '../List/list.scss';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 import { IList } from '../../../../common/interfaces/IList';
 import { TextureList } from '../List/TextureList';
+import { updatePosition } from './updatePosition';
+import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 
 export function Board(): JSX.Element {
   const [boardData, setBoradData] = useState<IBoard | null>(null);
@@ -116,8 +118,6 @@ export function Board(): JSX.Element {
         toast.error(`Error updating list properties`);
       }
     }
-    // eslint-disable-next-line no-console
-    // console.log(`Pos: ${JSON.stringify(position)}`);
     if (listId) {
       const texturedLists = { ...(boardData?.custom?.listTextures || {}) };
       if (delete texturedLists[listId]) {
@@ -153,13 +153,20 @@ export function Board(): JSX.Element {
       toast.error('Error updating board properties.');
     }
   };
+
+  const updateItemsPositions = async (props: IDragEvent): Promise<void> => {
+    const isUpdated = await updatePosition(props, lists, id);
+    if (isUpdated) {
+      setRefreshList((prev) => !prev);
+    }
+  };
   return (
     <div
       className="board"
       ref={scrollToEnd}
       style={{
         backgroundImage: currentTexture?.includes('/') ? `url(${currentTexture})` : currentTexture,
-        backgroundColor: '#acacac', // Дефолтний фон, поки вантажиться картинка
+        backgroundColor: '#acacac',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
@@ -197,6 +204,7 @@ export function Board(): JSX.Element {
             boardData={boardData}
             boardId={id}
             onTextureUpdate={updateListTexture}
+            onItemDragged={updateItemsPositions}
           />
         ))}
         {!isVisibleAddListForm && (

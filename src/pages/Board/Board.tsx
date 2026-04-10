@@ -23,11 +23,24 @@ export function Board({ id, title, custom, removeDeletedBoard }: IBoardProps): J
   }
 
   return (
-    <div className="home__header" style={{ backgroundImage: `url(${custom?.background})`, backgroundColor: '#acacac' }}>
-      <span className="home__board_title">{title}</span>
-      <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
-        <i className="fa fa-trash" />
-      </button>
+    <div
+      className="home__board_card"
+      style={{
+        backgroundImage: `url(${custom?.background})`,
+        backgroundColor: '#acacac',
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="home__board_footer">
+        <span className="home__board_title" title={title}>
+          {title}
+        </span>
+        <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
+          <i className="fa fa-trash" />
+        </button>
+      </div>
     </div>
   );
 }

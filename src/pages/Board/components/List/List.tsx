@@ -8,6 +8,7 @@ import { AddCardForm } from '../Card/AddCardForm';
 import { ChangeTitleForm } from '../Board/ChangeTitleForm';
 import { deleteList } from '../../../../api/boardsService';
 import { TextureList } from './TextureList';
+import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 
 interface IAddCardChangesProps extends IList {
@@ -15,9 +16,12 @@ interface IAddCardChangesProps extends IList {
   boardData: IBoard;
   boardId: number;
   onTextureUpdate(texturedList: Record<string, string>, freshData: IBoard): void;
+  onItemDragged(draggedElement: IDragEvent): void;
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
-  const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, position } = props;
+  // const [idDraggedList, setIdDraggedList] = useState<number | undefined>(0);
+  // const [idDroppedList, setIdDroppedList] = useState<number | undefined>(0);
+  const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, onItemDragged, position } = props;
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | null>(
@@ -57,55 +61,97 @@ export function List(props: IAddCardChangesProps): JSX.Element {
       toast.error(`Error deleting list`);
     }
   }
+  const onDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.dataTransfer.setData('listId', `${id}`);
+  };
+  const onDragEnd = (e: React.DragEvent<HTMLDivElement>): void => {
+    //  eslint-disable-next-line no-console
+    console.log(`some action ${e.currentTarget.classList}`);
+  };
+  const onDragEnter = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+  };
+  const onDragLeave = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+  };
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+  };
+  const onDrop = (e: React.DragEvent<HTMLDivElement>): void => {
+    const startedId = e.dataTransfer.getData('listId');
+    const draggedItemPositions: IDragEvent = { draggedId: Number(startedId), targetId: id! };
+    onItemDragged(draggedItemPositions);
+  };
   return (
-    <div className="list" style={{ backgroundImage: `url(${currentTexture})` }}>
-      <div className="list__header">
-        {!isVisibleChangeTitleForm && (
-          <h2 className="list__title" onClick={() => setVisibleChangeTitleForm(true)}>
-            {title}
-          </h2>
-        )}
-        {isVisibleChangeTitleForm && (
-          <ChangeTitleForm
+    <div
+      className="empty-list"
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      <div
+        className="list"
+        style={{ backgroundImage: `url(${currentTexture})` }}
+        draggable="true"
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      >
+        <div className="list__header">
+          {!isVisibleChangeTitleForm && (
+            <h2 className="list__title" onClick={() => setVisibleChangeTitleForm(true)}>
+              {title}
+            </h2>
+          )}
+          {isVisibleChangeTitleForm && (
+            <ChangeTitleForm
+              key={id}
+              onTitleChanged={handleTitleChanged}
+              listId={id ?? 0}
+              boardId={boardId}
+              currentTitle={title ?? ''}
+              type="list"
+            />
+          )}
+          <button
+            className="list__button_custom-icon"
+            aria-label="Change Texture"
+            onClick={() => setVisibleChangeTexture((prev) => !prev)}
+          >
+            <span className="icon-wrapper" />
+          </button>
+        </div>
+        {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
+        <ul className="list__cards">
+          {cards?.map((elem) => (
+            <Card
+              key={elem.id}
+              {...elem}
+              boardId={boardId}
+              listId={id!}
+              onListChanged={onListChanged}
+              onItemDragged={onItemDragged}
+            />
+          ))}
+        </ul>
+        {isVisibleAddCardForm && (
+          <AddCardForm
             key={id}
-            onTitleChanged={handleTitleChanged}
-            listId={id ?? 0}
+            title={title ?? ''}
+            onCardAdded={handleCardAdded}
+            position={(cards?.length ?? 0) + 1}
             boardId={boardId}
-            currentTitle={title ?? ''}
-            type="list"
+            list_id={id ?? 0}
           />
         )}
-        <button
-          className="list__button_custom-icon"
-          aria-label="Change Texture"
-          onClick={() => setVisibleChangeTexture((prev) => !prev)}
-        >
-          <span className="icon-wrapper" />
-        </button>
-      </div>
-      {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
-      <ul className="list__cards">
-        {cards?.map((elem) => (
-          <Card key={elem.id} {...elem} boardId={boardId} listId={id!} onListChanged={onListChanged} />
-        ))}
-      </ul>
-      {isVisibleAddCardForm && (
-        <AddCardForm
-          key={id}
-          title={title ?? ''}
-          onCardAdded={handleCardAdded}
-          position={(cards?.length ?? 0) + 1}
-          boardId={boardId}
-          list_id={id ?? 0}
-        />
-      )}
-      <div className="button__wrapper">
-        <button className="button__add_card" onClick={() => setVisibleAddCardForm(true)}>
-          ➕ додати картку
-        </button>
-        <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteList}>
-          <i className="fa fa-trash" />
-        </button>
+        <div className="button__wrapper">
+          <button className="button__add_card" onClick={() => setVisibleAddCardForm(true)}>
+            ➕ додати картку
+          </button>
+          <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteList}>
+            <i className="fa fa-trash" />
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -62,3 +62,8 @@ export async function putCardUpdates(cardData: ICard, boardId: number, cardId: n
   const response = await api.put<unknown, { result: string }>(`board/${boardId}/card/${cardId}`, cardData);
   return response.result;
 }
+
+export async function putCardsUpdates(cardData: ICard[], boardId: number): Promise<string> {
+  const response = await api.put<unknown, { result: string }>(`board/${boardId}/card/`, cardData);
+  return response.result;
+}

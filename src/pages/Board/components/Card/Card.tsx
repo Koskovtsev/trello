@@ -5,15 +5,17 @@ import './card.scss';
 import { ChangeTitleForm } from '../Board/ChangeTitleForm';
 import { putCardUpdates } from '../../../../api/boardsService';
 import { TextureList } from '../List/TextureList';
+import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 
 interface ICardChangeProps extends ICard {
   boardId: number;
   listId: number;
   onListChanged(): void;
+  onItemDragged(draggedElement: IDragEvent): void;
 }
 
 export function Card(props: ICardChangeProps): JSX.Element {
-  const { boardId, listId, onListChanged, title, id, custom } = props;
+  const { boardId, listId, onListChanged, onItemDragged, title, id, custom } = props;
   const [isVisibleChangeCardTitle, setVisibleChangeCardTitle] = useState(false);
   const [isVisibleMenuOptions, setVisibleMenuOptions] = useState(false);
   const [isChecked, setIsChecked] = useState(custom?.isChecked ?? false);
@@ -62,55 +64,103 @@ export function Card(props: ICardChangeProps): JSX.Element {
       toast.error('Error updating card properties.');
     }
   };
+  const onDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.dataTransfer.setData('cardId', `${id}`);
+    e.dataTransfer.setData('listId', `${listId}`);
+    e.stopPropagation();
+  };
+  const onDragEnd = (e: React.DragEvent<HTMLDivElement>): void => {
+    //  eslint-disable-next-line no-console
+    console.log(`some action ${e.currentTarget.classList}`);
+    e.stopPropagation();
+  };
+  const onDragEnter = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const onDragLeave = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const onDrop = (e: React.DragEvent<HTMLDivElement>): void => {
+    const draggedCardId = +e.dataTransfer.getData('cardId');
+    const sourceListId = +e.dataTransfer.getData('listId');
+    const draggedItemPositions: IDragEvent = {
+      draggedId: draggedCardId,
+      targetId: id!,
+      sourceContainerId: sourceListId,
+      targetContainerId: listId,
+    };
+    onItemDragged(draggedItemPositions);
+    e.stopPropagation();
+  };
   return (
-    <div className="card__item" style={{ backgroundImage: `url(${currentTexture})` }}>
-      <li>
-        <label className="card__label">
-          <input type="checkbox" className="card__checkbox" checked={isChecked} onChange={handleCheckedCard} />
-          {!isVisibleChangeCardTitle && <span>{title}</span>}
-          {isVisibleChangeCardTitle && (
-            <ChangeTitleForm
-              key={id}
-              onTitleChanged={handleTitleChanged}
-              listId={listId}
-              boardId={boardId}
-              cardId={id!}
-              currentTitle={title ?? ''}
-              type="card"
-            />
-          )}
-        </label>
-      </li>
-      <div className="button__card-change_wrapper">
-        <button
-          className="button__card-change_title"
-          aria-label="Change card title"
-          onClick={() => setVisibleChangeCardTitle(true)}
-        >
-          <i className="fa fa-pencil-alt" />
-        </button>
-        <button
-          className="button__menu_options"
-          aria-label="Show menu"
-          onClick={() => setVisibleMenuOptions((prev) => !prev)}
-        >
-          <i className="fas fa-ellipsis-h" />
-        </button>
-        {isVisibleMenuOptions && (
-          <div className="menu__options">
-            <div className="menu__options_header">
-              <span className="menu__options_title">Редагування картки</span>
-              <button
-                className="list__button_custom-icon"
-                aria-label="Change Texture"
-                onClick={() => setVisibleChangeTexture((prev) => !prev)}
-              >
-                <span className="icon-wrapper" />
-              </button>
+    <div
+      className="empty-list"
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      <div
+        className="card__item"
+        style={{ backgroundImage: `url(${currentTexture})`, zIndex: isVisibleMenuOptions ? 1000 : 5 }}
+        draggable="true"
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      >
+        <li>
+          <label className="card__label">
+            <input type="checkbox" className="card__checkbox" checked={isChecked} onChange={handleCheckedCard} />
+            {!isVisibleChangeCardTitle && <span>{title}</span>}
+            {isVisibleChangeCardTitle && (
+              <ChangeTitleForm
+                key={id}
+                onTitleChanged={handleTitleChanged}
+                listId={listId}
+                boardId={boardId}
+                cardId={id!}
+                currentTitle={title ?? ''}
+                type="card"
+              />
+            )}
+          </label>
+        </li>
+        <div className="button__card-change_wrapper">
+          <button
+            className="button__card-change_title"
+            aria-label="Change card title"
+            onClick={() => setVisibleChangeCardTitle(true)}
+          >
+            <i className="fa fa-pencil-alt" />
+          </button>
+          <button
+            className="button__menu_options"
+            aria-label="Show menu"
+            onClick={() => setVisibleMenuOptions((prev) => !prev)}
+          >
+            <i className="fas fa-ellipsis-h" />
+          </button>
+          {isVisibleMenuOptions && (
+            <div className="menu__options">
+              <div className="menu__options_header">
+                <span className="menu__options_title">Редагування картки</span>
+                <button
+                  className="list__button_custom-icon"
+                  aria-label="Change Texture"
+                  onClick={() => setVisibleChangeTexture((prev) => !prev)}
+                >
+                  <span className="icon-wrapper" />
+                </button>
+              </div>
+              {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
             </div>
-            {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

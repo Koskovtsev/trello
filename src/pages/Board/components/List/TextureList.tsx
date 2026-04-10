@@ -1,5 +1,5 @@
 export const textures = [
-  { id: 1, name: 'yellow', url: require('../../../../assets/textur_yellow.jpg') },
+  { id: 1, name: 'yellow', url: require('../../../../assets/textur_mountains.jpg') },
   { id: 2, name: 'orange', url: require('../../../../assets/textur_orange.jpg') },
   { id: 3, name: 'pink', url: require('../../../../assets/textur_pink.jpg') },
   { id: 4, name: 'azure', url: require('../../../../assets/textur_azure.jpg') },

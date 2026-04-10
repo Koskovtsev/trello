@@ -2,17 +2,27 @@
   list-style: none;
   padding: 0;
   margin: 0;
+
+  .empty-list {
+    width: fit-content !important;
+    height: fit-content !important;
+  }
 }
 
 .card__item {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  background-color: #aaa;
+  min-width: 150px;
+  font-size: 20px;
+  background-color: rgb(117, 117, 117, 0.5);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
   color: rgb(31, 30, 30);
   font-weight: 500;
   border: transparent 3px solid;
   border-radius: 10px;
+  z-index: 5;
 
   &:hover {
     border: white 3px solid;
@@ -59,8 +69,8 @@
   }
 
   &:checked {
-    background-color: #70b349;
-    border-color: #70b349;
+    background-color: #77bb55;
+    border-color: #77bb55;
     opacity: 1;
     position: relative;
   }
@@ -101,7 +111,7 @@
   border-radius: 10px;
   background-color: #aaa;
   width: 200px;
-  z-index: 10;
+  z-index: 100;
 
   &_header {
     width: 100%;

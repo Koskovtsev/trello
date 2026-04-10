@@ -1,4 +1,4 @@
-.list {
+.list, .empty-list {
     flex-shrink: 0;
     min-width: 200px;
     max-width: 200px;
@@ -15,19 +15,18 @@
     &__title {
         width: 100%;
         margin: 0 !important;
-        // margin-top: 1px;
         flex: 1;
         font-size: 20px;
         gap: 10px;
         padding-left: 10px;
         border: 2px solid transparent;
         box-sizing: border-box;
-        flex: 1; // Займає весь вільний простір
+        flex: 1; 
         min-width: 0;
         cursor: pointer;
-        white-space: normal; // Дозволяє звичайний перенос рядків
-        word-wrap: break-word; // Розриває дуже довгі слова, щоб не вилазили
-        overflow-wrap: break-word; // Сучасний стандарт для розриву слів
+        white-space: normal; 
+        word-wrap: break-word;
+        overflow-wrap: break-word;
         line-height: 1.2;
 
         &:hover {
@@ -95,7 +94,7 @@
     }
 
     .button__add_list {
-        background-color: #838282;
+        background-color: #838383;
         border: solid 1px black;
 
         &:hover {
@@ -104,7 +103,13 @@
         }
     }
 }
-
+.empty-list{
+    background-color: rgba(145, 144, 144, 0.2);
+    padding: 0;
+    min-width: auto;
+    
+    min-height: auto;
+}
 .board__title_wrapper .list__button_custom-icon {
     align-self: center;
 }

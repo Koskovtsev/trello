@@ -19,7 +19,7 @@ body {
     main {
         flex-grow: 1;
         display: flex; 
-        flex-direction: column; // column!
+        flex-direction: column; 
         font-size: 40px;
         background-color: #727272;
         width: 100%;
@@ -36,10 +36,11 @@ body {
 
     header {
         background-color: rgb(232, 252, 176);
-        height: 70px;
+        height: 40px;
+        padding-left: 30px;
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: flex-start;
         font-size: 30px;
     }
 

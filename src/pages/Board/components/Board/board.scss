@@ -5,7 +5,6 @@
     flex-direction: column;
     width: 100%;
     min-width: 0;
-    // overflow: hidden;
 
     .color-picker {
         max-width: 800px;
@@ -48,9 +47,10 @@
 
     &__title {
         cursor: pointer;
-
+        background-color: #939393;
+        margin: 5px;
         &:hover {
-            background-color: #939393;
+            transform: scale(1.1);
             transition: transform 0.2s;
         }
     }
@@ -58,8 +58,8 @@
     &__list {
         box-sizing: border-box;
         flex: 1;
-        overflow-x: auto; // Дозволяє з'явитися скролу
-        scroll-behavior: smooth; // Щоб JS плавно котив, а не стрибав
+        overflow-x: auto;
+        scroll-behavior: smooth;
         padding: 20px;
         display: flex;
         flex-direction: row;
@@ -70,27 +70,29 @@
         min-height: 0;
         width: 100%;
 
-       &::-webkit-scrollbar {
-        display: block;     // Примусово показуємо
-    }
-    &::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.1); // Світло-сірий фон
-        border-radius: 10px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: #555;   // Темно-сірий колір, щоб було видно
-        border-radius: 10px;
-        border: 2px solid transparent; // Відступ від країв доріжки
-        background-clip: content-box;
-
-        &:hover {
-            background: #333; // Темнішає при наведенні
+        &::-webkit-scrollbar {
+            display: block;
         }
-    }
 
-    // Для Firefox (він не розуміє webkit)
-    scrollbar-width: auto;
-    scrollbar-color: #555 rgba(0, 0, 0, 0.1);
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #727272;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+
+            &:hover {
+                background: #333;
+            }
+        }
+
+        // Для Firefox (він не розуміє webkit)
+        scrollbar-width: auto;
+        scrollbar-color: #555 rgba(0, 0, 0, 0.1);
     }
 
     &__add_button {
