@@ -70,8 +70,6 @@ export function Card(props: ICardChangeProps): JSX.Element {
     e.stopPropagation();
   };
   const onDragEnd = (e: React.DragEvent<HTMLDivElement>): void => {
-    //  eslint-disable-next-line no-console
-    console.log(`some action ${e.currentTarget.classList}`);
     e.stopPropagation();
   };
   const onDragEnter = (e: React.DragEvent<HTMLDivElement>): void => {

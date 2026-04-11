@@ -19,8 +19,6 @@ interface IAddCardChangesProps extends IList {
   onItemDragged(draggedElement: IDragEvent): void;
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
-  // const [idDraggedList, setIdDraggedList] = useState<number | undefined>(0);
-  // const [idDroppedList, setIdDroppedList] = useState<number | undefined>(0);
   const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, onItemDragged, position } = props;
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
@@ -65,8 +63,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     e.dataTransfer.setData('listId', `${id}`);
   };
   const onDragEnd = (e: React.DragEvent<HTMLDivElement>): void => {
-    //  eslint-disable-next-line no-console
-    console.log(`some action ${e.currentTarget.classList}`);
+    e.stopPropagation();
   };
   const onDragEnter = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault();

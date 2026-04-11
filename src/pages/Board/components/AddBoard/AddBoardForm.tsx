@@ -11,7 +11,6 @@ interface IAddBoardFormProps {
 export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const [currentTexture, setCurrentTexture] = useState<string | null>(textures[8].url);
-  // const [color, setColor] = useState<string>(textures[8].url);
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
     const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;

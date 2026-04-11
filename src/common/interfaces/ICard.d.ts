@@ -11,5 +11,5 @@ export interface ICard {
     [key: string]: string | number | boolean | undefined;
   };
   // users?: number[];
-  // created_at?: number;
+  // created_at?: number; це для авторизації
 }

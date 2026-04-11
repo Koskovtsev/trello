@@ -4,14 +4,14 @@ import { useParams } from 'react-router-dom';
 import { getBoard, putBoardUpdates, putListsUpdates } from '../../../../api/boardsService';
 import { List } from '../List/List';
 import { AddListForm } from '../List/AddListForm';
+import { TextureList } from '../List/TextureList';
 import { ChangeTitleForm } from './ChangeTitleForm';
-import './board.scss';
-import '../List/list.scss';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 import { IList } from '../../../../common/interfaces/IList';
-import { TextureList } from '../List/TextureList';
-import { updatePosition } from './updatePosition';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
+import { updatePosition } from './updatePosition';
+import './board.scss';
+import '../List/list.scss';
 
 export function Board(): JSX.Element {
   const [boardData, setBoradData] = useState<IBoard | null>(null);
@@ -20,25 +20,27 @@ export function Board(): JSX.Element {
   const [isChangeTitle, setIsChangeTitle] = useState(false);
   const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | undefined>(boardData?.custom?.background ?? undefined);
-  const { boardId } = useParams<{ boardId: string }>();
   const scrollToEnd = useRef<HTMLDivElement>(null);
   const isInitialRender = useRef(true);
   const prevListsLength = useRef(0);
+  const { boardId } = useParams<{ boardId: string }>();
   const id = Number(boardId);
   useEffect(() => {
     if (boardData?.custom?.background) {
       setCurrentTexture(boardData.custom.background);
     }
   }, [boardData]);
-  useEffect(() => {
-    async function fetchBoard(): Promise<void> {
-      try {
-        const data = await getBoard(id);
-        setBoradData(data);
-      } catch (error) {
-        toast.error(`Error getting board data`);
-      }
+  async function fetchBoard(): Promise<IBoard | null> {
+    try {
+      const data = await getBoard(id);
+      setBoradData(data);
+      return data;
+    } catch (error) {
+      toast.error(`Error getting board data`);
+      return null;
     }
+  }
+  useEffect(() => {
     fetchBoard();
   }, [boardId, refreshList]);
   const lists = boardData?.lists ?? [];
@@ -82,9 +84,10 @@ export function Board(): JSX.Element {
   const handleNewList = async (texture: string): Promise<void> => {
     if (!boardData) return;
     try {
-      const data: IBoard = await getBoard(id);
-      const texturedLists = { ...(data?.custom?.listTextures || {}) };
-      const newId = data.lists?.find(
+      const data = await fetchBoard();
+      if (!data) return;
+      const texturedLists = { ...(data.custom?.listTextures || {}) };
+      const newId = data?.lists?.find(
         (list) => !texturedLists[String(list.id)] || texturedLists[String(list.id)] === null
       )?.id;
       if (!newId) return;
