@@ -10,7 +10,6 @@ export const textures = [
   { id: 9, name: 'gray', url: require('../../../../assets/textur_gray.jpg') },
   { id: 10, name: 'black', url: require('../../../../assets/textur_black.jpg') },
 ];
-
 export function TextureList({ onTexturePicked }: { onTexturePicked: (texture: string) => void }): JSX.Element {
   return (
     <ul className="color-picker">

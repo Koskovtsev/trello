@@ -20,12 +20,13 @@ interface IAddCardChangesProps extends IList {
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
   const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, onItemDragged, position } = props;
-  const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
+  const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false); // TODO: тут теж багато стейтів.
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | null>(
     boardData.custom?.listTextures?.[id ?? 0] ?? null
   );
   const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
+  // TODO: прибрать хендлер текстур окремо до файлу з текстурами.
   const handleNewTexture = (texture: string): void => {
     if (texture === currentTexture) return;
     setCurrentTexture(texture);
@@ -47,6 +48,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     }
     setVisibleChangeTitleForm(false);
   };
+  // TODO: подумать чи можна перенести в інше місце звернення до сервера.
   async function handleDeleteList(): Promise<void> {
     try {
       const response = await deleteList(boardId, id!);
@@ -59,6 +61,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
       toast.error(`Error deleting list`);
     }
   }
+  // TODO: подумать чи можна зменшити чи перенести в інше місце драг-Н-дроп функції.
   const onDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
     e.dataTransfer.setData('listId', `${id}`);
   };

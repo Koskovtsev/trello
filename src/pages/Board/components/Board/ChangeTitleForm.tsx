@@ -27,7 +27,7 @@ interface IBaseProps {
   boardId: number;
   currentTitle: string;
 }
-
+// TODO: зробить для ньго свою папку, бо зараз він як безхатько.
 export function ChangeTitleForm(props: IChangeTitleFormProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
   const { onTitleChanged, currentTitle, boardId, type } = props;
@@ -47,9 +47,10 @@ export function ChangeTitleForm(props: IChangeTitleFormProps): JSX.Element {
       onTitleChanged(false);
       return;
     }
-    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;
+    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести перевірку вводу в окремий компонент
     if (newTitle?.trim() && titleRegex.test(newTitle)) {
       setIsLoading(true);
+      // TODO: компонент не має відправляти/обробляти запити на сервер, тільки повертати назву на верх.
       try {
         if (type === 'list') {
           const { listId } = props;

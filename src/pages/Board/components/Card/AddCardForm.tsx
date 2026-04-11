@@ -8,12 +8,12 @@ interface IAddCardFormProps extends ICard {
   boardId: number;
   list_id: number;
 }
-
+// TODO: useClickOutside() використовувать якщо юзер клікнув деінде - прибираємо компонент.
 export function AddCardForm({ onCardAdded, position, boardId, list_id }: IAddCardFormProps): JSX.Element {
   const [title, setTitle] = useState('');
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
-    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;
+    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести перевірку в окремий файл/компонент
     if (title.trim() && titleRegex.test(title)) {
       const dataToSend = { title, list_id, position };
       try {

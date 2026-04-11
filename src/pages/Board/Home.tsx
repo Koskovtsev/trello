@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { getBoards } from '../../api/boardsService';
@@ -11,24 +11,17 @@ import './home.scss';
 export function Home(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
   const [isVisibleAddBoardForm, setVisibleAddBoardForm] = useState(false);
-  const scrollToEnd = useRef<HTMLDivElement>(null);
+
+  async function fetchBoards(): Promise<void> {
+    try {
+      const data = await getBoards();
+      setBoards(data);
+    } catch (error) {
+      toast.error(`Error to get boards data`);
+    }
+  }
 
   useEffect(() => {
-    const width = scrollToEnd?.current?.scrollWidth || 0;
-    if (scrollToEnd?.current?.scrollLeft) {
-      scrollToEnd.current.scrollLeft = width;
-    }
-  }, [isVisibleAddBoardForm, boards.length]);
-
-  useEffect(() => {
-    async function fetchBoards(): Promise<void> {
-      try {
-        const data = await getBoards();
-        setBoards(data);
-      } catch (error) {
-        toast.error(`Error to get boards data`);
-      }
-    }
     fetchBoards();
   }, []);
 
@@ -43,7 +36,7 @@ export function Home(): JSX.Element {
   return (
     <>
       <span className="home__page_title">Мої дошки</span>
-      <div className="board__preview_list" ref={scrollToEnd}>
+      <div className="board__preview_list">
         {boards.map((elem) => {
           if (!elem.id) return null;
           return (

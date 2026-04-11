@@ -7,7 +7,7 @@ interface IBoardProps extends IBoard {
   id: number;
   removeDeletedBoard(id: number): void;
 }
-
+// TODO: це має бути компонентом в соответственній папці.
 export function Board({ id, title, custom, removeDeletedBoard }: IBoardProps): JSX.Element {
   async function handleDeleteBoard(e: React.MouseEvent<HTMLButtonElement>): Promise<void> {
     e.stopPropagation();

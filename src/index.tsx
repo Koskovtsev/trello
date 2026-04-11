@@ -1,9 +1,9 @@
 import React from 'react';
-import 'nprogress/nprogress.css';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
-import './index.css';
 import App from './App';
+import './index.css';
+import 'nprogress/nprogress.css';
 
 const rootElement = document.getElementById('root');
 
@@ -14,9 +14,6 @@ if (rootElement) {
       <HashRouter>
         <App />
       </HashRouter>
-      {/* <BrowserRouter>  прибрав для гітхабу.
-        <App /> 
-      </BrowserRouter> */}
     </React.StrictMode>
   );
 }

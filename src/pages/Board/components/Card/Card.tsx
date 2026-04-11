@@ -17,7 +17,7 @@ interface ICardChangeProps extends ICard {
 export function Card(props: ICardChangeProps): JSX.Element {
   const { boardId, listId, onListChanged, onItemDragged, title, id, custom } = props;
   const [isVisibleChangeCardTitle, setVisibleChangeCardTitle] = useState(false);
-  const [isVisibleMenuOptions, setVisibleMenuOptions] = useState(false);
+  const [isVisibleMenuOptions, setVisibleMenuOptions] = useState(false); // TODO: багато стейтів, які можна було б винести в компоненти які їх використовують.
   const [isChecked, setIsChecked] = useState(custom?.isChecked ?? false);
   const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | null>(custom?.listTexture ?? null);
@@ -44,6 +44,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
     }
     setVisibleChangeCardTitle(false);
   };
+  // TODO: текстури мають бути в файлі з текстурами і їх обробка теж.
   const handleNewTexture = async (texture: string): Promise<void> => {
     if (texture === currentTexture) return;
     setCurrentTexture(texture);
@@ -96,6 +97,11 @@ export function Card(props: ICardChangeProps): JSX.Element {
     onItemDragged(draggedItemPositions);
     e.stopPropagation();
   };
+  // TODO: прибрать карандаш в меню редагування.
+  // TODO: саме меню редагування має бути модальним вікном (через глобал стейт?).
+  // TODO: по стилям, будь-які едіти не мають скакати, всі розміри мають бути статичними.
+  // TODO: коли вибрано якусь текстуру, додать бордер, щоб було зрозуміло яка зараз текстура вибрана. або залишити збільшеним(як при ховері) чи і те і те.
+  // TODO: зробить не такими насиченими компоненти(збільшити розміри картки, або збільшити розміри списку) бо візуально - перегромадження.
   return (
     <div
       className="empty-list"

@@ -13,11 +13,12 @@ import { updatePosition } from './updatePosition';
 import './board.scss';
 import '../List/list.scss';
 
+// TODO: це має бути файл в пейджес разом з Хоум, це не компонент.
 export function Board(): JSX.Element {
   const [boardData, setBoradData] = useState<IBoard | null>(null);
   const [refreshList, setRefreshList] = useState(false);
   const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
-  const [isChangeTitle, setIsChangeTitle] = useState(false);
+  const [isChangeTitle, setIsChangeTitle] = useState(false); // TODO: дуже багато стейтів, виносити їх в окремі компоненти, до яких вони належать.
   const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | undefined>(boardData?.custom?.background ?? undefined);
   const scrollToEnd = useRef<HTMLDivElement>(null);
@@ -27,9 +28,10 @@ export function Board(): JSX.Element {
   const id = Number(boardId);
   useEffect(() => {
     if (boardData?.custom?.background) {
-      setCurrentTexture(boardData.custom.background);
+      setCurrentTexture(boardData.custom.background); // TODO: текстуру можна винести прямо в оголошення компоненту без стейту?
     }
   }, [boardData]);
+  // TODO: викликать фетчБоард а не змінювать стейт ререшЛіст.
   async function fetchBoard(): Promise<IBoard | null> {
     try {
       const data = await getBoard(id);
@@ -42,7 +44,7 @@ export function Board(): JSX.Element {
   }
   useEffect(() => {
     fetchBoard();
-  }, [boardId, refreshList]);
+  }, [boardId, refreshList]); // TODO: прибрать рефрешліст з стейту.
   const lists = boardData?.lists ?? [];
   const title = boardData?.title ?? '';
   useEffect(() => {
@@ -60,7 +62,7 @@ export function Board(): JSX.Element {
       prevListsLength.current = lists.length;
     }
     prevListsLength.current = lists.length;
-  }, [isVisibleAddListForm, lists.length]);
+  }, [isVisibleAddListForm, lists.length]); // TODO: розібраться навіщо цей юзреф!
   const updateListTexture = async (texturedList: Record<string, string>, freshData: IBoard): Promise<void> => {
     const updatedCustom = {
       ...freshData.custom,
@@ -75,7 +77,7 @@ export function Board(): JSX.Element {
         custom: updatedCustom,
       } as IBoard);
       if (response === 'Updated') {
-        setRefreshList((prev) => !prev);
+        setRefreshList((prev) => !prev); // TODO: викликать фетчБоард.
       }
     } catch (error) {
       toast.error(`Error updating list properties`);
@@ -103,20 +105,22 @@ export function Board(): JSX.Element {
 
   const handleListAdded = (texture: string): void => {
     handleNewList(texture);
-    setVisibleAddListForm(false);
+    setVisibleAddListForm(false); // TODO: об'єденить цей з попереднім методом.
   };
   if (!boardData) {
     return <div className="loading">Завантаження...</div>;
   }
+  // TODO: винести логіку цього хендлера окремо в файл і розбити на різні методи.
   const handleListChanged = async (position?: number, listId?: number): Promise<void> => {
     if (position && position < lists.length) {
+      // TODO: зробить інферсію в іф-у шоб зменшити вкладеність.
       const newPositionList = lists.reduce((acc: { id: number; position: number }[], list) => {
         if (list.id === listId) return acc;
         acc.push({ id: list.id!, position: acc.length + 1 });
         return acc;
       }, []);
       try {
-        await putListsUpdates(newPositionList as IList[], id);
+        await putListsUpdates(newPositionList as IList[], id); // TODO: пуш-пут... виность в окремі файли.
       } catch (error) {
         toast.error(`Error updating list properties`);
       }
@@ -127,14 +131,16 @@ export function Board(): JSX.Element {
         updateListTexture(texturedLists, boardData);
       }
     }
-    setRefreshList((prev) => !prev);
+    setRefreshList((prev) => !prev); // TODO: прибрать.
   };
+  // TODO: об'єднать з попереднім методом.
   const handleTitleChanged = (isChanged: boolean): void => {
     if (isChanged) {
       handleListChanged();
     }
     setIsChangeTitle(false);
   };
+  // TODO: винести в окремий файл
   const handleNewTexture = async (texture: string): Promise<void> => {
     if (texture === currentTexture) return;
     setCurrentTexture(texture);
@@ -143,6 +149,7 @@ export function Board(): JSX.Element {
       ...boardData.custom,
       background: texture,
     };
+    // TODO: зв'язок з сервером в окремому файлі.
     try {
       const response = await putBoardUpdates({
         id,
@@ -150,17 +157,17 @@ export function Board(): JSX.Element {
         custom: updatedCustom,
       } as IBoard);
       if (response === 'Updated') {
-        setRefreshList((prev) => !prev);
+        setRefreshList((prev) => !prev); // TODO: прибрать, має бути фетчБоард
       }
     } catch (error) {
       toast.error('Error updating board properties.');
     }
   };
-
+  // TODO: зв'язок з сервером в окремому файлі.
   const updateItemsPositions = async (props: IDragEvent): Promise<void> => {
     const isUpdated = await updatePosition(props, lists, id);
     if (isUpdated) {
-      setRefreshList((prev) => !prev);
+      setRefreshList((prev) => !prev); // TODO: прибрать, має бути фетчБоард
     }
   };
   return (

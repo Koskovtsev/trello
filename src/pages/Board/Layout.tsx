@@ -9,7 +9,6 @@ export function Layout(): JSX.Element {
       <main>
         <Outlet />
       </main>
-      <footer />
     </div>
   );
 }

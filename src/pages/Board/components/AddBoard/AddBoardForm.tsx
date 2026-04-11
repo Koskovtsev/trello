@@ -13,11 +13,11 @@ export function AddBoardForm({ onBoardAdded }: IAddBoardFormProps): JSX.Element 
   const [currentTexture, setCurrentTexture] = useState<string | null>(textures[8].url);
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
-    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/;
+    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести перевірку в окремий файл/компонент
     if (title.trim() && titleRegex.test(title)) {
       const dataToSend: IBoard = { title, custom: { background: currentTexture ?? textures[8].url } };
       try {
-        const id = await postNewBoard(dataToSend);
+        const id = await postNewBoard(dataToSend); // TODO: компонент має повертати назву а не відправляти на сервер.
         if (id) {
           const newFullBoardObject: IBoard = { id, title, custom: { background: currentTexture ?? textures[8].url } };
           onBoardAdded(newFullBoardObject);
