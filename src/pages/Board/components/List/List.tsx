@@ -20,13 +20,14 @@ interface IAddCardChangesProps extends IList {
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
   const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, onItemDragged, position } = props;
-  const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false); // TODO: тут теж багато стейтів.
+  const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false); // TODO: тут теж багато стейтів, треба скоротить.
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | null>(
     boardData.custom?.listTextures?.[id ?? 0] ?? null
   );
   const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
-  // TODO: прибрать хендлер текстур окремо до файлу з текстурами.
+  // TODO: прибрать хендлер текстур окремо до файлу що управляє текстурами.
+  // TODO: зробить кнопку текстур в окремий компонент селект. шо це?
   const handleNewTexture = (texture: string): void => {
     if (texture === currentTexture) return;
     setCurrentTexture(texture);
@@ -39,7 +40,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     onTextureUpdate(updatedTextureLists, boardData);
   };
   const handleCardAdded = (): void => {
-    onListChanged();
+    onListChanged(); // TODO: є кращі рішення ніж виклик пустого колбеку.
     setVisibleAddCardForm(false);
   };
   const handleTitleChanged = (isChanged: boolean): void => {

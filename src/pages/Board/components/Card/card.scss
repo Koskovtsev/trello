@@ -4,7 +4,7 @@
   margin: 0;
 
   .empty-list {
-    width: fit-content !important;
+    width: 100%;
     height: fit-content !important;
   }
 }
@@ -13,7 +13,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  min-width: 150px;
+  width: 100%;
   font-size: 20px;
   background-color: rgb(117, 117, 117, 0.5);
   backdrop-filter: blur(1px);

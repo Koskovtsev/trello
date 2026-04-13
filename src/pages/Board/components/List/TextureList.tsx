@@ -1,3 +1,4 @@
+// TODO: перенести зображення в паблік і прибрать require.
 export const textures = [
   { id: 1, name: 'yellow', url: require('../../../../assets/textur_mountains.jpg') },
   { id: 2, name: 'orange', url: require('../../../../assets/textur_orange.jpg') },

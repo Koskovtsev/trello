@@ -13,7 +13,7 @@ export function AddCardForm({ onCardAdded, position, boardId, list_id }: IAddCar
   const [title, setTitle] = useState('');
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
-    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести перевірку в окремий файл/компонент
+    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести перевірку в окремий файл/компонент додати еррор для юзера якщо нічого не ввів.
     if (title.trim() && titleRegex.test(title)) {
       const dataToSend = { title, list_id, position };
       try {
