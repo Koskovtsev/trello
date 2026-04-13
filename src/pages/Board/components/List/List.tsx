@@ -2,14 +2,14 @@ import toast from 'react-hot-toast';
 import { useState } from 'react';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
-import './list.scss';
-import '../../board.scss';
-import { AddCardForm } from '../Card/AddCardForm';
-import { ChangeTitleForm } from '../Board/ChangeTitleForm';
 import { deleteList } from '../../../../api/boardsService';
-import { TextureList } from './TextureList';
+import { TextureList } from '../Textures/TextureList';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { IBoard } from '../../../../common/interfaces/IBoard';
+import './list.scss';
+import '../../board.scss';
+import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
+import { AddCardForm } from '../AddCard/AddCardForm';
 
 interface IAddCardChangesProps extends IList {
   onListChanged(position?: number, listId?: number): void;
@@ -17,9 +17,21 @@ interface IAddCardChangesProps extends IList {
   boardId: number;
   onTextureUpdate(texturedList: Record<string, string>, freshData: IBoard): void;
   onItemDragged(draggedElement: IDragEvent): void;
+  onDataUpdate(): void;
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
-  const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, onItemDragged, position } = props;
+  const {
+    id,
+    title,
+    cards,
+    onListChanged,
+    boardData,
+    boardId,
+    onTextureUpdate,
+    onItemDragged,
+    onDataUpdate,
+    position,
+  } = props;
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false); // TODO: тут теж багато стейтів, треба скоротить.
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | null>(
@@ -40,12 +52,12 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     onTextureUpdate(updatedTextureLists, boardData);
   };
   const handleCardAdded = (): void => {
-    onListChanged(); // TODO: є кращі рішення ніж виклик пустого колбеку.
+    onDataUpdate(); // TODO: є кращі рішення ніж виклик пустого колбеку.
     setVisibleAddCardForm(false);
   };
   const handleTitleChanged = (isChanged: boolean): void => {
     if (isChanged) {
-      onListChanged();
+      onDataUpdate();
     }
     setVisibleChangeTitleForm(false);
   };
@@ -108,10 +120,10 @@ export function List(props: IAddCardChangesProps): JSX.Element {
             <ChangeTitleForm
               key={id}
               onTitleChanged={handleTitleChanged}
-              listId={id ?? 0}
-              boardId={boardId}
+              // listId={id ?? 0}
+              // boardId={boardId}
               currentTitle={title ?? ''}
-              type="list"
+              // type="list"
             />
           )}
           <button

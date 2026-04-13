@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import { FormEvent, useState } from 'react';
-import { postCard } from '../../../../api/boardsService';
 import { ICard } from '../../../../common/interfaces/ICard';
+import { postCard } from '../../../../api/boardsService';
 
 interface IAddCardFormProps extends ICard {
   onCardAdded(card: ICard): void;

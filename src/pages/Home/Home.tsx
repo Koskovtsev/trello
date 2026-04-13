@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { getBoards } from '../../api/boardsService';
-import { Board } from './Board';
-import { IBoard } from '../../common/interfaces/IBoard';
 import { AddBoardForm } from './components/AddBoard/AddBoardForm';
-import './board.scss';
+import { Board } from './components/BoardItem/BoardItem';
+import { IBoard } from '../../common/interfaces/IBoard';
 import './home.scss';
 
 export function Home(): JSX.Element {

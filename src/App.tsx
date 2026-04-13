@@ -1,10 +1,10 @@
 import { Toaster } from 'react-hot-toast';
 import { Route, Routes } from 'react-router-dom';
-import { Board } from './pages/Board/components/Board/Board';
-import { Home } from './pages/Board/Home';
+import { Board } from './pages/Board/Board';
+import { Home } from './pages/Home/Home';
 import './styles.scss';
 import 'nprogress/nprogress.css';
-import { Layout } from './pages/Board/Layout';
+import { Layout } from './components/Layout';
 
 function App(): JSX.Element {
   return (

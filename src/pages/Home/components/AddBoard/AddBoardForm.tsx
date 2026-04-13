@@ -1,9 +1,9 @@
 import toast from 'react-hot-toast';
 import { FormEvent, useState } from 'react';
-import { TextureList, textures } from '../List/TextureList';
 import { postNewBoard } from '../../../../api/boardsService';
 import './addForm.scss';
 import { IBoard } from '../../../../common/interfaces/IBoard';
+import { TextureList, textures } from '../../../Board/components/Textures/TextureList';
 
 interface IAddBoardFormProps {
   onBoardAdded(board: IBoard): void;

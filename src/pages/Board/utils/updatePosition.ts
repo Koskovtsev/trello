@@ -1,7 +1,7 @@
-import { putCardsUpdates, putListsUpdates } from '../../../../api/boardsService';
-import { ICard } from '../../../../common/interfaces/ICard';
-import { IList } from '../../../../common/interfaces/IList';
-import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
+import { putCardsUpdates, putListsUpdates } from '../../../api/boardsService';
+import { ICard } from '../../../common/interfaces/ICard';
+import { IList } from '../../../common/interfaces/IList';
+import { IDragEvent } from '../../../common/interfaces/IDragEvent';
 // TODO: три різні події під різні випадки. Кожен випадок має викликати свою подію в окремому файлі. + має бути файл-диригент який управлятиме BoardService.syncPositions().
 // handleListReorder.ts — рух списків. handleCardInternalMove.ts — рух картки в межах одного списку. handleCardCrossListMove.ts — переміщення картки між списками.
 function getReorderedIds(items: ICard[] | IList[], draggedId: number, targetId: number): number[] {

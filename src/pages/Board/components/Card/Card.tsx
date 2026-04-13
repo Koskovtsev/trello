@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ICard } from '../../../../common/interfaces/ICard';
-import './card.scss';
-import { ChangeTitleForm } from '../Board/ChangeTitleForm';
 import { putCardUpdates } from '../../../../api/boardsService';
-import { TextureList } from '../List/TextureList';
+import { TextureList } from '../Textures/TextureList';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
+import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
+import './card.scss';
 
 interface ICardChangeProps extends ICard {
   boardId: number;
@@ -38,9 +38,13 @@ export function Card(props: ICardChangeProps): JSX.Element {
       toast.error('Error updating card properties.');
     }
   };
-  const handleTitleChanged = (isChanged: boolean | undefined): void => {
-    if (isChanged) {
-      onListChanged();
+  const handleTitleChanged = async (newTitle: string | false): Promise<void> => {
+    if (newTitle) {
+      const newCard: ICard = { title: newTitle, list_id: listId };
+      const response = await putCardUpdates(newCard, boardId, id!);
+      if (response === 'Updated') {
+        onListChanged();
+      }
     }
     setVisibleChangeCardTitle(false);
   };
@@ -98,7 +102,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
     e.stopPropagation();
   };
   // TODO: прибрать карандаш в меню редагування.
-  // TODO: саме меню редагування має бути модальним вікном (через глобал стейт?).
+  // TODO: саме меню редагування має бути модальним вікном (через глобал стейт?) і зникати при клікі в іншому місці (useClickOutsids).
   // TODO: по стилям, будь-які едіти не мають скакати, всі розміри мають бути статичними.
   // TODO: коли вибрано якусь текстуру, додать бордер, щоб було зрозуміло яка зараз текстура вибрана. або залишити збільшеним(як при ховері) чи і те і те.
   // TODO: зробить не такими насиченими компоненти(збільшити розміри картки, або збільшити розміри списку) бо візуально - перегромадження.
@@ -122,15 +126,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
             <input type="checkbox" className="card__checkbox" checked={isChecked} onChange={handleCheckedCard} />
             {!isVisibleChangeCardTitle && <span>{title}</span>}
             {isVisibleChangeCardTitle && (
-              <ChangeTitleForm
-                key={id}
-                onTitleChanged={handleTitleChanged}
-                listId={listId}
-                boardId={boardId}
-                cardId={id!}
-                currentTitle={title ?? ''}
-                type="card"
-              />
+              <ChangeTitleForm key={id} onTitleChanged={handleTitleChanged} currentTitle={title ?? ''} />
             )}
           </label>
         </li>
