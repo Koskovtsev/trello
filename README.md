@@ -2,7 +2,8 @@
 A comprehensive project management application inspired by Trello. 
 This project focuses on handling complex nested states, custom Drag-and-Drop mechanics, 
 and real-time interaction with a REST API.
-**[Live Demo](https://koskovtsev.github.io/trello/)**
+* **[Live Demo](https://koskovtsev.github.io/trello/)**
+* **![Trello Board Preview](./assets/board_screenshot.jpg)**
 ## Key Features & Technical Challenges
 ### 1. Custom Drag-and-Drop Engine
 Instead of using libraries (like `react-beautiful-dnd`), I implemented a **native HTML5 Drag and Drop** system.
