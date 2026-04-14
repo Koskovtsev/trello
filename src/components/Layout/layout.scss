@@ -1,0 +1,71 @@
+@use '../../styles/variables' as *;
+.App-header {
+    min-height: 48px;
+    background-color: $color-brand-bg;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    border: solid $color-brand-hover-bg;
+    border-width: 0 0 2px 0;
+
+    .header__logo-link {
+        height: 32px;
+        padding: 0 10px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        border-radius: $border-radius-medium;
+        transition: background-color 0.2s ease;
+
+        .header__logo-text {
+            color: $color-header-logo-hover-gray;
+            font-size: 18px;
+            font-weight: 500;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header__logo-svg {
+            margin-right: 8px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+
+            .header__logo-bg {
+                color: $color-header-logo-hover-gray;
+                transition: color 0.2s ease;
+            }
+
+            .header__logo-rect {
+                color: $color-brand-bg;
+                transition: color 0.2s ease;
+            }
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        &:hover {
+            background-color: $color-brand-hover-bg;
+        }
+
+        &--home {
+            background-color: $color-brand-hover-bg;
+            .header__logo-text {
+                color: $color-header-logo-hover-white; 
+            }
+
+            .header__logo-svg {
+                opacity: 1;
+
+                .header__logo-bg {
+                    color: $color-brand-blue;
+                }
+
+                .header__logo-rect {
+                    color: $color-header-logo-hover-white; 
+                }
+            }
+        }
+    }
+}

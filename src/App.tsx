@@ -4,7 +4,7 @@ import { Board } from './pages/Board/Board';
 import { Home } from './pages/Home/Home';
 import './styles.scss';
 import 'nprogress/nprogress.css';
-import { Layout } from './components/Layout';
+import { Layout } from './components/Layout/Layout';
 
 function App(): JSX.Element {
   return (

@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { getBoards } from '../../api/boardsService';
-import { AddBoardForm } from './components/AddBoard/AddBoardForm';
+import { AddBoardModal } from './components/AddBoard/AddBoardModal';
 import { Board } from './components/BoardItem/BoardItem';
 import { IBoard } from '../../common/interfaces/IBoard';
 import './home.scss';
 
 export function Home(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
-  const [isVisibleAddBoardForm, setVisibleAddBoardForm] = useState(false);
+  const [addBoardModalActive, setaddBoardModalActive] = useState(false);
 
   async function fetchBoards(): Promise<void> {
     try {
@@ -28,10 +28,11 @@ export function Home(): JSX.Element {
     setBoards(boards.filter((elem) => elem.id !== id));
   };
 
-  const handleBoardAdded = (newBoard: IBoard): void => {
-    setBoards([...boards, newBoard]);
-    setVisibleAddBoardForm(false);
+  const handleBoardAdded = (newBoard: IBoard | false): void => {
+    if (newBoard) setBoards([...boards, newBoard]);
+    setaddBoardModalActive(false);
   };
+
   return (
     <>
       <span className="home__page_title">Мої дошки</span>
@@ -44,12 +45,10 @@ export function Home(): JSX.Element {
             </Link>
           );
         })}
-        {isVisibleAddBoardForm && <AddBoardForm onBoardAdded={handleBoardAdded} />}
-        {!isVisibleAddBoardForm && (
-          <button className="board__add_button" onClick={() => setVisibleAddBoardForm(true)}>
-            <span className="button__add_title">+ Додати дошку</span>
-          </button>
-        )}
+        <button className="board__add_button" onClick={() => setaddBoardModalActive((prop) => !prop)}>
+          <span className="button__add_title">+ Додати дошку</span>
+        </button>
+        <AddBoardModal active={addBoardModalActive} onBoardAdded={handleBoardAdded} />
       </div>
     </>
   );

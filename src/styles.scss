@@ -1,10 +1,10 @@
+@use './styles/variables' as *;
 @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
-
 .app-container {
     display: flex;
     flex-direction: column;
-    height: 100dvh; 
+    height: 100dvh;
     overflow: hidden;
 }
 
@@ -18,35 +18,11 @@ body {
 
     main {
         flex-grow: 1;
-        display: flex; 
-        flex-direction: column; 
+        display: flex;
+        flex-direction: column;
         font-size: 40px;
-        background-color: #727272;
+        background-color: $color-brand-bg;
         width: 100%;
         min-width: 0;
-
-
     }
-}
-
-.App {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-
-    header {
-        background-color: rgb(232, 252, 176);
-        height: 40px;
-        padding-left: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        font-size: 30px;
-    }
-
-}
-
-#nprogress .bar {
-    background: #ff3c00 !important;
-    height: 4px;
 }

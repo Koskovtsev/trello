@@ -1,25 +1,22 @@
-
-// TODO: зробить грідами розположення дошок.
+@use '../../styles/variables' as *;
 
 .home__page_title {
-    display: inline-block;
+    display: block;
     width: 100%;
     text-align: center;
+    color: $color-text-brand-gray;
 }
 
 .board__preview_list {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     padding: 30px;
-    overflow-x: auto;
-    flex-shrink: 0;
-    gap: 60px;
-    scroll-behavior: smooth;
+    gap: 30px;
 
     a {
         text-decoration: none;
+        display: block;
+        min-width: 0;
     }
 
     .board__add_button {
