@@ -1,24 +1,16 @@
-import toast from 'react-hot-toast';
 import { IBoard } from '../../../../common/interfaces/IBoard';
-import { deleteBoard } from '../../../../api/boardsService';
+import { DeleteButtonWithModal } from '../../../../components/DeleteButtonWithModal/DeleteButtonWithModal';
 import './boardItem.scss';
 
 interface IBoardProps extends IBoard {
   id: number;
-  removeDeletedBoard(id: number): void;
+  onBoardDelete(boardId: number): void;
 }
-export function Board({ id, title, custom, removeDeletedBoard }: IBoardProps): JSX.Element {
-  async function handleDeleteBoard(e: React.MouseEvent<HTMLButtonElement>): Promise<void> {
-    e.stopPropagation();
-    e.preventDefault();
-    try {
-      const response = await deleteBoard(id);
-      if (response === 'Deleted') {
-        removeDeletedBoard(id);
-      }
-    } catch (error) {
-      toast.error(`Error deleting board`);
-    }
+export function BoardItem({ id, title, custom, onBoardDelete }: IBoardProps): JSX.Element {
+  async function handleDeleteBoard(boardId: number): Promise<void> {
+    // e.stopPropagation();
+    // e.preventDefault();
+    onBoardDelete(boardId);
   }
 
   return (
@@ -28,9 +20,10 @@ export function Board({ id, title, custom, removeDeletedBoard }: IBoardProps): J
         <span className="home__board_title" title={title}>
           {title}
         </span>
-        <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
+        <DeleteButtonWithModal onDeletedItem={() => handleDeleteBoard(id)} />
+        {/* <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
           <i className="fa fa-trash" />
-        </button>
+        </button> */}
       </div>
     </div>
   );

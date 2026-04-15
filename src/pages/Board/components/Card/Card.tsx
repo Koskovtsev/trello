@@ -2,7 +2,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ICard } from '../../../../common/interfaces/ICard';
 import { putCardUpdates } from '../../../../api/boardsService';
-import { TextureList } from '../Textures/TextureList';
+import { TextureList } from '../../../../components/Textures/TextureList';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
 import './card.scss';

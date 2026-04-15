@@ -1,36 +1,27 @@
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import { getBoards } from '../../api/boardsService';
+import { useBoards } from '../../hooks/useBoards';
 import { AddBoardModal } from './components/AddBoard/AddBoardModal';
-import { Board } from './components/BoardItem/BoardItem';
-import { IBoard } from '../../common/interfaces/IBoard';
+import { BoardItem } from './components/BoardItem/BoardItem';
 import './home.scss';
 
 export function Home(): JSX.Element {
-  const [boards, setBoards] = useState<IBoard[]>([]);
+  const { boards, fetchBoards, createBoard, deleteBoardById } = useBoards();
   const [addBoardModalActive, setaddBoardModalActive] = useState(false);
-
-  async function fetchBoards(): Promise<void> {
-    try {
-      const data = await getBoards();
-      setBoards(data);
-    } catch (error) {
-      toast.error(`Error to get boards data`);
-    }
-  }
 
   useEffect(() => {
     fetchBoards();
   }, []);
 
-  const removeBoard = (id: number): void => {
-    setBoards(boards.filter((elem) => elem.id !== id));
+  const removeBoard = (boardId: number): void => {
+    if (boardId) {
+      deleteBoardById(boardId);
+    }
   };
 
-  const handleBoardAdded = (newBoard: IBoard | false): void => {
-    if (newBoard) setBoards([...boards, newBoard]);
-    setaddBoardModalActive(false);
+  const handleBoardAdded = async (title: string, texture: string): Promise<void> => {
+    const response = await createBoard(title, texture);
+    if (response) setaddBoardModalActive(false);
   };
 
   return (
@@ -41,14 +32,18 @@ export function Home(): JSX.Element {
           if (!elem.id) return null;
           return (
             <Link key={elem.id} to={`/board/${elem.id}`}>
-              <Board key={elem.id} id={elem.id} {...elem} removeDeletedBoard={removeBoard} />
+              <BoardItem key={elem.id} id={elem.id} {...elem} onBoardDelete={removeBoard} />
             </Link>
           );
         })}
         <button className="board__add_button" onClick={() => setaddBoardModalActive((prop) => !prop)}>
           <span className="button__add_title">+ Додати дошку</span>
         </button>
-        <AddBoardModal active={addBoardModalActive} onBoardAdded={handleBoardAdded} />
+        <AddBoardModal
+          active={addBoardModalActive}
+          setActive={setaddBoardModalActive}
+          onBoardAdded={handleBoardAdded}
+        />
       </div>
     </>
   );

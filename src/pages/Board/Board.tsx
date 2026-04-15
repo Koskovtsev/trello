@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBoard, putBoardUpdates, putListsUpdates } from '../../api/boardsService';
 import { List } from './components/List/List';
-import { TextureList } from './components/Textures/TextureList';
+import { TextureList } from '../../components/Textures/TextureList';
 import { IBoard } from '../../common/interfaces/IBoard';
 import { IList } from '../../common/interfaces/IList';
 import { IDragEvent } from '../../common/interfaces/IDragEvent';
@@ -166,14 +166,11 @@ export function Board(): JSX.Element {
       ref={scrollToEnd}
       style={{
         backgroundImage: currentTexture?.includes('/') ? `url(${currentTexture})` : currentTexture,
-        backgroundColor: '#acacac',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
       }}
     >
       <div className="board__title_wrapper">
         {!isChangeTitle && (
-          <div className="board__title" onClick={() => setIsChangeTitle(true)}>
+          <div className="board__title" title={title} onClick={() => setIsChangeTitle(true)}>
             {title}
           </div>
         )}

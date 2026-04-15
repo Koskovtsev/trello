@@ -1,3 +1,5 @@
+@use '../../styles/variables' as *;
+
 .board {
     box-sizing: border-box;
     height: 100%;
@@ -5,15 +7,17 @@
     flex-direction: column;
     width: 100%;
     min-width: 0;
+    background-color: #acacac;
+    background-size: cover;
+    background-position: center;
 
     .color-picker {
-        max-width: 800px;
+        max-width: 100%;
         align-items: center;
     }
 
     .edit-title {
         background-color: rgb(20, 20, 20, 0.3);
-
         height: 80px;
         display: flex;
         align-items: center;
@@ -21,9 +25,15 @@
     }
 
     &__title_wrapper {
+        background-color: rgb(20, 20, 20, 0.2);
+        margin: 0;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding: 0 20px;
         display: flex;
         flex-wrap: nowrap;
+        max-height: 65px;
     }
 
     &__title,
@@ -47,11 +57,14 @@
 
     &__title {
         cursor: pointer;
-        background-color: #939393;
+        background-color: rgba(100, 100, 100, 0.5);
         margin: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
         &:hover {
-            transform: scale(1.1);
-            transition: transform 0.2s;
+            border: solid 2px $color-brand-bg;
         }
     }
 
@@ -127,12 +140,4 @@
             transition: transform 0.2s;
         }
     }
-}
-
-.board__title_wrapper {
-    background-color: rgb(20, 20, 20, 0.2);
-    margin: 0;
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }

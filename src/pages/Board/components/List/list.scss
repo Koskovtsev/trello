@@ -71,8 +71,9 @@
         border: solid 1px transparent;
         border: none;
         cursor: pointer;
+        font-size: 18px;
         font-weight: 600;
-        height: 25px;
+        height: 32px;
         margin: 10px 0;
         border-radius: 5px;
         text-align: start;
@@ -137,7 +138,7 @@
     .icon-wrapper {
         width: 25px;
         height: 25px;
-        background-image: url('../../../../assets/color-picker-icon.png');
+        background-image: url('../../../../../public/assets/color-picker-icon.png');
         display: block;
         background-size: contain;
     }
@@ -176,30 +177,4 @@
 
 .board__list .list {
     background-color: transparent !important;
-}
-
-.color-picker {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    gap: 5px;
-    width: 100%;
-    height: auto;
-    padding: 0;
-    margin: 10px 0;
-    list-style: none;
-
-    .color_box {
-        width: 70px;
-        height: 40px;
-        border-radius: 4px;
-        cursor: pointer;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        transition: transform 0.1s ease;
-
-        &:hover {
-            transform: scale(2.0);
-            border-color: #fff;
-        }
-    }
 }

@@ -1,48 +1,39 @@
-import toast from 'react-hot-toast';
 import { FormEvent, useRef, useState } from 'react';
-import { postNewBoard } from '../../../../api/boardsService';
-import { IBoard } from '../../../../common/interfaces/IBoard';
-import { TextureList, textures } from '../../../Board/components/Textures/TextureList';
+import { TextureList, textures } from '../../../../components/Textures/TextureList';
 import { validateTitle } from '../../../../common/validador';
 import { Portal } from '../../../../components/Portal';
 import { useClickOutside } from '../../../../hooks/useClickOutside';
-import './addForm.scss';
+import './addBoardModal.scss';
 
 interface IAddBoardFormProps {
   active: boolean;
-  onBoardAdded(board: IBoard | false): void;
+  setActive(isActive: boolean): void;
+  onBoardAdded(title: string, texture: string): void;
 }
-export function AddBoardModal({ active, onBoardAdded }: IAddBoardFormProps): JSX.Element | null {
+export function AddBoardModal({ active, setActive, onBoardAdded }: IAddBoardFormProps): JSX.Element | null {
   if (!active) return null;
   const modalRef = useRef<HTMLDivElement>(null);
+  const [isTitleEntered, setIsTitleEntered] = useState(false);
   const [title, setTitle] = useState<string>('');
-  const [currentTexture, setCurrentTexture] = useState<string | null>(textures[8].url);
+  const [currentTexture, setCurrentTexture] = useState<string>(textures[8].url);
   const isValid = validateTitle(title);
-  async function handleSubmit(e: FormEvent): Promise<void> {
+  function handleSubmit(e: FormEvent): void {
     e.preventDefault();
     if (isValid) {
-      const dataToSend: IBoard = { title, custom: { background: currentTexture ?? textures[8].url } };
-      try {
-        const id = await postNewBoard(dataToSend); // TODO: компонент має повертати назву а не відправляти на сервер.
-        if (id) {
-          const newFullBoardObject: IBoard = { id, title, custom: { background: currentTexture ?? textures[8].url } };
-          onBoardAdded(newFullBoardObject);
-          setTitle('');
-        }
-      } catch (error) {
-        toast.error('Error creating new board');
-      }
+      onBoardAdded(title, currentTexture);
+      setTitle('');
     }
   }
   useClickOutside(modalRef, () => {
-    onBoardAdded(false);
+    setActive(false);
   });
+  const showInputError = isTitleEntered && !isValid;
   return (
     <Portal>
       <div className="modal" ref={modalRef}>
         <div className="modal__header">
           <span className="modal__header_title">Створити дошку</span>
-          <button type="button" className="modal__close-btn" aria-label="Close" onClick={() => onBoardAdded(false)}>
+          <button type="button" className="modal__close-btn" aria-label="Close" onClick={() => setActive(false)}>
             <i className="fa-solid fa-xmark" />
           </button>
         </div>
@@ -51,9 +42,15 @@ export function AddBoardModal({ active, onBoardAdded }: IAddBoardFormProps): JSX
             type="text"
             placeholder="Введіть назву дошки..."
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="form__add_title"
+            onChange={(e) => {
+              setTitle(e.target.value);
+              setIsTitleEntered(true);
+            }}
+            className={`form__add_title ${showInputError ? `error` : ``}`}
           />
+          {showInputError && (
+            <span className="modal__error-text">назва занадто коротка, або введені недопустимі символи</span>
+          )}
           <span className="modal__texture_title">Фон</span>
           <div className="modal_texture">
             <TextureList key={0} onTexturePicked={setCurrentTexture} />

@@ -4,14 +4,14 @@ import { ICard } from '../common/interfaces/ICard';
 import { IList } from '../common/interfaces/IList';
 import api from './request';
 
-interface ICreateBoardResponse {
-  result: string;
-  id: number;
-}
+// interface ICreateBoardResponse {
+//   result: string;
+//   id: number;
+// }
 
-export async function postNewBoard(boardData: IBoard): Promise<number> {
-  const response = await api.post<unknown, ICreateBoardResponse>('board', boardData);
-  return response.id;
+export async function postNewBoard(boardData: IBoard): Promise<string> {
+  const response = await api.post<unknown, { result: string }>('board', boardData);
+  return response.result;
 }
 
 export async function deleteBoard(id: number): Promise<string> {

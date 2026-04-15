@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
 import { deleteList } from '../../../../api/boardsService';
-import { TextureList } from '../Textures/TextureList';
+import { TextureList } from '../../../../components/Textures/TextureList';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 import './list.scss';
-import '../../board.scss';
+// import '../../board.scss';
 import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
 import { AddCardForm } from '../AddCard/AddCardForm';
 
@@ -117,14 +117,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
             </h2>
           )}
           {isVisibleChangeTitleForm && (
-            <ChangeTitleForm
-              key={id}
-              onTitleChanged={handleTitleChanged}
-              // listId={id ?? 0}
-              // boardId={boardId}
-              currentTitle={title ?? ''}
-              // type="list"
-            />
+            <ChangeTitleForm key={id} onTitleChanged={handleTitleChanged} currentTitle={title ?? ''} />
           )}
           <button
             className="list__button_custom-icon"

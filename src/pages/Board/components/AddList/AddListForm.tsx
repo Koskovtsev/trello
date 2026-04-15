@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import { FormEvent, useState } from 'react';
 import '../List/list.scss';
-import { TextureList, textures } from '../Textures/TextureList';
+import { TextureList, textures } from '../../../../components/Textures/TextureList';
 import { postList } from '../../../../api/boardsService';
 
 interface IAddListFormProps {
