@@ -1,24 +1,14 @@
 {
   "files": {
-    "main.css": "/trello/static/css/main.4b6e7747.css",
-    "main.js": "/trello/static/js/main.09a8f874.js",
-    "static/media/textur_mountains.jpg": "/trello/static/media/textur_mountains.a77b83895fa7a4d288e1.jpg",
-    "static/media/textur_orange.jpg": "/trello/static/media/textur_orange.1067c85891807009de9c.jpg",
-    "static/media/textur_blue.jpg": "/trello/static/media/textur_blue.3d7f95aecdcd3d0c3259.jpg",
-    "static/media/textur_red.jpg": "/trello/static/media/textur_red.46bf5aacc6335e706d37.jpg",
-    "static/media/textur_green.jpg": "/trello/static/media/textur_green.b524a127b106d00031e4.jpg",
-    "static/media/textur_pink.jpg": "/trello/static/media/textur_pink.04c46a9efb2a0855526d.jpg",
-    "static/media/textur_azure.jpg": "/trello/static/media/textur_azure.eb8e0872006c1e2a6a62.jpg",
-    "static/media/textur_gray.jpg": "/trello/static/media/textur_gray.4fdcdbdb4829a671ba9d.jpg",
-    "static/media/textur_purple.jpg": "/trello/static/media/textur_purple.4d3e79a9e35645449dc1.jpg",
-    "static/media/textur_black.jpg": "/trello/static/media/textur_black.a27a9aee276cc667a5f4.jpg",
+    "main.css": "/trello/static/css/main.b78e4f25.css",
+    "main.js": "/trello/static/js/main.7fd4c73f.js",
     "static/media/color-picker-icon.png": "/trello/static/media/color-picker-icon.323db5f141fe9c020795.png",
     "index.html": "/trello/index.html",
-    "main.4b6e7747.css.map": "/trello/static/css/main.4b6e7747.css.map",
-    "main.09a8f874.js.map": "/trello/static/js/main.09a8f874.js.map"
+    "main.b78e4f25.css.map": "/trello/static/css/main.b78e4f25.css.map",
+    "main.7fd4c73f.js.map": "/trello/static/js/main.7fd4c73f.js.map"
   },
   "entrypoints": [
-    "static/css/main.4b6e7747.css",
-    "static/js/main.09a8f874.js"
+    "static/css/main.b78e4f25.css",
+    "static/js/main.7fd4c73f.js"
   ]
 }
