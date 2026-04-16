@@ -1,0 +1,49 @@
+@use '../../styles/variables' as *;
+
+.modal__confirm {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: $color-brand-hover-bg;
+    color: $color-header-logo-hover-gray;
+    font-size: large;
+    font-weight: 500;
+
+    .button_wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .button {
+
+        &_delete,
+        &_cancel {
+            border-radius: $border-radius-small;
+            cursor: pointer;
+            border: none;
+            font-size: large;
+            font-weight: 500;
+            width: 70px;
+            height: 30px;
+            transition: opacity 0.2s ease;
+            &:hover {
+                filter: brightness(1.25);
+            }
+        }
+        
+        &_delete {
+            background-color: #ff6060;
+        }
+
+        &_cancel {
+            background-color: #66bbdd;
+        }
+    }
+}

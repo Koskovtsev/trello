@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DeleteItemModal } from './DeleteItemModal';
 
 interface IDeleteButtonProps {
-  onDeletedItem(): void;
+  onDeletedItem(isDelete: boolean): void;
 }
 export function DeleteButtonWithModal({ onDeletedItem }: IDeleteButtonProps): JSX.Element {
   const [deleteItemModalActive, setDeleteItemModalActive] = useState(false);
@@ -11,8 +11,10 @@ export function DeleteButtonWithModal({ onDeletedItem }: IDeleteButtonProps): JS
       <button
         className="home__button_delete-item"
         aria-label="Delete"
-        onClick={() => {
+        onClick={(e) => {
           setDeleteItemModalActive(true);
+          e.stopPropagation();
+          e.preventDefault();
         }}
       >
         <i className="fa fa-trash" />

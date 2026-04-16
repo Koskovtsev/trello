@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/trello/static/css/main.b78e4f25.css",
-    "main.js": "/trello/static/js/main.7fd4c73f.js",
+    "main.css": "/trello/static/css/main.b7d34fc7.css",
+    "main.js": "/trello/static/js/main.1f0f7064.js",
     "static/media/color-picker-icon.png": "/trello/static/media/color-picker-icon.323db5f141fe9c020795.png",
     "index.html": "/trello/index.html",
-    "main.b78e4f25.css.map": "/trello/static/css/main.b78e4f25.css.map",
-    "main.7fd4c73f.js.map": "/trello/static/js/main.7fd4c73f.js.map"
+    "main.b7d34fc7.css.map": "/trello/static/css/main.b7d34fc7.css.map",
+    "main.1f0f7064.js.map": "/trello/static/js/main.1f0f7064.js.map"
   },
   "entrypoints": [
-    "static/css/main.b78e4f25.css",
-    "static/js/main.7fd4c73f.js"
+    "static/css/main.b7d34fc7.css",
+    "static/js/main.1f0f7064.js"
   ]
 }

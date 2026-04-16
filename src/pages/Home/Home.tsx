@@ -13,11 +13,11 @@ export function Home(): JSX.Element {
     fetchBoards();
   }, []);
 
-  const removeBoard = (boardId: number): void => {
-    if (boardId) {
-      deleteBoardById(boardId);
-    }
-  };
+  // const removeBoard = (boardId: number): void => {
+  //   if (boardId) {
+  //     deleteBoardById(boardId);
+  //   }
+  // };
 
   const handleBoardAdded = async (title: string, texture: string): Promise<void> => {
     const response = await createBoard(title, texture);
@@ -32,7 +32,14 @@ export function Home(): JSX.Element {
           if (!elem.id) return null;
           return (
             <Link key={elem.id} to={`/board/${elem.id}`}>
-              <BoardItem key={elem.id} id={elem.id} {...elem} onBoardDelete={removeBoard} />
+              <BoardItem
+                key={elem.id}
+                id={elem.id}
+                {...elem}
+                onBoardDelete={(id) => {
+                  deleteBoardById(id);
+                }}
+              />
             </Link>
           );
         })}

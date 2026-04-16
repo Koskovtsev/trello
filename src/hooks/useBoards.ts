@@ -26,7 +26,7 @@ export function useBoards(): IUseBoardData {
     try {
       const response = await postNewBoard(dataToSend);
       if (response === 'Created') {
-        fetchBoards();
+        await fetchBoards();
         return true;
       }
     } catch (error) {
@@ -39,7 +39,7 @@ export function useBoards(): IUseBoardData {
     try {
       const response = await deleteBoard(boardId);
       if (response === 'Deleted') {
-        fetchBoards();
+        await fetchBoards();
       }
     } catch (error) {
       toast.error(`Error deleting board`);
