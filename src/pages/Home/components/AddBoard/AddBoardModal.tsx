@@ -20,8 +20,9 @@ export function AddBoardModal({ active, setActive, onBoardAdded }: IAddBoardForm
   function handleSubmit(e: FormEvent): void {
     e.preventDefault();
     if (isValid) {
-      onBoardAdded(title, currentTexture);
       setTitle('');
+      setActive(false);
+      onBoardAdded(title, currentTexture);
     }
   }
   useClickOutside(modalRef, () => {

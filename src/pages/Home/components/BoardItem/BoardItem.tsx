@@ -1,12 +1,12 @@
 import { IBoard } from '../../../../common/interfaces/IBoard';
-import { DeleteButtonWithModal } from '../../../../components/DeleteButtonWithModal/DeleteButtonWithModal';
+import { DeleteAction } from '../../../../components/DeleteButtonWithModal/DeleteAction';
 import './boardItem.scss';
 
 interface IBoardProps extends IBoard {
   id: number;
-  onBoardDelete(boardId: number): void;
+  onDelete(boardId: number): void;
 }
-export function BoardItem({ id, title, custom, onBoardDelete }: IBoardProps): JSX.Element {
+export function BoardItem({ id, title, custom, onDelete }: IBoardProps): JSX.Element {
   return (
     <div className="home__board_card">
       <div className="home__board_image" style={{ backgroundImage: `url(${custom?.background})` }} />
@@ -14,10 +14,7 @@ export function BoardItem({ id, title, custom, onBoardDelete }: IBoardProps): JS
         <span className="home__board_title" title={title}>
           {title}
         </span>
-        <DeleteButtonWithModal onDeletedItem={() => onBoardDelete(id)} />
-        {/* <button className="home__button_delete-item" aria-label="Delete" onClick={handleDeleteBoard}>
-          <i className="fa fa-trash" />
-        </button> */}
+        <DeleteAction onConfirm={() => onDelete(id)} />
       </div>
     </div>
   );

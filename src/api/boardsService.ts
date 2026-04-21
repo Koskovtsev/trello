@@ -67,3 +67,8 @@ export async function putCardsUpdates(cardData: ICard[], boardId: number): Promi
   const response = await api.put<unknown, { result: string }>(`board/${boardId}/card/`, cardData);
   return response.result;
 }
+
+export async function deleteCard(boardId: number, cardId: number): Promise<string> {
+  const response = await api.delete<unknown, { result: string }>(`board/${boardId}/card/${cardId}`);
+  return response.result;
+}

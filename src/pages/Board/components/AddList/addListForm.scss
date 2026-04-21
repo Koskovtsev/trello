@@ -1,0 +1,33 @@
+  .button__add_list,
+  .button__add_card {
+      background-color: transparent;
+      border: solid 1px transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      height: 32px;
+      margin: 10px 0;
+      border-radius: 5px;
+      text-align: start;
+
+      &:hover {
+          background-color: rgba(153, 153, 153, 0.6);
+          border: solid 1px black;
+          transition: transform 0.2s;
+      }
+  }
+
+  .button__add_card {
+      border: solid 1px transparent;
+  }
+
+  .button__add_list {
+      background-color: #838383;
+      border: solid 1px black;
+
+      &:hover {
+          background-color: #acacac;
+          transition: transform 0.2s;
+      }
+  }

@@ -13,12 +13,6 @@ export function Home(): JSX.Element {
     fetchBoards();
   }, []);
 
-  // const removeBoard = (boardId: number): void => {
-  //   if (boardId) {
-  //     deleteBoardById(boardId);
-  //   }
-  // };
-
   const handleBoardAdded = async (title: string, texture: string): Promise<void> => {
     const response = await createBoard(title, texture);
     if (response) setaddBoardModalActive(false);
@@ -36,7 +30,7 @@ export function Home(): JSX.Element {
                 key={elem.id}
                 id={elem.id}
                 {...elem}
-                onBoardDelete={(id) => {
+                onDelete={(id) => {
                   deleteBoardById(id);
                 }}
               />

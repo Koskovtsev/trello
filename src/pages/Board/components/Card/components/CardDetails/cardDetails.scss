@@ -1,0 +1,16 @@
+@use '/src/styles/variables' as *;
+
+.card-details__overlay{
+    width: 100vw;
+    height: 100vh;
+    background-color: $color-white-half-opacity;
+
+    .card-details__window {
+        width: 100px;
+        height: 100px;
+        background-color: $color-brand-bg;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+}

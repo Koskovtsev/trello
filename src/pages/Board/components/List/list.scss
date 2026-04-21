@@ -1,39 +1,46 @@
-.list, .empty-list {
+@use '/src/styles/variables' as *;
+
+.list,
+.empty-list {
     flex-shrink: 0;
     min-width: 320px;
     max-width: 320px;
     min-height: 160px;
     font-size: 10px;
     display: flex;
+
     justify-content: space-between;
     flex-direction: column;
     gap: 10px;
     padding: 12px;
     border-radius: 10px;
     box-sizing: border-box;
+}
 
-    &__title {
-        width: 100%;
-        margin: 0 !important;
-        flex: 1;
-        font-size: 20px;
-        gap: 10px;
-        padding-left: 10px;
-        border: 2px solid transparent;
+.list {
+
+    &__title,
+    .edit-title .edit-title__input {
+        display: flex;
+        height: auto;
+        align-items: center;
+        width: auto;
+        margin: 0;
+        justify-content: flex-start;
         box-sizing: border-box;
-        flex: 1; 
-        min-width: 0;
+        font-size: 24px;
+        font-weight: 500;
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: rgb(117, 117, 117, 0.5);
+        padding: 0 10px;
         cursor: pointer;
-        white-space: normal; 
+        white-space: normal;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        line-height: 1.2;
+        border-radius: $border-radius-large;
 
-        &:hover {
-            background-color: rgba(153, 153, 153, 0.6);
-            border: 2px solid black;
-            border-radius: 10px;
-            cursor: pointer;
+        &:focus {
+            color: black;
             transition: transform 0.2s;
         }
     }
@@ -43,74 +50,43 @@
         justify-content: space-between;
         align-items: flex-start;
         width: 100%;
-
-
     }
 
     &__cards {
         display: flex;
         flex-direction: column;
+        width: 100%;
         gap: 10px;
         margin: 0;
         font-size: 20px;
     }
 
-    .form__add_list {
-        height: 160px;
-    }
-
-    .input_list_title {
-        height: 20px;
-        border-radius: 5px;
-    }
-
-
-    .button__add_list,
-    .button__add_card {
-        background-color: transparent;
-        border: solid 1px transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: 600;
-        height: 32px;
-        margin: 10px 0;
-        border-radius: 5px;
-        text-align: start;
-
-        &:hover {
-            background-color: rgba(153, 153, 153, 0.6);
-            border: solid 1px black;
-            transition: transform 0.2s;
-        }
-    }
-
-    .button__add_card {
-        border: solid 1px transparent;
-    }
-
-    .button__wrapper {
+    &__footer {
         display: flex;
+        width: 100%;
         justify-content: space-between;
-    }
 
-    .button__add_list {
-        background-color: #838383;
-        border: solid 1px black;
-
-        &:hover {
-            background-color: #acacac;
-            transition: transform 0.2s;
+        .button__add_card {
+            background-color: $color-white-half-opacity;
+            border: none;
+            border-radius: $border-radius-medium;
+            height: 30px;
+            font-size: 16px;
+            font-weight: 550;
+            padding: 0 10px;
+            cursor: pointer;
         }
     }
 }
-.empty-list{
+
+.empty-list {
     background-color: rgba(145, 144, 144, 0.2);
     padding: 0;
     min-width: auto;
-    
+
     min-height: auto;
 }
+
 .board__title_wrapper .list__button_custom-icon {
     align-self: center;
 }
@@ -144,37 +120,31 @@
     }
 }
 
-.board__list .list .edit-title {
+.board__list .empty-list .list {
     display: flex;
     align-items: center;
     box-sizing: border-box;
     flex: 1;
     height: auto;
-    background-color: transparent !important;
-
-    &__input {
-        border: 2px solid transparent;
-        font-size: 20px;
-        font-family: inherit;
-        font-weight: 700;
-        height: 40px;
-        padding-left: 10px;
-        margin: 2px 0;
-        border-radius: 10px;
-        width: 100%;
-        background-color: transparent !important;
-        color: black;
-        outline: none;
-        transition: all 0.2s ease;
-
-        &:focus {
-            color: black;
-            background-color: rgba(153, 153, 153, 0.6) !important;
-            transition: transform 0.2s;
-        }
-    }
+    background-color: transparent;
 }
 
-.board__list .list {
-    background-color: transparent !important;
+.list__cards {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.empty-list .list .list__header .list__title {
+    // flex: 1;
+    min-width: 0;
+    white-space: normal;
+    word-wrap: break-all;
+    overflow-wrap: anywhere;
+    border: 2px solid transparent;
+}
+
+.list__header .form_wrapper .edit-title .edit-title__input {
+    width: fit-content;
+    max-width: 100%;
 }

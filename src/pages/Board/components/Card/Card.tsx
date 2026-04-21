@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { ICard } from '../../../../common/interfaces/ICard';
-import { putCardUpdates } from '../../../../api/boardsService';
-import { TextureList } from '../../../../components/Textures/TextureList';
+// import { putCardUpdates } from '../../../../api/boardsService';
+// import { TextureList } from '../../../../components/Textures/TextureList';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
+import { useCard } from './hooks/useCard';
 import './card.scss';
+import { CardMenuModal } from './components/CardMenu/CardMenuModal';
 
-interface ICardChangeProps extends ICard {
+interface ICardChangeProps {
+  cardData: ICard;
   boardId: number;
   listId: number;
   onListChanged(): void;
@@ -15,62 +17,53 @@ interface ICardChangeProps extends ICard {
 }
 
 export function Card(props: ICardChangeProps): JSX.Element {
-  const { boardId, listId, onListChanged, onItemDragged, title, id, custom } = props;
+  const { boardId, listId, onListChanged, onItemDragged, cardData } = props;
   const [isVisibleChangeCardTitle, setVisibleChangeCardTitle] = useState(false);
+  const [menuCoords, setMenuCoords] = useState<{ top: number; left: number } | null>(null);
   const [isVisibleMenuOptions, setVisibleMenuOptions] = useState(false); // TODO: багато стейтів, які можна було б винести в компоненти які їх використовують.
-  const [isChecked, setIsChecked] = useState(custom?.isChecked ?? false);
-  const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
-  const [currentTexture, setCurrentTexture] = useState<string | null>(custom?.listTexture ?? null);
-  const handleCheckedCard = async (): Promise<void> => {
-    const newCard: ICard = {
-      ...props,
-      custom: {
-        ...custom,
-        isChecked: !isChecked,
-      },
-      list_id: listId,
-    };
-    try {
-      await putCardUpdates(newCard, boardId, id!);
-      setIsChecked((prev) => !prev);
-      onListChanged();
-    } catch (error) {
-      toast.error('Error updating card properties.');
-    }
+  const [isVisibleCardDetails, setVisibleCardDetails] = useState(false);
+
+  const { handleCheckedCard } = useCard({ boardId, listId, cardId: cardData.id!, cardData, onListChanged });
+  const { handleDeleteCard } = useCard({ boardId, cardId: cardData.id!, onListChanged });
+  const { handleChangeTitle } = useCard({ boardId, listId, cardId: cardData.id!, cardData, onListChanged });
+
+  const triggerEditTitle = (): void => {
+    setVisibleChangeCardTitle(true);
+    setVisibleMenuOptions(false);
   };
-  const handleTitleChanged = async (newTitle: string | false): Promise<void> => {
-    if (newTitle) {
-      const newCard: ICard = { title: newTitle, list_id: listId };
-      const response = await putCardUpdates(newCard, boardId, id!);
-      if (response === 'Updated') {
-        onListChanged();
-      }
-    }
-    setVisibleChangeCardTitle(false);
+
+  const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMenuCoords({
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX,
+    });
+    setVisibleMenuOptions(true);
   };
+
   // TODO: текстури мають бути в файлі з текстурами і їх обробка теж.
-  const handleNewTexture = async (texture: string): Promise<void> => {
-    if (texture === currentTexture) return;
-    setCurrentTexture(texture);
-    setVisibleChangeTexture(false);
-    const cardUpdate: ICard = {
-      list_id: listId,
-      custom: {
-        ...custom,
-        listTexture: texture,
-      },
-    };
-    try {
-      await putCardUpdates(cardUpdate, boardId, id!);
-      setVisibleChangeTexture((prev) => !prev);
-      setVisibleMenuOptions((prev) => !prev);
-      onListChanged();
-    } catch (error) {
-      toast.error('Error updating card properties.');
-    }
-  };
+  // const handleNewTexture = async (texture: string): Promise<void> => {
+  //   if (texture === currentTexture) return;
+  //   setCurrentTexture(texture);
+  //   setVisibleChangeTexture(false);
+  //   const cardUpdate: ICard = {
+  //     list_id: listId,
+  //     custom: {
+  //       ...cardData.custom,
+  //       listTexture: texture,
+  //     },
+  //   };
+  //   try {
+  //     await putCardUpdates(cardUpdate, boardId, cardData.id!);
+  //     setVisibleChangeTexture((prev) => !prev);
+  //     setVisibleMenuOptions((prev) => !prev);
+  //     onListChanged();
+  //   } catch (error) {
+  //     toast.error('Error updating card properties.');
+  //   }
+  // };
   const onDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
-    e.dataTransfer.setData('cardId', `${id}`);
+    e.dataTransfer.setData('cardId', `${cardData.id}`);
     e.dataTransfer.setData('listId', `${listId}`);
     e.stopPropagation();
   };
@@ -94,15 +87,13 @@ export function Card(props: ICardChangeProps): JSX.Element {
     const sourceListId = +e.dataTransfer.getData('listId');
     const draggedItemPositions: IDragEvent = {
       draggedId: draggedCardId,
-      targetId: id!,
+      targetId: cardData.id!,
       sourceContainerId: sourceListId,
       targetContainerId: listId,
     };
-    onItemDragged(draggedItemPositions);
+    if (draggedCardId) onItemDragged(draggedItemPositions);
     e.stopPropagation();
   };
-  // TODO: прибрать карандаш в меню редагування.
-  // TODO: саме меню редагування має бути модальним вікном (через глобал стейт?) і зникати при клікі в іншому місці (useClickOutsids).
   // TODO: по стилям, будь-які едіти не мають скакати, всі розміри мають бути статичними.
   // TODO: коли вибрано якусь текстуру, додать бордер, щоб було зрозуміло яка зараз текстура вибрана. або залишити збільшеним(як при ховері) чи і те і те.
   // TODO: зробить не такими насиченими компоненти(збільшити розміри картки, або збільшити розміри списку) бо візуально - перегромадження.
@@ -116,50 +107,41 @@ export function Card(props: ICardChangeProps): JSX.Element {
     >
       <div
         className="card__item"
-        style={{ backgroundImage: `url(${currentTexture})`, zIndex: isVisibleMenuOptions ? 1000 : 5 }}
-        draggable="true"
+        style={{ backgroundImage: `url(${cardData.custom?.listTexture})`, zIndex: isVisibleMenuOptions ? 1000 : 5 }}
+        draggable={!isVisibleChangeCardTitle}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
       >
         <li>
           <label className="card__label">
-            <input type="checkbox" className="card__checkbox" checked={isChecked} onChange={handleCheckedCard} />
-            {!isVisibleChangeCardTitle && <span>{title}</span>}
+            <input
+              type="checkbox"
+              className="card__checkbox"
+              checked={cardData.custom?.isChecked}
+              onChange={handleCheckedCard}
+            />
+            {!isVisibleChangeCardTitle && <span className="card__checkbox_title">{cardData.title}</span>}
             {isVisibleChangeCardTitle && (
-              <ChangeTitleForm key={id} onTitleChanged={handleTitleChanged} currentTitle={title ?? ''} />
+              <ChangeTitleForm
+                onTitleChanged={(newTitle) => handleChangeTitle(newTitle, setVisibleChangeCardTitle)}
+                currentTitle={cardData.title ?? ''}
+                onCancel={() => setVisibleChangeCardTitle(false)}
+              />
             )}
           </label>
         </li>
         <div className="button__card-change_wrapper">
-          <button
-            className="button__card-change_title"
-            aria-label="Change card title"
-            onClick={() => setVisibleChangeCardTitle(true)}
-          >
+          <button className="button__menu_options" aria-label="Change card title" onClick={handleOpenMenu}>
             <i className="fa fa-pencil-alt" />
           </button>
-          <button
-            className="button__menu_options"
-            aria-label="Show menu"
-            onClick={() => setVisibleMenuOptions((prev) => !prev)}
-          >
-            <i className="fas fa-ellipsis-h" />
-          </button>
-          {isVisibleMenuOptions && (
-            <div className="menu__options">
-              <div className="menu__options_header">
-                <span className="menu__options_title">Редагування картки</span>
-                <button
-                  className="list__button_custom-icon"
-                  aria-label="Change Texture"
-                  onClick={() => setVisibleChangeTexture((prev) => !prev)}
-                >
-                  <span className="icon-wrapper" />
-                </button>
-              </div>
-              {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
-            </div>
-          )}
+          <CardMenuModal
+            isOpen={isVisibleMenuOptions}
+            onClose={() => setVisibleMenuOptions(false)}
+            coords={menuCoords}
+            onDeleteCard={handleDeleteCard}
+            onChangeTitle={triggerEditTitle}
+            onCardDetailOpen={() => setVisibleCardDetails(true)}
+          />
         </div>
       </div>
     </div>

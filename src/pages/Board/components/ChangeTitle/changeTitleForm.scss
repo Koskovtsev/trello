@@ -1,0 +1,45 @@
+@use '/src/styles/variables' as *;
+
+.form_wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+}
+
+.edit-title__input {
+    cursor: text !important;
+    position: relative;
+    z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    user-select: text;
+    -webkit-user-drag: none;
+}
+
+.edit-title {
+    border: $color-brand-bg;
+}
+
+.error_message {
+    display: block;
+    border-radius: $border-radius-medium;
+    // border: 2px solid $color-button-hover-red;
+    background-color: $color-brand-hover-bg;
+    font-size: 14px;
+    font-weight: 550;
+    margin: 5px;
+    padding-left: 10px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #fff;
+}
+
+.edit-title--error {
+    border: 2px solid $color-button-hover-red !important;
+
+    &:focus {
+        border: 2px solid $color-button-hover-red !important;
+    }
+}

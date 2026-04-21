@@ -1,0 +1,55 @@
+@use '/src/styles/variables' as *;
+
+.card-menu__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1001;
+}
+
+.card-menu__content {
+    display: flex;
+    padding: 10px;
+    position: absolute;
+    flex-direction: column;
+    align-items: flex-end;
+    border-radius: 10px;
+    background-color: transparent;
+    width: 200px;
+    z-index: 100;
+}
+
+.menu__options_button {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    height: 30px;
+    margin: 3px 0;
+    border: none;
+    border-radius: $border-radius-small;
+    color: $color-header-logo-hover-gray;
+    font-weight: 550;
+    font-size: 14px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: $color-brand-hover-bg;
+
+    &:hover {
+        background-color: $color-brang-bg-default;
+        color: #fff;
+    }
+}
+
+.open-textures_logo{
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    background-image: url('../../../../../../../public/assets/color-picker-icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}

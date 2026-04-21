@@ -27,8 +27,6 @@ export function Board(): JSX.Element {
   async function fetchBoard(): Promise<IBoard | null> {
     try {
       const data = await getBoard(id);
-      // eslint-disable-next-line prettier/prettier, no-console
-      console.log("Дані отримано:", data);
       setBoradData(data);
       return data;
     } catch (error) {
@@ -59,6 +57,7 @@ export function Board(): JSX.Element {
     prevListsLength.current = lists.length;
   }, [isVisibleAddListForm, lists.length]); // TODO: цей юзеффект для автоскролу, винести в окремий файл.
   const updateListTexture = async (texturedList: Record<string, string>, freshData: IBoard): Promise<void> => {
+    // TODO: винести в модалку
     const updatedCustom = {
       ...freshData.custom,
       listTextures: {
@@ -84,7 +83,7 @@ export function Board(): JSX.Element {
       if (!data) return;
       const texturedLists = { ...(data.custom?.listTextures || {}) };
       const newId = data?.lists?.find(
-        (list) => !texturedLists[String(list.id)] || texturedLists[String(list.id)] === null // TODO: розібратись чому тут string.
+        (list) => !texturedLists[String(list.id)] || texturedLists[String(list.id)] === null
       )?.id;
       if (!newId) return;
       const updatedTextureLists = {
@@ -112,7 +111,7 @@ export function Board(): JSX.Element {
       return acc;
     }, []);
     try {
-      await putListsUpdates(newPositionList as IList[], id); // TODO: пуш-пут... виность в окремі файли.
+      await putListsUpdates(newPositionList as IList[], id); // TODO: пуш-пут... винести в боардХук.
     } catch (error) {
       toast.error(`Error updating list properties`);
     }
@@ -126,7 +125,7 @@ export function Board(): JSX.Element {
     await fetchBoard();
   };
   // TODO: переробить компонент ChangeTitleForm він має повертати новий тайтл, його обробкой має зайнятись окрема функція в окремому файлі.
-  const handleTitleChanged = async (newTitle: string | false): Promise<void> => {
+  const handleTitleChanged = async (newTitle: string): Promise<void> => {
     if (newTitle) {
       const newBoard: IBoard = { id, title: newTitle };
       await putBoardUpdates(newBoard);
@@ -174,7 +173,14 @@ export function Board(): JSX.Element {
             {title}
           </div>
         )}
-        {isChangeTitle && <ChangeTitleForm key={id} onTitleChanged={handleTitleChanged} currentTitle={title ?? ''} />}
+        {isChangeTitle && (
+          <ChangeTitleForm
+            key={id}
+            onTitleChanged={handleTitleChanged}
+            currentTitle={title ?? ''}
+            onCancel={() => setIsChangeTitle(false)}
+          />
+        )}
         <button
           className="list__button_custom-icon"
           aria-label="Change Texture"
