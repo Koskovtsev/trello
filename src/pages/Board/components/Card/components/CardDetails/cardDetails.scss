@@ -1,16 +1,97 @@
 @use '/src/styles/variables' as *;
 
-.card-details__overlay{
+.card-details__overlay {
     width: 100vw;
     height: 100vh;
-    background-color: $color-white-half-opacity;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    z-index: 1001;
+    display: flex;
+    justify-content: center;
+    padding-top: 100px;
+    align-items: flex-start;
 
     .card-details__window {
-        width: 100px;
-        height: 100px;
+        width: 600px;
+        height: 400px;
         background-color: $color-brand-bg;
+        border-radius: $border-radius-large;
+        border: 1px solid $color-white-half-opacity;
         display: flex;
+        flex-direction: column;
         justify-content: flex-start;
-        align-items: center;
+        align-items: flex-start;
+        overflow: hidden;
+        
+
+        .card-details__texture-sample {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            background-color: $color-white-half-opacity;
+            height: 100px;
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+            border: 1px solid $color-white-half-opacity;
+
+            .button__wrapper {
+                width: fit-content;
+                min-width: 0;
+                display: flex;
+                align-items: flex-start;
+
+                .button__textures {
+                    background-color: transparent;
+                    border: none;
+                    padding: 0;
+                    margin: 5px;
+                    cursor: pointer;
+
+                    .icon-wrapper {
+                        width: 25px;
+                        height: 25px;
+                        display: block;
+                        background-size: contain;
+                    }
+
+                    .change-textures {
+                        background-image: url('../../../../../../../public/assets/color-picker-icon.png');
+                    }
+
+                    .delete-textures {
+                        background-image: url('../../../../../../../public/assets/color-delete-icon.png');
+                    }
+                }
+
+                .button__close-modal {
+                    width: 26px;
+                    height: 26px;
+                    margin: 5px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    align-self: self-start;
+                    background-color: transparent;
+                    border: none;
+                    border-radius: 50%;
+                    padding-top: 2px;
+                    cursor: pointer;
+                    box-sizing: border-box;
+                    background-color: $color-brand-hover-bg;
+
+                    &:hover {
+                        background-color: $color-brang-bg-default;
+                    }
+
+                    i {
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+        .card-details__main{
+            padding: 10px 0 0 20px
+        }
     }
 }

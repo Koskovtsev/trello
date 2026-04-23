@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { ICard } from '../../../../common/interfaces/ICard';
-// import { putCardUpdates } from '../../../../api/boardsService';
-// import { TextureList } from '../../../../components/Textures/TextureList';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
 import { useCard } from './hooks/useCard';
-import './card.scss';
 import { CardMenuModal } from './components/CardMenu/CardMenuModal';
+import './card.scss';
 
 interface ICardChangeProps {
   cardData: ICard;
@@ -21,7 +19,6 @@ export function Card(props: ICardChangeProps): JSX.Element {
   const [isVisibleChangeCardTitle, setVisibleChangeCardTitle] = useState(false);
   const [menuCoords, setMenuCoords] = useState<{ top: number; left: number } | null>(null);
   const [isVisibleMenuOptions, setVisibleMenuOptions] = useState(false); // TODO: багато стейтів, які можна було б винести в компоненти які їх використовують.
-  const [isVisibleCardDetails, setVisibleCardDetails] = useState(false);
 
   const { handleCheckedCard } = useCard({ boardId, listId, cardId: cardData.id!, cardData, onListChanged });
   const { handleDeleteCard } = useCard({ boardId, cardId: cardData.id!, onListChanged });
@@ -107,7 +104,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
     >
       <div
         className="card__item"
-        style={{ backgroundImage: `url(${cardData.custom?.listTexture})`, zIndex: isVisibleMenuOptions ? 1000 : 5 }}
+        style={{ backgroundImage: `url(${cardData.custom?.listTexture})`, zIndex: isVisibleMenuOptions ? 300 : 5 }}
         draggable={!isVisibleChangeCardTitle}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
@@ -117,7 +114,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
             <input
               type="checkbox"
               className="card__checkbox"
-              checked={cardData.custom?.isChecked}
+              checked={!!cardData.custom?.isChecked}
               onChange={handleCheckedCard}
             />
             {!isVisibleChangeCardTitle && <span className="card__checkbox_title">{cardData.title}</span>}
@@ -140,7 +137,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
             coords={menuCoords}
             onDeleteCard={handleDeleteCard}
             onChangeTitle={triggerEditTitle}
-            onCardDetailOpen={() => setVisibleCardDetails(true)}
+            card={cardData}
           />
         </div>
       </div>

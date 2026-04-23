@@ -32,7 +32,7 @@ export function AddCardForm({ onCardAdded, position, boardId, list_id }: IAddCar
       <input
         type="text"
         className="input_card_title"
-        value={title}
+        value={title ?? ''}
         onChange={(e) => setTitle(e.target.value)}
         onBlur={handleSubmit}
       />

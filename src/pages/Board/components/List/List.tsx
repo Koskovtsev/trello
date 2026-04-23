@@ -4,11 +4,11 @@ import { Card } from '../Card/Card';
 import { TextureList } from '../../../../components/Textures/TextureList';
 import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { IBoard } from '../../../../common/interfaces/IBoard';
-import './list.scss';
 import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
 import { AddCardForm } from '../AddCard/AddCardForm';
 import { useList } from './hooks/useList';
 import { DeleteAction } from '../../../../components/DeleteButtonWithModal/DeleteAction';
+import './list.scss';
 
 interface IAddCardChangesProps extends IList {
   onListChanged(position?: number, listId?: number): void;
@@ -20,7 +20,6 @@ interface IAddCardChangesProps extends IList {
 }
 export function List(props: IAddCardChangesProps): JSX.Element {
   const { id, title, cards, onListChanged, boardData, boardId, onTextureUpdate, onItemDragged, onDataUpdate } = props;
-
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false); // TODO: тут теж багато стейтів, треба скоротить.
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const [currentTexture, setCurrentTexture] = useState<string | null>(

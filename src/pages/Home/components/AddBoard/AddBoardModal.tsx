@@ -42,7 +42,7 @@ export function AddBoardModal({ active, setActive, onBoardAdded }: IAddBoardForm
           <input
             type="text"
             placeholder="Введіть назву дошки..."
-            value={title}
+            value={title ?? ''}
             onChange={(e) => {
               setTitle(e.target.value);
               setIsTitleEntered(true);

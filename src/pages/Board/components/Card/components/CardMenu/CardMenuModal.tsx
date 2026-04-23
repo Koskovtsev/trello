@@ -1,8 +1,12 @@
 import { useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+// import { useDispatch } from 'react-redux';
+// import { openModal } from '../../../../../../store/cardsSlice';
 import { useClickOutside } from '../../../../../../hooks/useClickOutside';
 import { Portal } from '../../../../../../components/Portal';
-import './cardMenuModal.scss';
 import { ConfirmModal } from '../../../../../../components/DeleteButtonWithModal/ConfirmModal';
+import { ICard } from '../../../../../../common/interfaces/ICard';
+import './cardMenuModal.scss';
 
 interface ICardMenuProps {
   isOpen: boolean;
@@ -10,7 +14,7 @@ interface ICardMenuProps {
   coords: { top: number; left: number } | null;
   onDeleteCard(): void;
   onChangeTitle(): void;
-  onCardDetailOpen(): void;
+  card: ICard;
 }
 export function CardMenuModal({
   isOpen,
@@ -18,10 +22,13 @@ export function CardMenuModal({
   coords,
   onDeleteCard,
   onChangeTitle,
-  onCardDetailOpen,
+  card,
 }: ICardMenuProps): JSX.Element | null {
   const menuRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setModalActive] = useState(false);
+  // const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { boardId } = useParams();
   useClickOutside(menuRef, () => {
     if (!isModalOpen) {
       onClose();
@@ -54,7 +61,8 @@ export function CardMenuModal({
               className="menu__options_button open-card"
               onClick={() => {
                 onClose();
-                onCardDetailOpen();
+                navigate(`/board/${boardId}/card/${card.id}`);
+                // dispatch(openModal(card));
               }}
             >
               Відкрити картку

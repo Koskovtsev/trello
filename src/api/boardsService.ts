@@ -4,11 +4,6 @@ import { ICard } from '../common/interfaces/ICard';
 import { IList } from '../common/interfaces/IList';
 import api from './request';
 
-// interface ICreateBoardResponse {
-//   result: string;
-//   id: number;
-// }
-
 export async function postNewBoard(boardData: IBoard): Promise<string> {
   const response = await api.post<unknown, { result: string }>('board', boardData);
   return response.result;

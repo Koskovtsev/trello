@@ -38,7 +38,7 @@ export function AddListForm({ onListAdded, position, boardId }: IAddListFormProp
           type="text"
           className="input_list_title"
           placeholder="Введіть назву списку..."
-          value={title}
+          value={title ?? ''}
           onChange={(e) => setTitle(e.target.value)}
         />
         <TextureList key={boardId} onTexturePicked={setCurrentTexture} />

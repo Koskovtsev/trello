@@ -38,7 +38,7 @@ export function ChangeTitleForm(props: IChangeTitleFormProps): JSX.Element {
           className={`edit-title__input ${isError ? 'edit-title--error' : ''}`}
           ref={inputRef}
           type="text"
-          value={newTitle}
+          value={newTitle ?? ''}
           onMouseDown={(e) => e.stopPropagation}
           onChange={(e) => {
             if (!validateTitle(e.target.value)) {
