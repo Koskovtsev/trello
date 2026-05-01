@@ -1,25 +1,33 @@
 import { useState } from 'react';
 import './textureList.scss';
 
+interface TextureProps {
+  onTexturePicked(texture: string): void;
+  currentTexture: string;
+}
+
 export const textures = [
   { id: 1, name: 'yellow', url: '/trello/assets/textur_yellow.jpg' },
-  { id: 2, name: 'orange', url: '/trello/assets/textur_pink.jpg' },
-  { id: 3, name: 'black', url: '/trello/assets/textur_orange.jpg' },
-  { id: 4, name: 'azure', url: '/trello/assets/textur_green.jpg' },
-  { id: 5, name: 'green', url: '/trello/assets/textur_blue.jpg' },
+  { id: 2, name: 'pink', url: '/trello/assets/textur_pink.jpg' },
+  { id: 3, name: 'orange', url: '/trello/assets/textur_orange.jpg' },
+  { id: 4, name: 'green', url: '/trello/assets/textur_green.jpg' },
+  { id: 5, name: 'blue', url: '/trello/assets/textur_blue.jpg' },
   { id: 6, name: 'purple', url: '/trello/assets/textur_purple.jpg' },
   { id: 7, name: 'gray', url: '/trello/assets/textur_gray.jpg' },
-  { id: 8, name: 'black', url: '/trello/assets/textur_black.jpg' },
-  { id: 9, name: 'pink_', url: '/trello/assets/textur_lakes.jpg' },
-  { id: 10, name: 'blue', url: '/trello/assets/textur_car.jpg' },
-  { id: 11, name: 'black', url: '/trello/assets/textur_mountains.jpg' },
-  { id: 12, name: 'black', url: '/trello/assets/textur_nature.jpg' },
+  { id: 8, name: 'lakes', url: '/trello/assets/textur_lakes.jpg' },
+  { id: 9, name: 'car', url: '/trello/assets/textur_car.jpg' },
+  { id: 10, name: 'mountains', url: '/trello/assets/textur_mountains.jpg' },
+  { id: 11, name: 'nature', url: '/trello/assets/textur_nature.jpg' },
+  { id: 12, name: 'none', url: '' },
 ];
-export function TextureList({ onTexturePicked }: { onTexturePicked: (texture: string) => void }): JSX.Element {
-  const [selectedId, setSelectedId] = useState(0);
-  const handleTexturePick = (textureID: number, textureUrl: string): void => {
-    onTexturePicked(textureUrl);
-    setSelectedId(textureID);
+export function getTexture(textureName: string): string {
+  return textures.find((texture) => texture.name === textureName)?.url ?? '';
+}
+export function TextureList({ onTexturePicked, currentTexture }: TextureProps): JSX.Element {
+  const [selectedTexture, setTexture] = useState(currentTexture);
+  const handleTexturePick = (textureName: string): void => {
+    onTexturePicked(textureName);
+    setTexture(textureName);
   };
   return (
     <ul className="color-picker">
@@ -33,9 +41,9 @@ export function TextureList({ onTexturePicked }: { onTexturePicked: (texture: st
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
             }}
-            onClick={() => handleTexturePick(texture.id, texture.url)}
+            onClick={() => handleTexturePick(texture.name)}
           >
-            {selectedId === texture.id && (
+            {selectedTexture === texture.name && (
               <div className="texture_selected_wrapper">
                 <div className="texture_selected">
                   <i className="fa-solid fa-check" />

@@ -13,6 +13,10 @@
   max-width: 100%;
   font-size: 20px;
   background-color: rgb(117, 117, 117, 0.5);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-clip: padding-box;
+  background-position: center;
   backdrop-filter: blur(1px);
   -webkit-backdrop-filter: blur(1px);
   font-weight: 500;
@@ -33,7 +37,7 @@
   }
 
   &:hover {
-    border: white 3px solid;
+    border: #fff 3px solid;
     transition: transform 0.2s;
 
     .card__checkbox {
@@ -74,7 +78,7 @@
   }
 
   &:hover {
-    border-color: #70b349;
+    border-color: $color-checkbox-active-green;
     transform: scale(1.1);
   }
 
@@ -94,8 +98,8 @@
   }
 
   &:checked {
-    background-color: #77bb55;
-    border-color: #77bb55;
+    background-color: $color-checkbox-active-green;
+    border-color: $color-checkbox-active-green;
     opacity: 1;
     position: relative;
   }

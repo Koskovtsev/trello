@@ -1,41 +1,65 @@
-import toast from 'react-hot-toast';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { ICard } from '../../../../common/interfaces/ICard';
-import { postCard } from '../../../../api/boardsService';
+import { useClickOutside } from '../../../../hooks/useClickOutside';
+import { validateTitle } from '../../../../common/validador';
+import { AppDispatch } from '../../../../store/store';
+import { createCardThunk, fetchBoardThunk } from '../../../../store/boards/thunks';
+import './addCardForm.scss';
 
 interface IAddCardFormProps extends ICard {
-  onCardAdded(card: ICard): void;
+  onCardAdded(): void;
   boardId: number;
   list_id: number;
 }
-// TODO: useClickOutside() використовувать якщо юзер клікнув деінде - прибираємо компонент.
 export function AddCardForm({ onCardAdded, position, boardId, list_id }: IAddCardFormProps): JSX.Element {
   const [title, setTitle] = useState('');
-  async function handleSubmit(e: FormEvent): Promise<void> {
+  const [isTitleEntered, setIsTitleEntered] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const isValid = validateTitle(title);
+  function saveTitle(): void {
+    const payload = {
+      boardId,
+      cardData: {
+        title,
+        list_id,
+        position,
+      },
+    };
+    dispatch(createCardThunk(payload));
+    dispatch(fetchBoardThunk(boardId));
+    onCardAdded();
+  }
+  useClickOutside(modalRef, () => {
+    if (isValid) {
+      saveTitle();
+      setTitle('');
+    }
+  });
+  function handleSubmit(e: FormEvent): void {
     e.preventDefault();
-    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести перевірку в окремий файл/компонент додати еррор для юзера якщо нічого не ввів.
-    if (title.trim() && titleRegex.test(title)) {
-      const dataToSend = { title, list_id, position };
-      try {
-        const response = await postCard(dataToSend, boardId);
-        if (response === 'Created') {
-          onCardAdded(dataToSend);
-          setTitle('');
-        }
-      } catch (error) {
-        toast.error('There is an Error to add new Card');
-      }
+    if (isValid) {
+      saveTitle();
+      setTitle('');
     }
   }
+  const showInputError = isTitleEntered && !isValid;
   return (
-    <form className="form__add_card" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        className="input_card_title"
-        value={title ?? ''}
-        onChange={(e) => setTitle(e.target.value)}
-        onBlur={handleSubmit}
-      />
-    </form>
+    <div className="input-form__wrapper" ref={modalRef}>
+      <form className="form__add_card" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Введіть назву картки..."
+          className={`input_card_title ${showInputError ? `error` : ``}`}
+          value={title ?? ''}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            setIsTitleEntered(true);
+          }}
+        />
+        {showInputError && <span className="modal__error-text">Назва не відповідає вимогам</span>}
+      </form>
+    </div>
   );
 }

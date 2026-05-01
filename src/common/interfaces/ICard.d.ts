@@ -7,8 +7,7 @@ export interface ICard {
   desription?: string;
   custom?: {
     isChecked?: boolean;
-    listTexture?: string;
-    [key: string]: string | number | boolean | undefined;
+    background?: string;
   };
   // users?: number[];
   // created_at?: number; це для авторизації

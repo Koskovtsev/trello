@@ -1,0 +1,45 @@
+@use '/src/styles/variables' as *;
+
+.input-form__wrapper {
+    padding: 5px;
+    background-color: $color-white-half-opacity;
+    border-radius: $border-radius-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .form__add_card {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+
+        .modal__error-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .input_card_title {
+            padding-left: 5px;
+            font-size: 16px;
+            background-color: $color-brand-bg;
+            color: $color-text-brand-gray;
+            border-radius: $border-radius-medium;
+            height: 28px;
+            border: $color-header-logo-hover-gray 2px solid;
+
+            &.error {
+                border-color: $color-button-hover-red;
+                outline: none;
+
+                &:focus {
+                    border-color: $color-button-hover-red;
+                }
+            }
+
+            &::placeholder {
+                font-size: 14px;
+                color: #9c9c9c;
+            }
+        }
+
+        }
+}

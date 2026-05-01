@@ -1,11 +1,10 @@
 import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
-// import { openModal } from '../../../../../../store/cardsSlice';
 import { useClickOutside } from '../../../../../../hooks/useClickOutside';
 import { Portal } from '../../../../../../components/Portal';
 import { ConfirmModal } from '../../../../../../components/DeleteButtonWithModal/ConfirmModal';
 import { ICard } from '../../../../../../common/interfaces/ICard';
+import { useBoard } from '../../../../hooks/useBoard';
 import './cardMenuModal.scss';
 
 interface ICardMenuProps {
@@ -15,6 +14,7 @@ interface ICardMenuProps {
   onDeleteCard(): void;
   onChangeTitle(): void;
   card: ICard;
+  listId: number;
 }
 export function CardMenuModal({
   isOpen,
@@ -23,10 +23,10 @@ export function CardMenuModal({
   onDeleteCard,
   onChangeTitle,
   card,
+  listId,
 }: ICardMenuProps): JSX.Element | null {
   const menuRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setModalActive] = useState(false);
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const { boardId } = useParams();
   useClickOutside(menuRef, () => {
@@ -34,6 +34,7 @@ export function CardMenuModal({
       onClose();
     }
   });
+  const { handleTextureModal } = useBoard(Number(boardId));
   if (!isOpen || !coords) return null;
   return (
     <Portal>
@@ -62,7 +63,6 @@ export function CardMenuModal({
               onClick={() => {
                 onClose();
                 navigate(`/board/${boardId}/card/${card.id}`);
-                // dispatch(openModal(card));
               }}
             >
               Відкрити картку
@@ -70,9 +70,16 @@ export function CardMenuModal({
             <button
               className="menu__options_button open-textures"
               aria-label="Change Texture"
-              onClick={() => {
+              onClick={(e) => {
+                onClose();
+                handleTextureModal(e, {
+                  type: 'card',
+                  boardId: Number(boardId),
+                  listId,
+                  cardId: card.id!,
+                });
                 // eslint-disable-next-line no-console
-                console.log(`TODO: change texture here.`);
+                // console.log(`trying to call modal: boardId:${Number(boardId)}, listId: ${listId} cardId: ${card.id!}.`);
               }}
             >
               <span className="open-textures_title">Змінення обкладинки</span>

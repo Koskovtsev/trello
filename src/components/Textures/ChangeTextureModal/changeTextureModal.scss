@@ -1,0 +1,21 @@
+@use '/src/styles/variables' as *;
+
+.texture-modal__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  pointer-events: none; 
+
+  .texture-modal__content {
+    pointer-events: auto;
+    position: absolute;
+    background-color: $color-brand-hover-bg;
+    box-shadow: 0 8px 16px rgba(0, 0, 1, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    max-width: 260px;    
+  }
+}

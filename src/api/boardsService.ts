@@ -19,8 +19,8 @@ export async function getBoards(): Promise<IBoard[]> {
   return response.boards;
 }
 
-export async function putBoardUpdates(boardData: IBoard): Promise<string> {
-  const response = await api.put<unknown, { result: string }>(`board/${boardData.id}`, boardData);
+export async function putBoardUpdates(boardId: number, boardData: IBoard): Promise<string> {
+  const response = await api.put<unknown, { result: string }>(`board/${boardId}`, boardData);
   return response.result;
 }
 
@@ -28,12 +28,12 @@ export async function getBoard(id: number): Promise<IBoardData> {
   return api.get<IBoardData, IBoardData>(`board/${id}`);
 }
 
-export async function postList(list: IList, boardId: number): Promise<string> {
+export async function postList(boardId: number, list: IList): Promise<string> {
   const response = await api.post<unknown, { result: string }>(`board/${boardId}/list`, list);
   return response.result;
 }
 
-export async function postCard(card: ICard, boardId: number): Promise<string> {
+export async function postCard(boardId: number, card: ICard): Promise<string> {
   const response = await api.post<unknown, { result: string }>(`board/${boardId}/card`, card);
   return response.result;
 }
@@ -43,22 +43,22 @@ export async function deleteList(boardId: number, listId: number): Promise<strin
   return response.result;
 }
 
-export async function putListUpdates(listData: IList, boardId: number, listId: number): Promise<string> {
+export async function putListUpdates(boardId: number, listId: number, listData: IList): Promise<string> {
   const response = await api.put<unknown, { result: string }>(`board/${boardId}/list/${listId}`, listData);
   return response.result;
 }
 
-export async function putListsUpdates(listData: IList[], boardId: number): Promise<string> {
+export async function putListsUpdates(boardId: number, listData: IList[]): Promise<string> {
   const response = await api.put<unknown, { result: string }>(`board/${boardId}/list/`, listData);
   return response.result;
 }
 
-export async function putCardUpdates(cardData: ICard, boardId: number, cardId: number): Promise<string> {
+export async function putCardUpdates(boardId: number, cardId: number, cardData: ICard): Promise<string> {
   const response = await api.put<unknown, { result: string }>(`board/${boardId}/card/${cardId}`, cardData);
   return response.result;
 }
 
-export async function putCardsUpdates(cardData: ICard[], boardId: number): Promise<string> {
+export async function putCardsUpdates(boardId: number, cardData: ICard[]): Promise<string> {
   const response = await api.put<unknown, { result: string }>(`board/${boardId}/card/`, cardData);
   return response.result;
 }

@@ -1,0 +1,53 @@
+@use '/src/styles/variables' as *;
+
+.edit-title__container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 450px;
+    box-sizing: border-box;
+    // width: 100%;
+    // max-width: calc(100% - 100px);
+}
+
+.edit-title__textarea {
+    display: block;
+    width: 100%;
+    padding: 4px 8px;
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.2;
+    font-family: inherit;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent; // Прозора рамка в дефолті, щоб текст не "стрибав"
+    border-radius: $border-radius-medium;
+    color: $color-white-text;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word; 
+
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+        border-color: $color-header-logo-hover-gray;
+    }
+
+    // Стиль при помилці
+    &--error {
+        border-color: #ff4d4d !important; // Червоний колір
+        background-color: rgba(255, 77, 77, 0.05); // Легкий червоний відтінок фону
+    }
+}
+
+.edit-title__error-message {
+    color: #ff4d4d;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 4px;
+    margin-left: 2px;
+}

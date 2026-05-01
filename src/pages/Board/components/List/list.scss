@@ -118,11 +118,16 @@
         display: block;
         background-size: contain;
     }
+    .delete-textures {
+        background-image: url('../../../../../public/assets/color-delete-icon.png');
+        width: 25px;
+        height: 25px;
+        background-color: transparent;
+    }
 }
 
 .board__list .empty-list .list {
     display: flex;
-    align-items: center;
     box-sizing: border-box;
     flex: 1;
     height: auto;

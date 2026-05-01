@@ -7,7 +7,6 @@ export interface IBoard {
     background?: string;
     description?: string;
     listTextures?: Record<string, string>;
-    [key: string]: string | number | boolean | undefined;
   };
   lists?: IList[];
 }

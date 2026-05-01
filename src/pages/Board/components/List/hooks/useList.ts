@@ -28,7 +28,7 @@ export function useList({ boardId, listId, onRefreshList }: IUseListProps): IUse
   const changeTitle = async (title: string): Promise<void> => {
     try {
       const listData = { title };
-      const response = await putListUpdates(listData, boardId, listId);
+      const response = await putListUpdates(boardId, listId, listData);
       if (response === 'Updated') onRefreshList();
     } catch (error) {
       toast.error(`Error changing list title`);

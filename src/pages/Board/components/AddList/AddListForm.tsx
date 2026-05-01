@@ -1,8 +1,8 @@
 import toast from 'react-hot-toast';
 import { FormEvent, useState } from 'react';
-import '../List/list.scss';
-import { TextureList, textures } from '../../../../components/Textures/TextureList';
+import { TextureList } from '../../../../components/Textures/TextureList';
 import { postList } from '../../../../api/boardsService';
+import '../List/list.scss';
 
 interface IAddListFormProps {
   onListAdded(texture: string): void;
@@ -12,14 +12,14 @@ interface IAddListFormProps {
 
 export function AddListForm({ onListAdded, position, boardId }: IAddListFormProps): JSX.Element {
   const [title, setTitle] = useState('');
-  const [currentTexture, setCurrentTexture] = useState(textures[8].url);
+  const [currentTexture, setCurrentTexture] = useState('gray');
   async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
     const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести окремо перевірку інпуту.
     if (title.trim() && titleRegex.test(title)) {
       const dataToSend = { title, position, custom: { listTextures: currentTexture } };
       try {
-        const response = await postList(dataToSend, boardId);
+        const response = await postList(boardId, dataToSend);
         if (response === 'Created') {
           onListAdded(currentTexture);
           setTitle('');
@@ -41,7 +41,7 @@ export function AddListForm({ onListAdded, position, boardId }: IAddListFormProp
           value={title ?? ''}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <TextureList key={boardId} onTexturePicked={setCurrentTexture} />
+        <TextureList key={boardId} onTexturePicked={setCurrentTexture} currentTexture={currentTexture} />
         <button type="submit" className="button__add_list">
           Додати список
         </button>

@@ -1,5 +1,5 @@
 import { FormEvent, useRef, useState } from 'react';
-import { TextureList, textures } from '../../../../components/Textures/TextureList';
+import { TextureList } from '../../../../components/Textures/TextureList';
 import { validateTitle } from '../../../../common/validador';
 import { Portal } from '../../../../components/Portal';
 import { useClickOutside } from '../../../../hooks/useClickOutside';
@@ -15,7 +15,7 @@ export function AddBoardModal({ active, setActive, onBoardAdded }: IAddBoardForm
   const modalRef = useRef<HTMLDivElement>(null);
   const [isTitleEntered, setIsTitleEntered] = useState(false);
   const [title, setTitle] = useState<string>('');
-  const [currentTexture, setCurrentTexture] = useState<string>(textures[8].url);
+  const [currentTexture, setCurrentTexture] = useState<string>('gray');
   const isValid = validateTitle(title);
   function handleSubmit(e: FormEvent): void {
     e.preventDefault();
@@ -54,7 +54,7 @@ export function AddBoardModal({ active, setActive, onBoardAdded }: IAddBoardForm
           )}
           <span className="modal__texture_title">Фон</span>
           <div className="modal_texture">
-            <TextureList key={0} onTexturePicked={setCurrentTexture} />
+            <TextureList key={0} onTexturePicked={setCurrentTexture} currentTexture={currentTexture} />
           </div>
           <button type="submit" className="board__button_add-item" disabled={!isValid}>
             Додати дошку

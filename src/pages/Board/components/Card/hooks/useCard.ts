@@ -1,6 +1,10 @@
 import toast from 'react-hot-toast';
-import { deleteCard, putCardUpdates } from '../../../../../api/boardsService';
+import { useDispatch } from 'react-redux';
+// import { deleteCard, putCardUpdates } from '../../../../../api/boardsService';
 import { ICard } from '../../../../../common/interfaces/ICard';
+import { AppDispatch } from '../../../../../store/store';
+import { deleteCardThunk, fetchBoardThunk, updateCardThunk } from '../../../../../store/boards/thunks';
+// import { title } from 'process';
 
 interface IUseCardData {
   handleCheckedCard(): void;
@@ -12,30 +16,39 @@ interface IUseCardProps {
   listId?: number;
   cardId: number;
   cardData?: ICard;
-  onListChanged(): void;
+  // onListChanged(): void;
 }
-export function useCard({ boardId, listId, cardId, cardData, onListChanged }: IUseCardProps): IUseCardData {
-  const handleCheckedCard = async (): Promise<void> => {
+export function useCard({ boardId, listId, cardId, cardData }: IUseCardProps): IUseCardData {
+  const dispatch = useDispatch<AppDispatch>();
+  const handleCheckedCard = (): void => {
     if (!cardData) return;
-    const newCard: ICard = {
-      ...cardData,
-      custom: {
-        ...cardData.custom,
-        isChecked: !cardData.custom?.isChecked,
+    const payload = {
+      boardId,
+      cardData: {
+        ...cardData,
+        custom: {
+          ...cardData.custom,
+          isChecked: !cardData.custom?.isChecked,
+        },
+        list_id: listId,
       },
-      list_id: listId,
     };
     try {
-      const response = await putCardUpdates(newCard, boardId, cardId);
-      if (response === 'Updated') onListChanged();
+      dispatch(updateCardThunk(payload));
     } catch (error) {
       toast.error('Error updating card properties.');
     }
   };
   const handleDeleteCard = async (): Promise<void> => {
     try {
-      const response = await deleteCard(boardId, cardId);
-      if (response === 'Deleted') onListChanged();
+      const payload = {
+        boardId,
+        cardData: {
+          id: cardId,
+        },
+      };
+      dispatch(deleteCardThunk(payload));
+      dispatch(fetchBoardThunk(boardId));
     } catch (error) {
       toast.error('Error updating card properties.');
     }
@@ -46,11 +59,17 @@ export function useCard({ boardId, listId, cardId, cardData, onListChanged }: IU
   ): Promise<void> => {
     if (!cardData) return;
     try {
-      if (newTitle) {
-        const newCard: ICard = { title: newTitle, list_id: listId };
-        const response = await putCardUpdates(newCard, boardId, cardData.id!);
-        if (response === 'Updated') onListChanged();
-      }
+      // const newCard: ICard = { title: newTitle, list_id: listId };
+      // const response = await putCardUpdates(boardId, cardData.id!, newCard);
+      // if (response === 'Updated') onListChanged();
+      const payload = {
+        boardId,
+        cardData: {
+          title: newTitle,
+          list_id: listId,
+        },
+      };
+      dispatch(updateCardThunk(payload));
     } catch (error) {
       toast.error('Error updating card properties.');
     } finally {

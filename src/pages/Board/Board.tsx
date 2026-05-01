@@ -2,32 +2,38 @@ import toast from 'react-hot-toast';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useParams } from 'react-router-dom';
-import { getBoard, putBoardUpdates, putListsUpdates } from '../../api/boardsService';
+import { getBoard, putBoardUpdates } from '../../api/boardsService';
 import { List } from './components/List/List';
-import { TextureList } from '../../components/Textures/TextureList';
+import { getTexture, TextureList } from '../../components/Textures/TextureList';
 import { IBoard } from '../../common/interfaces/IBoard';
-import { IList } from '../../common/interfaces/IList';
+// import { IList } from '../../common/interfaces/IList';
 import { IDragEvent } from '../../common/interfaces/IDragEvent';
 import { updatePosition } from './utils/updatePosition';
 import { ChangeTitleForm } from './components/ChangeTitle/ChangeTitleForm';
 import { AddListForm } from './components/AddList/AddListForm';
 import { AppDispatch, RootState } from '../../store/store';
-import { fetchBoardThunk } from '../../store/boardsSlice';
+import { fetchBoardThunk, updateBoardThunk } from '../../store/boards/thunks';
+import { useBoard } from './hooks/useBoard';
+import { ChangeTextureModal } from '../../components/Textures/ChangeTextureModal/ChangeTextureModal';
 import './board.scss';
 import './components/List/list.scss';
 
 export function Board(): JSX.Element {
+  const activeBoard = useSelector((state: RootState) => state.boards.activeBoard);
   const [isVisibleChangeTexture, setVisibleChangeTexture] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const activeBoard = useSelector((state: RootState) => state.boards.activeBoard);
-  const [isChangeTitle, setIsChangeTitle] = useState(false); // TODO: дуже багато стейтів, виносити їх в окремі компоненти, до яких вони належать.
+  const [isChangeTitle, setIsChangeTitle] = useState(false);
   const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
-  const currentTexture = activeBoard?.custom?.background ?? 'default_color';
   const scrollToEnd = useRef<HTMLDivElement>(null);
   const isInitialRender = useRef(true);
   const prevListsLength = useRef(0);
   const { boardId } = useParams<{ boardId: string }>();
   const id = Number(boardId);
+  const currentTexture = getTexture(activeBoard?.custom?.background ?? '');
+
+  const { handleChangeTitle } = useBoard(id);
+  const { handleTextureModal } = useBoard(id);
+
   async function fetchBoard(): Promise<IBoard | null> {
     try {
       const data = await getBoard(id);
@@ -67,23 +73,19 @@ export function Board(): JSX.Element {
     }
   };
   const updateListTexture = async (texturedList: Record<string, string>, freshData: IBoard): Promise<void> => {
-    // TODO: винести в модалку
     const updatedCustom = {
-      ...freshData.custom,
-      listTextures: {
-        ...texturedList,
+      boardId: id,
+      boardData: {
+        title,
+        custom: {
+          ...freshData.custom,
+          listTextures: {
+            ...texturedList,
+          },
+        },
       },
     };
-    try {
-      const response = await putBoardUpdates({
-        id,
-        title: freshData.title,
-        custom: updatedCustom,
-      } as IBoard);
-      if (response === 'Updated') refreshBoard();
-    } catch (error) {
-      toast.error(`Error updating list properties`);
-    }
+    dispatch(updateBoardThunk(updatedCustom));
   };
   const handleNewList = async (texture: string): Promise<void> => {
     setVisibleAddListForm(false);
@@ -110,39 +112,39 @@ export function Board(): JSX.Element {
     return <div className="loading">Завантаження...</div>;
   }
   // TODO: винести логіку цього хендлера окремо в файл і розбити на різні методи.
-  const handleListChanged = async (position?: number, listId?: number): Promise<void> => {
-    if (!position || position >= lists.length) {
-      refreshBoard();
-      return;
-    }
-    const newPositionList = lists.reduce((acc: { id: number; position: number }[], list) => {
-      if (list.id === listId) return acc;
-      acc.push({ id: list.id!, position: acc.length + 1 });
-      return acc;
-    }, []);
-    try {
-      await putListsUpdates(newPositionList as IList[], id); // TODO: пуш-пут... винести в боардХук.
-    } catch (error) {
-      toast.error(`Error updating list properties`);
-    }
+  // const handleListChanged = async (position?: number, listId?: number): Promise<void> => {
+  //   if (!position || position >= lists.length) {
+  //     refreshBoard();
+  //     return;
+  //   }
+  //   const newPositionList = lists.reduce((acc: { id: number; position: number }[], list) => {
+  //     if (list.id === listId) return acc;
+  //     acc.push({ id: list.id!, position: acc.length + 1 });
+  //     return acc;
+  //   }, []);
+  //   try {
+  //     await putListsUpdates(id, newPositionList as IList[]); // TODO: пуш-пут... винести в боардХук.
+  //   } catch (error) {
+  //     toast.error(`Error updating list properties`);
+  //   }
 
-    if (listId) {
-      const texturedLists = { ...(activeBoard?.custom?.listTextures || {}) };
-      if (delete texturedLists[listId]) {
-        updateListTexture(texturedLists, activeBoard);
-      }
-    }
-    refreshBoard();
-  };
+  //   if (listId) {
+  //     const texturedLists = { ...(activeBoard?.custom?.listTextures || {}) };
+  //     if (delete texturedLists[listId]) {
+  //       updateListTexture(texturedLists, activeBoard);
+  //     }
+  //   }
+  //   refreshBoard();
+  // };
   // TODO: переробить компонент ChangeTitleForm він має повертати новий тайтл, його обробкой має зайнятись окрема функція в окремому файлі.
-  const handleTitleChanged = async (newTitle: string): Promise<void> => {
-    if (newTitle) {
-      const newBoard: IBoard = { id, title: newTitle };
-      await putBoardUpdates(newBoard);
-      refreshBoard();
-    }
-    setIsChangeTitle(false);
-  };
+  // const handleTitleChanged = async (newTitle: string): Promise<void> => {
+  //   if (newTitle) {
+  //     const newBoard: IBoard = { id, title: newTitle };
+  //     await putBoardUpdates(id, newBoard);
+  //     refreshBoard();
+  //   }
+  //   setIsChangeTitle(false);
+  // };
   // TODO: винести в окремий файл який буде займатись виключно текстурами (компонент селект текстур)
   const handleNewTexture = async (texture: string): Promise<void> => {
     if (texture === currentTexture) return;
@@ -154,7 +156,7 @@ export function Board(): JSX.Element {
     };
     // TODO: зв'язок з сервером в окремому файлі?
     try {
-      const response = await putBoardUpdates({
+      const response = await putBoardUpdates(id, {
         id,
         title: activeBoard.title,
         custom: updatedCustom,
@@ -171,13 +173,7 @@ export function Board(): JSX.Element {
   };
   return (
     <>
-      <div
-        className="board"
-        ref={scrollToEnd}
-        style={{
-          backgroundImage: currentTexture?.includes('/') ? `url(${currentTexture})` : currentTexture,
-        }}
-      >
+      <div className="board" ref={scrollToEnd} style={{ backgroundImage: `url(${currentTexture})` }}>
         <div className="board__title_wrapper">
           {!isChangeTitle && (
             <div className="board__title" title={title} onClick={() => setIsChangeTitle(true)}>
@@ -187,7 +183,10 @@ export function Board(): JSX.Element {
           {isChangeTitle && (
             <ChangeTitleForm
               key={id}
-              onTitleChanged={handleTitleChanged}
+              onTitleChanged={(newTitle) => {
+                handleChangeTitle(newTitle);
+                setIsChangeTitle(false);
+              }}
               currentTitle={title ?? ''}
               onCancel={() => setIsChangeTitle(false)}
             />
@@ -195,22 +194,25 @@ export function Board(): JSX.Element {
           <button
             className="list__button_custom-icon"
             aria-label="Change Texture"
-            onClick={() => setVisibleChangeTexture((prev) => !prev)}
+            onClick={(e) => {
+              handleTextureModal(e, { type: 'board', boardId: id });
+            }}
           >
             <span className="icon-wrapper" />
           </button>
-          {isVisibleChangeTexture && <TextureList key={boardId} onTexturePicked={handleNewTexture} />}
+          {isVisibleChangeTexture && (
+            <TextureList key={boardId} onTexturePicked={handleNewTexture} currentTexture={currentTexture} />
+          )}
         </div>
         <div className="board__list">
           {lists.map((elem) => (
             <List
               key={elem.id}
               {...elem}
-              onListChanged={handleListChanged}
+              // onListChanged={handleListChanged}
               boardData={activeBoard}
               boardId={id}
               onDataUpdate={refreshBoard}
-              onTextureUpdate={updateListTexture}
               onItemDragged={updateItemsPositions}
             />
           ))}
@@ -224,6 +226,7 @@ export function Board(): JSX.Element {
           )}
         </div>
       </div>
+      <ChangeTextureModal />
       <Outlet />
     </>
   );

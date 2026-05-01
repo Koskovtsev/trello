@@ -2,20 +2,23 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { AppDispatch, RootState } from '../../../../../../store/store';
-import { closeModal, updateCardThunk } from '../../../../../../store/cardsSlice';
-import { ChangeTitleForm } from '../../../ChangeTitle/ChangeTitleForm';
 import { ICard } from '../../../../../../common/interfaces/ICard';
-import { fetchBoardThunk } from '../../../../../../store/boardsSlice';
+import { fetchBoardThunk, updateCardThunk } from '../../../../../../store/boards/thunks';
+import { closeCardModal } from '../../../../../../store/uiSlice';
+import { useBoard } from '../../../../hooks/useBoard';
+import { getTexture } from '../../../../../../components/Textures/TextureList';
+import { useCard } from '../../hooks/useCard';
+import { TextAreaForm } from './TextAreaForm/TextAreaForm';
 import './cardDetails.scss';
 
-interface UpdateCardPayload {
-  cardData: ICard;
-  boardId: number;
-  cardId: number;
-}
-
 export function CardDetails(): JSX.Element | null {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const [isVisibleChangeCardTitle, setVisibleChangeCardTitle] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState<number>(0);
+
   const { cardId, boardId } = useParams<{ cardId: string; boardId: string }>();
+
   const activeCard = useSelector((state: RootState) => {
     const lists = state.boards.activeBoard?.lists || [];
     return (
@@ -30,14 +33,15 @@ export function CardDetails(): JSX.Element | null {
     );
     return parentList?.id;
   });
-  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (!activeCard && boardId) {
       dispatch(fetchBoardThunk(Number(boardId)));
     }
   }, [boardId, activeCard, dispatch]);
-  const navigate = useNavigate();
-  const [isVisibleChangeCardTitle, setVisibleChangeCardTitle] = useState(false);
+
+  if (!listId || !Number(boardId) || !Number(cardId) || !activeCard) return null;
+  const currentTexture = getTexture(activeCard.custom?.background ?? 'none');
+
   const handleChangeTitle = (newTitle: string): void => {
     const newCard: ICard = {
       ...activeCard,
@@ -45,15 +49,27 @@ export function CardDetails(): JSX.Element | null {
       list_id: listId,
     };
     if (boardId && cardId) {
-      dispatch(
-        updateCardThunk({ cardData: newCard, boardId: Number(boardId), cardId: Number(cardId) } as UpdateCardPayload)
-      );
+      const payload = {
+        boardId: Number(boardId),
+        cardData: newCard,
+      };
+      dispatch(updateCardThunk(payload));
     }
   };
+
   const handleClose = (): void => {
-    dispatch(closeModal());
+    dispatch(closeCardModal());
     navigate(`/board/${boardId}`);
   };
+
+  const { handleTextureModal } = useBoard(Number(boardId));
+
+  const { handleCheckedCard } = useCard({
+    boardId: Number(boardId),
+    listId,
+    cardId: Number(cardId),
+    cardData: activeCard,
+  });
   return (
     <div className="card-details__overlay" onClick={handleClose}>
       <div className="card-details__window" onClick={(e) => e.stopPropagation()}>
@@ -61,16 +77,17 @@ export function CardDetails(): JSX.Element | null {
           <div>Завантаження даних картки {cardId}...</div>
         ) : (
           <>
-            <div
-              className="card-details__texture-sample"
-              style={{ backgroundImage: `url(${activeCard.custom?.listTexture})` }}
-            >
+            <div className="card-details__texture-sample" style={{ backgroundImage: `url(${currentTexture})` }}>
               <div className="button__wrapper">
-                <button className="button__textures change-textures" aria-label="Change Texture" title="Change Texture">
+                <button
+                  className="button__textures change-textures"
+                  aria-label="Change Texture"
+                  title="Change Texture"
+                  onClick={(e) =>
+                    handleTextureModal(e, { type: 'card', boardId: Number(boardId), listId, cardId: Number(cardId) })
+                  }
+                >
                   <span className="icon-wrapper change-textures" />
-                </button>
-                <button className="button__textures delete-textures" aria-label="Delete Texture" title="Delete Texture">
-                  <span className="icon-wrapper delete-textures" />
                 </button>
                 <button className="button__close-modal" aria-label="Close" title="Close" onClick={handleClose}>
                   <i className="fa-solid fa-xmark" />
@@ -78,26 +95,41 @@ export function CardDetails(): JSX.Element | null {
               </div>
             </div>
             <div className="card-details__main">
-              {/* <label className="card__label">
-      <input type="checkbox" className="card__checkbox" checked={activeCard.custom?.isChecked} onChange={() => {
-        dispatch()
-      }} />
-    </label> */}
-              {!isVisibleChangeCardTitle && (
-                <span className="card__checkbox_title" onClick={() => setVisibleChangeCardTitle(true)}>
-                  {activeCard.title}
-                </span>
-              )}
-              {isVisibleChangeCardTitle && (
-                <ChangeTitleForm
-                  onTitleChanged={(newTitle) => {
-                    handleChangeTitle(newTitle);
-                    setVisibleChangeCardTitle(false);
-                  }}
-                  currentTitle={activeCard.title ?? ''}
-                  onCancel={() => setVisibleChangeCardTitle(false)}
-                />
-              )}
+              <div className="card__title_wrapper">
+                <label className="card__label">
+                  <input
+                    type="checkbox"
+                    className="card__checkbox"
+                    checked={activeCard.custom?.isChecked}
+                    onChange={handleCheckedCard}
+                  />
+                </label>
+                {!isVisibleChangeCardTitle && (
+                  <span
+                    className="card__title"
+                    onMouseUp={() => {
+                      const selection = window.getSelection();
+                      if (selection) {
+                        setCursorPosition(selection.focusOffset);
+                      }
+                    }}
+                    onClick={() => setVisibleChangeCardTitle(true)}
+                  >
+                    {activeCard.title}
+                  </span>
+                )}
+                {isVisibleChangeCardTitle && (
+                  <TextAreaForm
+                    cursorPosition={cursorPosition}
+                    onTextChanged={(newTitle) => {
+                      handleChangeTitle(newTitle);
+                      // setVisibleChangeCardTitle(false);
+                    }}
+                    currentText={activeCard.title ?? ''}
+                    onCancel={() => setVisibleChangeCardTitle(false)}
+                  />
+                )}
+              </div>
             </div>
           </>
         )}

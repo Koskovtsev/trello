@@ -4,25 +4,26 @@ import { IDragEvent } from '../../../../common/interfaces/IDragEvent';
 import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
 import { useCard } from './hooks/useCard';
 import { CardMenuModal } from './components/CardMenu/CardMenuModal';
+import { getTexture } from '../../../../components/Textures/TextureList';
 import './card.scss';
 
 interface ICardChangeProps {
   cardData: ICard;
   boardId: number;
   listId: number;
-  onListChanged(): void;
+  // onListChanged(): void;
   onItemDragged(draggedElement: IDragEvent): void;
 }
 
 export function Card(props: ICardChangeProps): JSX.Element {
-  const { boardId, listId, onListChanged, onItemDragged, cardData } = props;
+  const { boardId, listId, onItemDragged, cardData } = props;
   const [isVisibleChangeCardTitle, setVisibleChangeCardTitle] = useState(false);
   const [menuCoords, setMenuCoords] = useState<{ top: number; left: number } | null>(null);
   const [isVisibleMenuOptions, setVisibleMenuOptions] = useState(false); // TODO: багато стейтів, які можна було б винести в компоненти які їх використовують.
 
-  const { handleCheckedCard } = useCard({ boardId, listId, cardId: cardData.id!, cardData, onListChanged });
-  const { handleDeleteCard } = useCard({ boardId, cardId: cardData.id!, onListChanged });
-  const { handleChangeTitle } = useCard({ boardId, listId, cardId: cardData.id!, cardData, onListChanged });
+  const { handleCheckedCard } = useCard({ boardId, listId, cardId: cardData.id!, cardData });
+  const { handleDeleteCard } = useCard({ boardId, cardId: cardData.id! });
+  const { handleChangeTitle } = useCard({ boardId, listId, cardId: cardData.id!, cardData });
 
   const triggerEditTitle = (): void => {
     setVisibleChangeCardTitle(true);
@@ -38,27 +39,8 @@ export function Card(props: ICardChangeProps): JSX.Element {
     setVisibleMenuOptions(true);
   };
 
-  // TODO: текстури мають бути в файлі з текстурами і їх обробка теж.
-  // const handleNewTexture = async (texture: string): Promise<void> => {
-  //   if (texture === currentTexture) return;
-  //   setCurrentTexture(texture);
-  //   setVisibleChangeTexture(false);
-  //   const cardUpdate: ICard = {
-  //     list_id: listId,
-  //     custom: {
-  //       ...cardData.custom,
-  //       listTexture: texture,
-  //     },
-  //   };
-  //   try {
-  //     await putCardUpdates(cardUpdate, boardId, cardData.id!);
-  //     setVisibleChangeTexture((prev) => !prev);
-  //     setVisibleMenuOptions((prev) => !prev);
-  //     onListChanged();
-  //   } catch (error) {
-  //     toast.error('Error updating card properties.');
-  //   }
-  // };
+  const currentTexture = getTexture(cardData?.custom?.background ?? '');
+
   const onDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
     e.dataTransfer.setData('cardId', `${cardData.id}`);
     e.dataTransfer.setData('listId', `${listId}`);
@@ -91,9 +73,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
     if (draggedCardId) onItemDragged(draggedItemPositions);
     e.stopPropagation();
   };
-  // TODO: по стилям, будь-які едіти не мають скакати, всі розміри мають бути статичними.
-  // TODO: коли вибрано якусь текстуру, додать бордер, щоб було зрозуміло яка зараз текстура вибрана. або залишити збільшеним(як при ховері) чи і те і те.
-  // TODO: зробить не такими насиченими компоненти(збільшити розміри картки, або збільшити розміри списку) бо візуально - перегромадження.
+
   return (
     <div
       className="empty-list"
@@ -104,7 +84,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
     >
       <div
         className="card__item"
-        style={{ backgroundImage: `url(${cardData.custom?.listTexture})`, zIndex: isVisibleMenuOptions ? 300 : 5 }}
+        style={{ backgroundImage: `url(${currentTexture})`, zIndex: isVisibleMenuOptions ? 300 : 5 }}
         draggable={!isVisibleChangeCardTitle}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
@@ -138,6 +118,7 @@ export function Card(props: ICardChangeProps): JSX.Element {
             onDeleteCard={handleDeleteCard}
             onChangeTitle={triggerEditTitle}
             card={cardData}
+            listId={listId}
           />
         </div>
       </div>

@@ -33,7 +33,7 @@ export async function updatePosition(
     if (sourceContainerId === targetContainerId) {
       const updatedIds = getReorderedIds(sourceCards, draggedId, targetId);
       const cardsPayload = mapCardsToPayload(updatedIds, sourceContainerId);
-      return (await putCardsUpdates(cardsPayload, boardId)) === 'Updated'; // TODO: винести в окремий файл зв'язок з сервером?
+      return (await putCardsUpdates(boardId, cardsPayload)) === 'Updated'; // TODO: винести в окремий файл зв'язок з сервером?
     }
     const sourceIds = sourceCards.map((elem) => elem.id!).filter((id) => id !== draggedId);
     const targetIds = getReorderedIds(targetCards, draggedId, targetId);
@@ -41,11 +41,11 @@ export async function updatePosition(
       ...mapCardsToPayload(sourceIds, sourceContainerId),
       ...mapCardsToPayload(targetIds, targetContainerId),
     ];
-    return (await putCardsUpdates(cardsPayload, boardId)) === 'Updated'; // TODO: винести в окремий файл зв'язок з сервером?
+    return (await putCardsUpdates(boardId, cardsPayload)) === 'Updated'; // TODO: винести в окремий файл зв'язок з сервером?
   }
   const updatedIds = getReorderedIds(lists, draggedId, targetId);
   const listsPayload = mapListsToPayload(updatedIds);
-  return (await putListsUpdates(listsPayload, boardId)) === 'Updated'; // TODO: винести в окремий файл зв'язок з сервером?
+  return (await putListsUpdates(boardId, listsPayload)) === 'Updated'; // TODO: винести в окремий файл зв'язок з сервером?
 }
 // export async function updatePosition(event: IDragEvent, lists: IList[], boardId: number): Promise<boolean> {
 //   // 1. Вибираємо сценарій (Handler)
