@@ -1,19 +1,21 @@
 @use '/src/styles/variables' as *;
 
-.card-details__overlay {
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    position: fixed;
-    z-index: 501;
-    display: flex;
-    justify-content: center;
-    padding-top: 100px;
-    align-items: flex-start;
+.card-details {
+    &__overlay {
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        z-index: 501;
+        display: flex;
+        justify-content: center;
+        padding-top: 100px;
+        align-items: flex-start;
+    }
 
-    .card-details__window {
+    &__window {
         width: 600px;
-        height: 400px;
+        height: 600px;
         background-color: $color-brand-bg;
         border-radius: $border-radius-large;
         border: 1px solid $color-white-half-opacity;
@@ -22,164 +24,267 @@
         justify-content: flex-start;
         align-items: flex-start;
         overflow: hidden;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+        background-color: $color-white-half-opacity;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-clip: padding-box;
+        background-position: center;
+        height: 100px;
+        width: 100%;
+        padding: 5px;
+        box-sizing: border-box;
+        border: 1px solid $color-white-half-opacity;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: flex-start;
+        width: fit-content;
+        min-width: 0;
+    }
+
+    &__btn-textures-change {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        margin: 5px;
+        cursor: pointer;
+    }
+
+    &__icon {
+        background-image: url('../../../../../../../public/assets/color-picker-icon.png');
+        width: 25px;
+        height: 25px;
+        display: block;
+        background-size: contain;
+    }
 
 
-        .card-details__texture-sample {
-            display: flex;
-            justify-content: flex-end;
-            align-items: flex-start;
-            background-color: $color-white-half-opacity;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-clip: padding-box;
-            background-position: center;
-            height: 100px;
-            width: 100%;
-            padding: 5px;
-            box-sizing: border-box;
-            border: 1px solid $color-white-half-opacity;
+    &__btn-close {
+        width: 26px;
+        height: 26px;
+        margin: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: self-start;
+        background-color: transparent;
+        border: none;
+        border-radius: 50%;
+        padding-top: 2px;
+        cursor: pointer;
+        box-sizing: border-box;
+        background-color: $color-brand-hover-bg;
 
-            .button__wrapper {
-                width: fit-content;
-                min-width: 0;
-                display: flex;
-                align-items: flex-start;
+        &:hover {
+            background-color: $color-brang-bg-default;
+        }
 
-                .button__textures {
-                    background-color: transparent;
-                    border: none;
-                    padding: 0;
-                    margin: 5px;
-                    cursor: pointer;
+        i {
+            font-size: 20px;
+        }
+    }
 
-                    .icon-wrapper {
-                        width: 25px;
-                        height: 25px;
-                        display: block;
-                        background-size: contain;
-                    }
+    &__main {
+        padding: 20px;
+        width: 100%;
+        flex-grow: 1;
+        box-sizing: border-box;
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-gutter: stable;
+    }
 
-                    .change-textures {
-                        background-image: url('../../../../../../../public/assets/color-picker-icon.png');
-                    }
+    &__title-group {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: start;
+        align-items: flex-start;
 
-                    .delete-textures {
-                        background-image: url('../../../../../../../public/assets/color-delete-icon.png');
-                    }
-                }
+        gap: 10px;
+        width: 100%;
+    }
 
-                .button__close-modal {
-                    width: 26px;
-                    height: 26px;
-                    margin: 5px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    align-self: self-start;
-                    background-color: transparent;
-                    border: none;
-                    border-radius: 50%;
-                    padding-top: 2px;
-                    cursor: pointer;
-                    box-sizing: border-box;
-                    background-color: $color-brand-hover-bg;
+    &__checkbox-label {
+        width: 30px;
+        flex-shrink: 0;
+    }
 
-                    &:hover {
-                        background-color: $color-brang-bg-default;
-                    }
+    &__checkbox {
 
-                    i {
-                        font-size: 20px;
-                    }
-                }
+        appearance: none;
+        -webkit-appearance: none;
+        width: 28px;
+        height: 28px;
+        border: 2px solid $color-white-half-opacity;
+        border-radius: 50%;
+        background-color: $color-header-logo-hover-gray;
+        cursor: pointer;
+        position: relative;
+        opacity: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        margin: 0;
+        margin-top: 8px;
+        transition: all 0.2s ease;
+
+        &:hover {
+            border-color: $color-brand-hover-bg;
+            transform: scale(1.05);
+        }
+
+        &::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 22px;
+            color: #000;
+            position: static;
+            opacity: 0;
+            -webkit-text-stroke: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        &:checked {
+            background-color: $color-checkbox-active-green;
+            border-color: $color-checkbox-active-green;
+
+            &::after {
+                opacity: 1;
             }
         }
 
+    }
 
-        .card-details__main {
-            padding: 20px;
+    &__title {
+        box-sizing: border-box;
+        display: block;
+        font-size: 25px;
+        font-weight: 600;
+        flex-grow: 1;
+        line-height: 1.2;
+        color: $color-white-text;
+        padding: 4px 8px;
+        border: 2px solid transparent;
+        border-radius: $border-radius-medium;
+        width: 450px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        min-height: 68px;
+    }
 
-            // box-sizing: border-box;
-            .card__title_wrapper {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                justify-content: start;
-                align-items: flex-start;
+    &__description {
+        &-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
 
-                gap: 10px;
-                width: 100%;
+        &-label {
+            font-size: 20px;
+            color: $color-gray-text;
+            font-weight: 600;
+        }
+    }
+
+    &__list {
+        color: $color-gray-text;
+        font-size: 20px;
+
+        // margin: 5px;
+        &_name {
+            margin: 5px;
+            color: $color-white-text;
+            font-size: 22px;
+            font-weight: 600;
+        }
+    }
+
+    &__link {
+        margin: 8px;
+
+        &_label {
+            display: block;
+            color: $color-gray-text;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        &_box {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 10px;
+            border-radius: $border-radius-medium;
+            margin: 5px;
+            color: $color-white-text;
+            font-size: 16px;
+            font-weight: 500;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+
+            span {
+                flex: 1;
+                word-break: break-all;
             }
 
-            .card__label {
-                width: 30px;
+            button {
                 flex-shrink: 0;
-            }
-
-            .card__checkbox {
-                appearance: none;
-                -webkit-appearance: none;
-                width: 28px;
-                height: 28px;
-                border: 2px solid $color-white-half-opacity;
-                border-radius: 50%;
-                background-color: $color-header-logo-hover-gray;
+                background-color: $color-brang-bg-default;
+                border-radius: $border-radius-small;
+                border: none;
                 cursor: pointer;
-                position: relative;
-                opacity: 1;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-shrink: 0;
-                margin: 0;
-                transition: all 0.2s ease;
-
-                &:hover {
-                    border-color: $color-brand-hover-bg;
-                    transform: scale(1.05);
-                }
-
-                &::after {
-                    content: '\f00c';
-                    font-family: 'Font Awesome 5 Free';
-                    font-weight: 900;
-                    font-size: 22px;
-                    color: #000;
-                    position: static;
-                    opacity: 0;
-                    -webkit-text-stroke: 0;
-                    transition: opacity 0.2s ease;
-                }
-
-                &:checked {
-                    background-color: $color-checkbox-active-green;
-                    border-color: $color-checkbox-active-green;
-
-                    &::after {
-                        opacity: 1;
-                    }
-                }
-
+                height: 22px;
             }
 
-            .card__title {
-                box-sizing: border-box;
-                display: block;
-                font-size: 25px;
-                font-weight: 600;
-                flex-grow: 1;
-                line-height: 1.2;
-                color: $color-white-text;
-                padding: 4px 8px;
-                border: 2px solid transparent;
-                border-radius: $border-radius-medium;
-                width: 450px;
-                white-space: pre-wrap; 
-                word-wrap: break-word; 
-                overflow-wrap: break-word;
-                word-break: break-word
+            button:hover {
+                background-color: $color-header-logo-hover-gray;
             }
+        }
+    }
+    &__copied {
+        margin-left: 10px;
+        color: #4caf50;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+    &__footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 70px;
+        height: 60px;
+        width: 100%;
+        background-color: #4caf50;
+        box-sizing: border-box;
+        padding: 0 50px;
+        background-color: $color-brand-hover-bg;
+    }
 
+    &__action-btn {
+        height: 30px;
+        border: none;
+        border-radius: $border-radius-medium;
+        background-color: $color-brang-bg-default;
+        font-size: 18px;
+        font-weight: 500;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-gray-text;
         }
     }
 }

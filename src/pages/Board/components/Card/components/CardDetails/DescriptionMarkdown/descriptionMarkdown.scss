@@ -1,0 +1,81 @@
+@use '/src/styles/variables' as *;
+
+.markdown-editor {
+    width: 100%;
+
+    &__preview {
+        cursor: pointer;
+        padding: 8px;
+        border-radius: $border-radius-medium;
+        transition: background-color 0.2s;
+        border: 1px solid $color-header-logo-hover-gray;
+        
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    }
+
+    &__placeholder {
+        color: #888;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    &__content {
+        color: $color-white-text;
+        line-height: 1.1;
+        font-size: 16px;
+        font-weight: 600;
+        
+        // Стилізація відрендереного маркдауну
+        p { margin-bottom: 10px; }
+        ul, ol { margin-left: 20px; }
+    }
+
+    &__textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.2);
+        color: $color-white-text;
+        border: 1px solid $color-text-brand-gray;
+        border-radius: $border-radius-medium;
+        font-family: inherit;
+        font-size: 14px;
+        
+        resize: none; 
+        
+        outline: none;
+        box-sizing: border-box;
+
+        &:focus {
+            border-color: $color-brand-white-blue;
+        }
+    }
+
+    &__actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+    }
+
+    &__button {
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+
+        &--save {
+            background-color: $color-brand-blue;
+            color: #000;
+            &:hover { background-color: $color-brand-white-blue }
+        }
+
+        &--cancel {
+            background-color: transparent;
+            color: $color-white-text;
+            &:hover { background-color: $color-white-half-opacity; }
+        }
+    }
+}

@@ -26,25 +26,15 @@ export function TextAreaForm({ onTextChanged, currentText, onCancel, cursorPosit
       autoResize();
     }
   }, [cursorPosition]);
-  // useEffect(() => {
-  //   if (textAreaRef.current) {
-  //     textAreaRef.current.focus();
-  //     // треба поставити курсор у те місце куди було клікнуто на тексті. Як в трелло.
-  //     const { length } = textAreaRef.current.value;
-  //     textAreaRef.current.setSelectionRange(length, length);
-  //     autoResize();
-  //   }
-  // }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       const value = textAreaRef.current?.value || '';
-      if (value.trim() === currentText.trim()) {
-        onCancel();
-        return;
+      if (value.trim() !== currentText.trim()) {
+        onTextChanged(value.trim());
       }
-      onTextChanged(value.trim());
+      onCancel();
     }
     if (e.key === 'Escape') {
       onCancel();

@@ -4,7 +4,7 @@ export interface ICard {
   position?: number;
   list_id?: number;
   color?: string;
-  desription?: string;
+  description?: string;
   custom?: {
     isChecked?: boolean;
     background?: string;
