@@ -1,23 +1,77 @@
 @use '/src/styles/variables' as *;
 
-.list,
-.empty-list {
-    flex-shrink: 0;
-    min-width: 320px;
-    max-width: 320px;
-    min-height: 160px;
-    font-size: 10px;
-    display: flex;
 
-    justify-content: space-between;
+.board__list {
+    display: flex;
+    height: 100%;
+    background-color: transparent;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.list__wrapper {
+    border-radius: $border-radius-large;
+    min-width: auto;
+    min-height: auto;
+
+    &_dragging {
+        background-color: rgba(0, 0, 0, 0.2);
+        z-index: 11999;
+
+        .list {
+            opacity: 0;
+            height: 100%;
+        }
+
+        .empty-list {
+            height: 100%;
+        }
+    }
+}
+
+.empty-list {
+    display: flex;
+    flex-shrink: 0;
+    width: 320px;
+    min-width: 320px;
+    height: 100%;
+    min-height: 100%;
+    margin: 5px;
+    font-size: 10px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-clip: padding-box;
+    background-position: center;
+    border-radius: $border-radius-large;
     flex-direction: column;
-    gap: 10px;
-    padding: 12px;
-    border-radius: 10px;
     box-sizing: border-box;
+    justify-content: space-between;
+    opacity: 1;
+
+    background: linear-gradient(to bottom,
+            rgba(117, 117, 117, 0.5) 0%,
+            rgba(117, 117, 117, 0) 20%);
 }
 
 .list {
+
+    &:active {
+        cursor: grabbing;
+    }
+
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    box-sizing: border-box;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-clip: padding-box;
+    background-position: center;
+    border-radius: $border-radius-large;
+    max-height: calc(100vh - 200px);
+    min-height: 160px;
 
     &__title,
     .edit-title .edit-title__input {
@@ -31,7 +85,7 @@
         font-size: 24px;
         font-weight: 500;
         font-family: Arial, Helvetica, sans-serif;
-        background-color: rgb(117, 117, 117, 0.5);
+        background-color: $color-white-half-opacity;
         padding: 0 10px;
         cursor: pointer;
         white-space: normal;
@@ -49,6 +103,7 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
+
         width: 100%;
     }
 
@@ -56,8 +111,9 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        gap: 10px;
+        // gap: 10px;
         margin: 0;
+        margin-top: 5px;
         font-size: 20px;
     }
 
@@ -70,21 +126,15 @@
             background-color: $color-white-half-opacity;
             border: none;
             border-radius: $border-radius-medium;
-            height: 30px;
+            height: 40px;
             font-size: 16px;
             font-weight: 550;
-            padding: 0 10px;
+            padding: 10px;
+            margin: 5px;
+            margin-top: 10px;
             cursor: pointer;
         }
     }
-}
-
-.empty-list {
-    background-color: rgba(145, 144, 144, 0.2);
-    padding: 0;
-    min-width: auto;
-
-    min-height: auto;
 }
 
 .board__title_wrapper .list__button_custom-icon {
@@ -118,6 +168,7 @@
         display: block;
         background-size: contain;
     }
+
     .delete-textures {
         background-image: url('../../../../../public/assets/color-delete-icon.png');
         width: 25px;
@@ -126,22 +177,21 @@
     }
 }
 
-.board__list .empty-list .list {
-    display: flex;
-    box-sizing: border-box;
-    flex: 1;
-    height: auto;
-    background-color: transparent;
-}
 
 .list__cards {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 100%;
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin-right: -12px;
+    padding-right: 12px;
 }
 
 .empty-list .list .list__header .list__title {
-    // flex: 1;
     min-width: 0;
     white-space: normal;
     word-wrap: break-all;

@@ -78,8 +78,6 @@ export function CardMenuModal({
                   listId,
                   cardId: card.id!,
                 });
-                // eslint-disable-next-line no-console
-                // console.log(`trying to call modal: boardId:${Number(boardId)}, listId: ${listId} cardId: ${card.id!}.`);
               }}
             >
               <span className="open-textures_title">Змінення обкладинки</span>
@@ -88,7 +86,14 @@ export function CardMenuModal({
             <button className="menu__options_button open-card" onClick={() => setModalActive(true)}>
               Видалити картку
             </button>
-            <ConfirmModal isOpen={isModalOpen} onClose={setModalActive} onConfirm={onDeleteCard} />
+            <ConfirmModal
+              isOpen={isModalOpen}
+              onClose={setModalActive}
+              onConfirm={() => {
+                onDeleteCard();
+                onClose();
+              }}
+            />
           </div>
         </div>
       </div>

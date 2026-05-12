@@ -8,17 +8,17 @@ import { createCardThunk, fetchBoardThunk } from '../../../../store/boards/thunk
 import './addCardForm.scss';
 
 interface IAddCardFormProps extends ICard {
-  onCardAdded(): void;
+  onClose(): void;
   boardId: number;
   list_id: number;
 }
-export function AddCardForm({ onCardAdded, position, boardId, list_id }: IAddCardFormProps): JSX.Element {
+export function AddCardForm({ onClose, position, boardId, list_id }: IAddCardFormProps): JSX.Element {
   const [title, setTitle] = useState('');
   const [isTitleEntered, setIsTitleEntered] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const modalRef = useRef<HTMLDivElement>(null);
   const isValid = validateTitle(title);
-  function saveTitle(): void {
+  async function saveTitle(): Promise<void> {
     const payload = {
       boardId,
       cardData: {
@@ -27,9 +27,9 @@ export function AddCardForm({ onCardAdded, position, boardId, list_id }: IAddCar
         position,
       },
     };
-    dispatch(createCardThunk(payload));
-    dispatch(fetchBoardThunk(boardId));
-    onCardAdded();
+    await dispatch(createCardThunk(payload)).unwrap();
+    await dispatch(fetchBoardThunk(boardId)).unwrap();
+    onClose();
   }
   useClickOutside(modalRef, () => {
     if (isValid) {
@@ -37,10 +37,10 @@ export function AddCardForm({ onCardAdded, position, boardId, list_id }: IAddCar
       setTitle('');
     }
   });
-  function handleSubmit(e: FormEvent): void {
+  async function handleSubmit(e: FormEvent): Promise<void> {
     e.preventDefault();
     if (isValid) {
-      saveTitle();
+      await saveTitle();
       setTitle('');
     }
   }

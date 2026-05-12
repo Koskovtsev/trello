@@ -1,21 +1,34 @@
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useBoards } from '../../hooks/useBoards';
 import { AddBoardModal } from './components/AddBoard/AddBoardModal';
+import { createBoardThunk, deleteBoardThunk, fetchAllBoardsThunk } from '../../store/boards/thunks';
 import { BoardItem } from './components/BoardItem/BoardItem';
+import { AppDispatch, RootState } from '../../store/store';
 import './home.scss';
 
 export function Home(): JSX.Element {
-  const { boards, fetchBoards, createBoard, deleteBoardById } = useBoards();
+  const dispatch = useDispatch<AppDispatch>();
+  const boards = useSelector((state: RootState) => state.boards.boards);
   const [addBoardModalActive, setaddBoardModalActive] = useState(false);
+  const [draftTitle, setDraftTitle] = useState('');
 
   useEffect(() => {
-    fetchBoards();
+    dispatch(fetchAllBoardsThunk());
   }, []);
 
   const handleBoardAdded = async (title: string, texture: string): Promise<void> => {
-    const response = await createBoard(title, texture);
-    if (response) setaddBoardModalActive(false);
+    const payload = {
+      title,
+      custom: {
+        background: texture,
+      },
+    };
+    const response = await dispatch(createBoardThunk(payload));
+    if (response) {
+      setaddBoardModalActive(false);
+      await dispatch(fetchAllBoardsThunk());
+    }
   };
 
   return (
@@ -31,7 +44,7 @@ export function Home(): JSX.Element {
                 id={elem.id}
                 {...elem}
                 onDelete={(id) => {
-                  deleteBoardById(id);
+                  dispatch(deleteBoardThunk(id));
                 }}
               />
             </Link>
@@ -44,6 +57,8 @@ export function Home(): JSX.Element {
           active={addBoardModalActive}
           setActive={setaddBoardModalActive}
           onBoardAdded={handleBoardAdded}
+          title={draftTitle}
+          setTitle={setDraftTitle}
         />
       </div>
     </>

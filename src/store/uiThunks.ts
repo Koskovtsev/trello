@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateBoardThunk, updateCardThunk } from './boards/thunks';
-import { RootState } from './store';
 import { ICard } from '../common/interfaces/ICard';
+import { RootState } from './store';
 
 export const applyTexture = createAsyncThunk('texture/apply', async (texture: string, { getState, dispatch }) => {
   const state = getState() as RootState;

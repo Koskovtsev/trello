@@ -1,0 +1,47 @@
+@use '/src/styles/variables' as *;
+
+.card-move {
+    &__overlay {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    &__window {
+        background-color: $color-brand-bg;
+        border-radius: $border-radius-large;
+        width: 350px;
+        padding: 10px;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+
+        &_title {
+            font-size: 16px;
+            color: $color-text-brand-gray;
+            font-weight: 600;
+        }
+    }
+
+    &__close {
+        background-color: transparent;
+        border: none;
+        border-radius: $border-radius-large;
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        color: $color-text-brand-gray;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-brand-hover-bg;
+        }
+    }
+
+}

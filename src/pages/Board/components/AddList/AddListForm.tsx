@@ -1,39 +1,71 @@
 import toast from 'react-hot-toast';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { TextureList } from '../../../../components/Textures/TextureList';
-import { postList } from '../../../../api/boardsService';
+import { validateTitle } from '../../../../common/validador';
+import { IList } from '../../../../common/interfaces/IList';
+import { AppDispatch } from '../../../../store/store';
+import { createListThunk, fetchBoardThunk, updateBoardThunk } from '../../../../store/boards/thunks';
+import { IBoard } from '../../../../common/interfaces/IBoard';
 import '../List/list.scss';
+import { useClickOutside } from '../../../../hooks/useClickOutside';
 
 interface IAddListFormProps {
-  onListAdded(texture: string): void;
+  onClose(): void;
   position: number;
   boardId: number;
+  title: string;
+  setTitle(newTitle: string): void;
 }
 
-export function AddListForm({ onListAdded, position, boardId }: IAddListFormProps): JSX.Element {
-  const [title, setTitle] = useState('');
+export function AddListForm({ onClose, position, boardId, title, setTitle }: IAddListFormProps): JSX.Element {
+  const formRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const [currentTexture, setCurrentTexture] = useState('gray');
-  async function handleSubmit(e: FormEvent): Promise<void> {
+
+  useClickOutside(formRef, onClose);
+
+  const createList = async (): Promise<void> => {
+    const listData: IList = {
+      title: title.trim(),
+      position,
+    };
+    await dispatch(createListThunk({ boardId, listData })).unwrap();
+    const newBoard = await dispatch(fetchBoardThunk(boardId)).unwrap();
+    const newListId = newBoard.lists?.find((list) => list.position === position)?.id;
+    if (!newListId) return;
+    const boardData: IBoard = {
+      ...newBoard,
+      custom: {
+        ...newBoard.custom,
+        listTextures: {
+          ...newBoard.custom?.listTextures,
+          [newListId]: currentTexture,
+        },
+      },
+    };
+    await dispatch(updateBoardThunk({ boardId, boardData }));
+  };
+
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
-    const titleRegex = /^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\s._-]+$/; // TODO: винести окремо перевірку інпуту.
-    if (title.trim() && titleRegex.test(title)) {
-      const dataToSend = { title, position, custom: { listTextures: currentTexture } };
-      try {
-        const response = await postList(boardId, dataToSend);
-        if (response === 'Created') {
-          onListAdded(currentTexture);
-          setTitle('');
-        }
-      } catch (error) {
-        toast.error(`Error creating new list`);
-      }
+    if (!title.trim() && !validateTitle(title)) return;
+    try {
+      await createList();
+      setTitle('');
+      onClose();
+    } catch (error) {
+      toast.error(`Catn create list`);
     }
-  }
-  // TODO: стандартний інпут сильно виділяється, стилізувати під оригінальний трелло.
-  // TODO: useClickOutside - щоб прибрать коли неактивний, використати його до всих відкривающихся модалок/компонентів.
+  }; // TODO: стандартний інпут сильно виділяється, стилізувати під оригінальний трелло.
+
   return (
-    <div className="list" style={{ backgroundImage: `url(${currentTexture})`, backgroundColor: '#acacac' }}>
-      <form className="form__add_list" onSubmit={handleSubmit}>
+    <div
+      className="list"
+      style={{ backgroundImage: `url(${currentTexture})`, backgroundColor: '#acacac' }}
+      ref={formRef}
+    >
+      <form className="form__add_list" onSubmit={(e) => handleSubmit(e)}>
         <input
           type="text"
           className="input_list_title"

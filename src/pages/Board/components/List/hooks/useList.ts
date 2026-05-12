@@ -11,6 +11,7 @@ interface IUseListProps {
   listId: number;
   onRefreshList(): void;
 }
+// TODO: переробить на редакс сховище.
 export function useList({ boardId, listId, onRefreshList }: IUseListProps): IUseListData {
   const deleteListById = async (): Promise<void> => {
     try {

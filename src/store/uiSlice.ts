@@ -1,15 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IBoard } from '../common/interfaces/IBoard';
 
 type TextureTarget =
   | { type: 'list'; boardId: number; listId: number }
   | { type: 'card'; boardId: number; listId: number; cardId: number }
   | { type: 'board'; boardId: number };
-
-type CardMenuTarget = {
-  boardId: number;
-  listId: number;
-  cardId: number;
-};
 
 interface UiState {
   textureModal: {
@@ -17,10 +12,7 @@ interface UiState {
     target: TextureTarget | null;
     coords: { top: number; left: number } | null;
   };
-  cardMenu: {
-    isOpen: boolean;
-    target: CardMenuTarget | null;
-  };
+  activeBoard: IBoard | null;
 }
 
 const initialState: UiState = {
@@ -29,10 +21,7 @@ const initialState: UiState = {
     target: null,
     coords: null,
   },
-  cardMenu: {
-    isOpen: false,
-    target: null,
-  },
+  activeBoard: null,
 };
 
 const uiSlice = createSlice({
@@ -51,18 +40,8 @@ const uiSlice = createSlice({
       modalState.textureModal.target = null;
       modalState.textureModal.coords = null;
     },
-    openCardModal(state, action: PayloadAction<CardMenuTarget>) {
-      const modalState = state;
-      modalState.cardMenu.isOpen = true;
-      modalState.cardMenu.target = action.payload;
-    },
-    closeCardModal(state) {
-      const modalState = state;
-      modalState.cardMenu.isOpen = false;
-      modalState.cardMenu.target = null;
-    },
   },
 });
 
-export const { openTextureModal, closeTextureModal, openCardModal, closeCardModal } = uiSlice.actions;
+export const { openTextureModal, closeTextureModal } = uiSlice.actions;
 export default uiSlice.reducer;

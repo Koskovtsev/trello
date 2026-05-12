@@ -17,7 +17,7 @@ interface UseBoardData {
 export function useBoard(boardId: number): UseBoardData {
   const dispatch = useDispatch<AppDispatch>();
   const { isOpen } = useSelector((state: RootState) => state.ui.textureModal);
-  const handleChangeTitle = (title: string): void => {
+  const handleChangeTitle = async (title: string): Promise<void> => {
     try {
       const payload = {
         boardId,
@@ -25,7 +25,7 @@ export function useBoard(boardId: number): UseBoardData {
           title,
         },
       };
-      dispatch(updateBoardThunk(payload));
+      await dispatch(updateBoardThunk(payload));
     } catch (error) {
       toast.error(`Error changing board title`);
     }
@@ -46,22 +46,5 @@ export function useBoard(boardId: number): UseBoardData {
       toast.error(`Error change texture`);
     }
   };
-  //  const handleDeleteTexture = (target: TextureTarget): void => {
-  // const rect = e.currentTarget.getBoundingClientRect();
-
-  // const coords = {
-  //   top: rect.top + window.scrollY,
-  //   left: rect.right + window.scrollX + 10,
-  // };
-  // if (isOpen) {
-  //   dispatch(closeTextureModal());
-  // } else {
-  //   dispatch(openTextureModal({ target, coords }));
-  // }
-  //   try {
-  //     const payload
-  //   }
-
-  // };
   return { handleChangeTitle, handleTextureModal };
 }

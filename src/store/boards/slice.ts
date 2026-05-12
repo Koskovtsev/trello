@@ -8,7 +8,10 @@ import {
   fetchBoardThunk,
   updateBoardThunk,
   updateCardThunk,
+  updateGroupCardsThunk,
+  updateGroupListsThunk,
   updateListThunk,
+  processCardMoveThunk,
 } from './thunks';
 
 interface BoardState {
@@ -36,7 +39,7 @@ const boardSlice = createSlice({
     });
     builder.addCase(updateBoardThunk.fulfilled, (state, action) => {
       const builderState = state;
-      const updatedBoard = action.payload;
+      const updatedBoard = action.payload.boardData;
       if (!updatedBoard || !builderState.activeBoard) return;
       if (builderState.activeBoard.id === updatedBoard.id) {
         builderState.activeBoard = {
@@ -79,6 +82,12 @@ const boardSlice = createSlice({
         }
       }
     });
+    builder.addCase(deleteListThunk.fulfilled, (state, action) => {
+      const builderState = state;
+      const deletedListId = action.payload.listData.id;
+      if (!builderState.activeBoard?.lists) return;
+      builderState.activeBoard.lists = builderState.activeBoard.lists.filter((list) => list.id !== deletedListId);
+    });
     builder.addCase(updateCardThunk.fulfilled, (state, action) => {
       const builderState = state;
       const updatedCard = action.payload;
@@ -89,12 +98,6 @@ const boardSlice = createSlice({
         Object.assign(card, updatedCard.cardData);
       }
     });
-    builder.addCase(deleteListThunk.fulfilled, (state, action) => {
-      const builderState = state;
-      const deletedListId = action.payload.listData.id;
-      if (!builderState.activeBoard?.lists) return;
-      builderState.activeBoard.lists = builderState.activeBoard.lists.filter((list) => list.id !== deletedListId);
-    });
     builder.addCase(deleteCardThunk.fulfilled, (state, action) => {
       const { id: deletedCardId, list_id: currentListId } = action.payload.cardData;
       if (!state.activeBoard) return;
@@ -102,6 +105,79 @@ const boardSlice = createSlice({
       if (list?.cards) {
         list.cards = list.cards.filter((card) => card.id !== deletedCardId);
       }
+    });
+    builder.addCase(updateGroupListsThunk.fulfilled, (state, action) => {
+      const { listsData } = action.payload;
+      const builderState = state;
+      if (!builderState.activeBoard) return;
+      builderState.activeBoard.lists = listsData.sort((a, b) => {
+        const posA = a.position ?? 0;
+        const posB = b.position ?? 0;
+        return posA - posB;
+      });
+    });
+    builder.addCase(updateGroupCardsThunk.fulfilled, (state, action) => {
+      const { cardsData } = action.payload;
+      const builderState = state;
+      if (!builderState.activeBoard?.lists) return;
+
+      builderState.activeBoard.lists = builderState.activeBoard.lists.map((list) => {
+        const updatesForList = cardsData.filter((card) => card.list_id === list.id);
+        if (!updatesForList.length || !list.cards) {
+          return list;
+        }
+        const updatesMap = new Map(
+          updatesForList.map((card) => [
+            card.id,
+            {
+              position: card.position,
+              list_id: card.list_id,
+            },
+          ])
+        );
+
+        const updatedCards = list.cards.map((existingCard) => {
+          const update = updatesMap.get(existingCard.id);
+          if (!update) {
+            return existingCard;
+          }
+          return {
+            ...existingCard,
+            position: update.position,
+            list_id: update.list_id,
+          };
+        });
+        return {
+          ...list,
+          cards: updatedCards.sort((a, b) => (a.position ?? 0) - (b.position ?? 0)),
+        };
+      });
+    });
+
+    builder.addCase(processCardMoveThunk.fulfilled, (state, action) => {
+      const { cardId, sourceListId, targetListId, targetPosition } = action.meta.arg;
+      const { activeBoard } = state;
+      if (!activeBoard?.lists) return;
+      const sourceList = activeBoard.lists.find((l) => l.id === sourceListId);
+      const targetList = activeBoard.lists.find((l) => l.id === targetListId);
+
+      if (!sourceList?.cards || !targetList) return;
+      const cardIndex = sourceList.cards.findIndex((c) => c.id === cardId);
+      if (cardIndex === -1) return;
+      const [movedCard] = sourceList.cards.splice(cardIndex, 1);
+      movedCard.list_id = targetListId;
+      movedCard.position = targetPosition;
+
+      if (!targetList.cards) targetList.cards = [];
+      targetList.cards.splice(targetPosition - 1, 0, movedCard);
+      sourceList.cards = sourceList.cards.map((card, i) => ({
+        ...card,
+        position: i + 1,
+      }));
+      targetList.cards = targetList.cards.map((card, i) => ({
+        ...card,
+        position: i + 1,
+      }));
     });
   },
 });

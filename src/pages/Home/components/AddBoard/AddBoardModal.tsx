@@ -9,20 +9,27 @@ interface IAddBoardFormProps {
   active: boolean;
   setActive(isActive: boolean): void;
   onBoardAdded(title: string, texture: string): void;
+  title: string;
+  setTitle(newTitle: string): void;
 }
-export function AddBoardModal({ active, setActive, onBoardAdded }: IAddBoardFormProps): JSX.Element | null {
+export function AddBoardModal({
+  active,
+  setActive,
+  onBoardAdded,
+  title,
+  setTitle,
+}: IAddBoardFormProps): JSX.Element | null {
   if (!active) return null;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isTitleEntered, setIsTitleEntered] = useState(false);
-  const [title, setTitle] = useState<string>('');
   const [currentTexture, setCurrentTexture] = useState<string>('gray');
   const isValid = validateTitle(title);
   function handleSubmit(e: FormEvent): void {
     e.preventDefault();
     if (isValid) {
+      onBoardAdded(title, currentTexture);
       setTitle('');
       setActive(false);
-      onBoardAdded(title, currentTexture);
     }
   }
   useClickOutside(modalRef, () => {

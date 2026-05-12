@@ -1,10 +1,21 @@
 @use '/src/styles/variables' as *;
 
-.empty-list {
+.empty-Card_list {
   width: 100%;
-  height: fit-content !important;
+  padding: 4px 0;
 }
-
+.card__item_wrapper{
+  min-width: auto;
+  min-height: auto;
+  &-dragging {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: $border-radius-large;
+    z-index: 11999;
+    .card__item {
+      opacity: 0;
+    }
+  }
+}
 .card__item {
   display: flex;
   justify-content: space-between;
@@ -24,6 +35,7 @@
   border-radius: $border-radius-large;
   z-index: 5;
   box-sizing: border-box;
+  opacity: 1;
 
   li {
     flex-grow: 1;
@@ -123,11 +135,12 @@
 .button__card-change_wrapper {
   display: flex;
   margin: auto 0;
-
+  
   .button__menu_options {
     background-color: transparent;
     font-size: 14px;
     border: none;
+    cursor: pointer;
 
     &:hover {
       transform: scale(1.3);

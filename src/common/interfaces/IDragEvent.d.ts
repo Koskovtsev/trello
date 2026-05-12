@@ -1,6 +1,8 @@
 export interface IDragEvent {
   draggedId: number;
   targetId: number;
-  sourceContainerId?: number;
-  targetContainerId?: number;
+  sourceListId?: number;
+  targetListId?: number;
+  sourceBoardId?: number;
+  targetBoardId?: number;
 }

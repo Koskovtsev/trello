@@ -1,5 +1,4 @@
 import { IBoard } from '../common/interfaces/IBoard';
-import { IBoardData } from '../common/interfaces/IBoardData';
 import { ICard } from '../common/interfaces/ICard';
 import { IList } from '../common/interfaces/IList';
 import api from './request';
@@ -24,8 +23,8 @@ export async function putBoardUpdates(boardId: number, boardData: IBoard): Promi
   return response.result;
 }
 
-export async function getBoard(id: number): Promise<IBoardData> {
-  return api.get<IBoardData, IBoardData>(`board/${id}`);
+export async function getBoard(id: number): Promise<IBoard> {
+  return api.get<IBoard, IBoard>(`board/${id}`);
 }
 
 export async function postList(boardId: number, list: IList): Promise<string> {
@@ -33,9 +32,9 @@ export async function postList(boardId: number, list: IList): Promise<string> {
   return response.result;
 }
 
-export async function postCard(boardId: number, card: ICard): Promise<string> {
-  const response = await api.post<unknown, { result: string }>(`board/${boardId}/card`, card);
-  return response.result;
+export async function postCard(boardId: number, card: ICard): Promise<number> {
+  const response = await api.post<unknown, { id: number }>(`board/${boardId}/card`, card);
+  return response.id;
 }
 
 export async function deleteList(boardId: number, listId: number): Promise<string> {

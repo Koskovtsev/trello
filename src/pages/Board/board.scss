@@ -60,7 +60,6 @@
         flex-direction: row;
         justify-content: flex-start;
         flex-wrap: nowrap;
-        gap: 10px;
         align-items: flex-start;
         min-height: 0;
         width: 100%;
@@ -98,6 +97,7 @@
         height: 40px;
         font-weight: 600;
         min-width: 160px;
+        margin: 10px;
         border-radius: 10px;
         background-color: #979797;
 

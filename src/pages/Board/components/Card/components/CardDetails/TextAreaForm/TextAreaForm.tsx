@@ -20,7 +20,7 @@ export function TextAreaForm({ onTextChanged, currentText, onCancel, cursorPosit
     }
   };
   useEffect(() => {
-    if (textAreaRef.current) {
+    if (textAreaRef.current && cursorPosition != null) {
       textAreaRef.current.focus();
       textAreaRef.current.setSelectionRange(cursorPosition, cursorPosition);
       autoResize();
@@ -43,14 +43,18 @@ export function TextAreaForm({ onTextChanged, currentText, onCancel, cursorPosit
 
   const handleSave = (): void => {
     const value = textAreaRef.current?.value || '';
-    if (value.trim() === currentText.trim()) {
+    const trimmed = value.trim();
+    const current = currentText.trim();
+    if (trimmed === current) {
       onCancel();
       return;
     }
-    if (validateTitle(value)) {
-      onTextChanged(value.trim());
-      onCancel();
+    if (!validateTitle(trimmed)) {
+      setError(true);
+      return;
     }
+    onTextChanged(trimmed);
+    onCancel();
   };
 
   return (
