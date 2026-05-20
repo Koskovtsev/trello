@@ -35,6 +35,8 @@ export function AddCardForm({ onClose, position, boardId, list_id }: IAddCardFor
     if (isValid) {
       saveTitle();
       setTitle('');
+    } else {
+      onClose();
     }
   });
   async function handleSubmit(e: FormEvent): Promise<void> {

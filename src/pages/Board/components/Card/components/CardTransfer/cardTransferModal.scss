@@ -44,4 +44,79 @@
         }
     }
 
+    &__selector {
+        height: 40px;
+        color: $color-gray-text;
+        font-size: 18px;
+        padding: 0 5px;
+        background-color: $color-brand-bg-dark;
+        cursor: pointer;
+        border-radius: $border-radius-small;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:focus {
+            border-color: $color-brand-blue;
+        }
+    }
+
+    &__destination_wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 10px;
+        margin: 20px 0;
+        width: 100%;
+    }
+
+    &__list_selector,
+    &__card-position_selector {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &__list_selector {
+        width: 215px;
+    }
+
+    &__board_selector {
+        display: flex;
+        flex-direction: column;
+        margin: 10px 0;
+        gap: 10px;
+        ;
+    }
+
+    &__action_title {
+        font-size: 18px;
+        color: $color-gray-text;
+        font-weight: 500;
+    }
+
+    &__selector_name {
+        font-size: 16px;
+        color: $color-gray-text;
+        font-weight: 600;
+    }
+
+    &__move-button {
+        width: 100%;
+        cursor: pointer;
+        box-sizing: border-box;
+        border-radius: $border-radius-medium;
+        display: flex;
+        padding: 7px;
+        margin-top: 10px;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        background-color: $color-brand-blue;
+        font-weight: 500;
+
+        &:hover {
+            background-color: $color-brand-white-blue;
+        }
+    }
 }

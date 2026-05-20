@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { AddBoardModal } from './components/AddBoard/AddBoardModal';
 import { createBoardThunk, deleteBoardThunk, fetchAllBoardsThunk } from '../../store/boards/thunks';
 import { BoardItem } from './components/BoardItem/BoardItem';
 import { AppDispatch, RootState } from '../../store/store';
+import { AddItemModal } from './components/AddBoard/AddItemModal';
 import './home.scss';
 
 export function Home(): JSX.Element {
@@ -50,15 +50,16 @@ export function Home(): JSX.Element {
             </Link>
           );
         })}
-        <button className="board__add_button" onClick={() => setaddBoardModalActive((prop) => !prop)}>
+        <button className="board__add_button" onClick={() => setaddBoardModalActive(true)}>
           <span className="button__add_title">+ Додати дошку</span>
         </button>
-        <AddBoardModal
+        <AddItemModal
           active={addBoardModalActive}
           setActive={setaddBoardModalActive}
           onBoardAdded={handleBoardAdded}
           title={draftTitle}
           setTitle={setDraftTitle}
+          modalType="board"
         />
       </div>
     </>

@@ -4,7 +4,6 @@ import { Outlet, useParams } from 'react-router-dom';
 import { List } from './components/List/List';
 import { getTexture } from '../../components/Textures/TextureList';
 import { ChangeTitleForm } from './components/ChangeTitle/ChangeTitleForm';
-import { AddListForm } from './components/AddList/AddListForm';
 import { AppDispatch, RootState } from '../../store/store';
 import { fetchBoardThunk, processCardMoveThunk } from '../../store/boards/thunks';
 import { useBoard } from './hooks/useBoard';
@@ -12,6 +11,7 @@ import { ChangeTextureModal } from '../../components/Textures/ChangeTextureModal
 import { IList } from '../../common/interfaces/IList';
 import { ICard } from '../../common/interfaces/ICard';
 import { IDragCardPayload } from '../../common/interfaces/IDragCardPayload';
+import { AddItemModal } from '../Home/components/AddBoard/AddItemModal';
 import './board.scss';
 import './components/List/list.scss';
 
@@ -33,7 +33,7 @@ export function Board(): JSX.Element {
   const { boardId } = useParams<{ boardId: string }>();
   const id = Number(boardId);
   const currentTexture = getTexture(activeBoard?.custom?.background ?? '');
-  const { handleChangeTitle, handleTextureModal } = useBoard(id);
+  const { handleChangeTitle, handleTextureModal, handleListAdded } = useBoard(id);
   useEffect(() => {
     if (boardId) {
       dispatch(fetchBoardThunk(Number(boardId))).unwrap();
@@ -147,8 +147,10 @@ export function Board(): JSX.Element {
     setDragType(null);
     setPreviewLists(lists);
   };
-  // eslint-disable-next-line no-console
-  console.log(`boardData: ${JSON.stringify(activeBoard)}`);
+  // const handleListAdded = (): void => {
+  //   // eslint-disable-next-line no-console
+  //   console.log(`додаємо список`);
+  // };
   return (
     <>
       <div className="board" ref={scrollToEnd} style={{ backgroundImage: `url(${currentTexture})` }}>
@@ -206,12 +208,20 @@ export function Board(): JSX.Element {
             </button>
           )}
           {isVisibleAddListForm && (
-            <AddListForm
-              onClose={() => setVisibleAddListForm(false)}
-              position={lists.length + 1}
-              boardId={id}
+            // <AddListForm
+            //   onClose={() => setVisibleAddListForm(false)}
+            //   position={lists.length + 1}
+            //   boardId={id}
+            //   title={draftTitle}
+            //   setTitle={setDraftTitle}
+            // />
+            <AddItemModal
+              active={isVisibleAddListForm}
+              setActive={setVisibleAddListForm}
+              onBoardAdded={(listTitle, listTexture) => handleListAdded(listTitle, listTexture, lists.length + 1)}
               title={draftTitle}
               setTitle={setDraftTitle}
+              modalType="list"
             />
           )}
         </div>

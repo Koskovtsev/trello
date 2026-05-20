@@ -181,11 +181,14 @@ export function CardDetails(): JSX.Element | null {
       </div>
       <CardTransferModal
         isOpen={isMoveModalOpen}
-        onClose={() => setMoveModalActive(false)}
-        cardId={activeCard.id!}
+        onClose={() => {
+          handleClose();
+          setMoveModalActive(false);
+        }}
         listId={listId}
         boardId={boardIdNum}
         mode={actionType}
+        cardData={activeCard}
       />
       <ConfirmModal
         isOpen={isConfirmModalOpen}

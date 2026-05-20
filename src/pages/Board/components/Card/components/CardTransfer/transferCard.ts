@@ -4,13 +4,14 @@ import { AppDispatch } from '../../../../../../store/store';
 import {
   createCardThunk,
   deleteCardThunk,
-  fetchBoardThunk,
+  // fetchBoardThunk,
   processCardMoveThunk,
   updateGroupCardsThunk,
 } from '../../../../../../store/boards/thunks';
 import { ICard } from '../../../../../../common/interfaces/ICard';
 import { IBoard } from '../../../../../../common/interfaces/IBoard';
 import { IDragCardPayload } from '../../../../../../common/interfaces/IDragCardPayload';
+import { getBoard } from '../../../../../../api/boardsService';
 
 function buildCardsAfterInsert(
   boardData: IBoard,
@@ -40,33 +41,32 @@ export async function transferCard(payload: ITransferCardData, dispatch: AppDisp
     description: cardData.description,
     custom: cardData.custom,
   };
+  const createAndReorderCard = async (): Promise<void> => {
+    const createdCardId = await dispatch(createCardThunk({ boardId: toBoardId, cardData: newCard })).unwrap();
+    const newboardData = await getBoard(toBoardId);
+    const groupCardsPayload = buildCardsAfterInsert(newboardData, toBoardId, createdCardId, position, toListId);
+    if (groupCardsPayload) await dispatch(updateGroupCardsThunk(groupCardsPayload)).unwrap();
+  };
   try {
     if (mode === 'copy') {
-      const createdCardId = await dispatch(createCardThunk({ boardId: toBoardId, cardData: newCard })).unwrap();
-      const newboardData = await dispatch(fetchBoardThunk(toBoardId)).unwrap();
-      const groupCardsPayload = buildCardsAfterInsert(newboardData, toBoardId, createdCardId, position, toListId);
-      if (groupCardsPayload) await dispatch(updateGroupCardsThunk(groupCardsPayload));
+      await createAndReorderCard();
+      return;
     }
-    if (mode === 'move') {
-      const isCrossBoardMove = fromBoardId !== toBoardId;
-      if (isCrossBoardMove) {
-        const createdCardId = await dispatch(createCardThunk({ boardId: toBoardId, cardData: newCard })).unwrap();
-        const newboardData = await dispatch(fetchBoardThunk(toBoardId)).unwrap();
-        const groupCardsPayload = buildCardsAfterInsert(newboardData, toBoardId, createdCardId, position, toListId);
-        if (groupCardsPayload) await dispatch(updateGroupCardsThunk(groupCardsPayload));
-        await dispatch(deleteCardThunk({ boardId: fromBoardId, cardData })).unwrap();
-      } else {
-        const movePayload: IDragCardPayload = {
-          cardId: cardData.id!,
-          sourceListId: cardData.list_id!,
-          targetListId: toListId,
-          sourcePosition: cardData.position!,
-          targetPosition: position,
-          boardId: toBoardId,
-        };
-        await dispatch(processCardMoveThunk(movePayload)).unwrap();
-      }
+    const isCrossBoardMove = fromBoardId !== toBoardId;
+    if (isCrossBoardMove) {
+      await createAndReorderCard();
+      await dispatch(deleteCardThunk({ boardId: fromBoardId, cardData })).unwrap();
+      return;
     }
+    const movePayload: IDragCardPayload = {
+      cardId: cardData.id!,
+      sourceListId: cardData.list_id!,
+      targetListId: toListId,
+      sourcePosition: cardData.position!,
+      targetPosition: position,
+      boardId: toBoardId,
+    };
+    await dispatch(processCardMoveThunk(movePayload)).unwrap();
   } catch (error) {
     toast.error(`error while transfer card`);
   }

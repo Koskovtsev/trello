@@ -3,22 +3,26 @@ import { TextureList } from '../../../../components/Textures/TextureList';
 import { validateTitle } from '../../../../common/validador';
 import { Portal } from '../../../../components/Portal';
 import { useClickOutside } from '../../../../hooks/useClickOutside';
-import './addBoardModal.scss';
+import './addItemModal.scss';
 
-interface IAddBoardFormProps {
+type ModalType = 'board' | 'list';
+
+interface IAddItemFormProps {
   active: boolean;
   setActive(isActive: boolean): void;
   onBoardAdded(title: string, texture: string): void;
   title: string;
   setTitle(newTitle: string): void;
+  modalType: ModalType;
 }
-export function AddBoardModal({
+export function AddItemModal({
   active,
   setActive,
   onBoardAdded,
   title,
   setTitle,
-}: IAddBoardFormProps): JSX.Element | null {
+  modalType,
+}: IAddItemFormProps): JSX.Element | null {
   if (!active) return null;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isTitleEntered, setIsTitleEntered] = useState(false);
@@ -40,7 +44,7 @@ export function AddBoardModal({
     <Portal>
       <div className="modal" ref={modalRef}>
         <div className="modal__header">
-          <span className="modal__header_title">Створити дошку</span>
+          <span className="modal__header_title">Створити{modalType === 'board' ? ` дошку` : ` список`}</span>
           <button type="button" className="modal__close-btn" aria-label="Close" onClick={() => setActive(false)}>
             <i className="fa-solid fa-xmark" />
           </button>
@@ -48,7 +52,7 @@ export function AddBoardModal({
         <form className="form__add" onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Введіть назву дошки..."
+            placeholder={`Введіть назву ${modalType === 'board' ? ` дошки` : ` списку`}...`}
             value={title ?? ''}
             onChange={(e) => {
               setTitle(e.target.value);
@@ -64,7 +68,7 @@ export function AddBoardModal({
             <TextureList key={0} onTexturePicked={setCurrentTexture} currentTexture={currentTexture} />
           </div>
           <button type="submit" className="board__button_add-item" disabled={!isValid}>
-            Додати дошку
+            Додати{modalType === 'board' ? ` дошку` : ` список`}
           </button>
         </form>
       </div>

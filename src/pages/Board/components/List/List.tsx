@@ -4,15 +4,15 @@ import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
 import { IBoard } from '../../../../common/interfaces/IBoard';
 import { ChangeTitleForm } from '../ChangeTitle/ChangeTitleForm';
-import { AddCardForm } from '../AddCard/AddCardForm';
 import { useList } from './hooks/useList';
 import { DeleteAction } from '../../../../components/DeleteButtonWithModal/DeleteAction';
 import { useBoard } from '../../hooks/useBoard';
 import { getTexture } from '../../../../components/Textures/TextureList';
 import { AppDispatch } from '../../../../store/store';
-import './list.scss';
 import { processListMoveThunk } from '../../../../store/boards/thunks';
 import { ICard } from '../../../../common/interfaces/ICard';
+import { AddCardForm } from '../AddCard/AddCardForm';
+import './list.scss';
 
 interface IDragListPayload {
   listId: number;
@@ -55,6 +55,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     dragType,
   } = props;
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
+  // const modalRef = useRef<HTMLDivElement>(null);
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const currentTexture = getTexture(boardData.custom?.listTextures?.[id ?? 0] ?? 'gray');
   const dispatch = useDispatch<AppDispatch>();
@@ -109,6 +110,9 @@ export function List(props: IAddCardChangesProps): JSX.Element {
       await dispatch(processListMoveThunk(draggedItem)).unwrap();
     }
   };
+  // useClickOutside(modalRef, () => {
+  //   setVisibleAddCardForm(false);
+  // });
   return (
     <div
       className="empty-list"
@@ -154,7 +158,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
               <span className="icon-wrapper" />
             </button>
           </div>
-          <ul className="list__cards">
+          <div className="list__cards">
             {cards?.map((elem) => (
               <Card
                 key={elem.id}
@@ -169,7 +173,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
                 draggedCardId={draggedCardId!}
               />
             ))}
-          </ul>
+          </div>
           {isVisibleAddCardForm && (
             <AddCardForm
               title={title ?? ''}

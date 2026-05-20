@@ -7,8 +7,8 @@ import { IList } from '../../../../common/interfaces/IList';
 import { AppDispatch } from '../../../../store/store';
 import { createListThunk, fetchBoardThunk, updateBoardThunk } from '../../../../store/boards/thunks';
 import { IBoard } from '../../../../common/interfaces/IBoard';
-import '../List/list.scss';
 import { useClickOutside } from '../../../../hooks/useClickOutside';
+import '../List/list.scss';
 
 interface IAddListFormProps {
   onClose(): void;

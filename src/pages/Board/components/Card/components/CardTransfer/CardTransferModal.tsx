@@ -9,52 +9,46 @@ import { ChangeTitleForm } from '../../../ChangeTitle/ChangeTitleForm';
 import { transferCard } from './transferCard';
 import { ITransferCardData } from '../../../../../../common/interfaces/ITransferCardData';
 import './cardTransferModal.scss';
+import { ICard } from '../../../../../../common/interfaces/ICard';
 
 type Mode = 'move' | 'copy';
 
 interface CardMoveProps {
   isOpen: boolean;
   onClose(): void;
-  cardId: number;
   listId: number;
   boardId: number;
   mode: Mode;
+  cardData: ICard;
 }
 
 export function CardTransferModal({
   isOpen,
   onClose,
-  cardId,
   listId,
   boardId,
   mode,
+  cardData,
 }: CardMoveProps): JSX.Element | null {
   const [selectedBoardId, setSelectedBoardId] = useState(boardId);
-  const [cardTitle, setCardTitle] = useState('');
   const [currentBoard, setCurrentBoard] = useState<IBoard | null>(null);
   const [selectedListId, setSelectedListId] = useState(listId);
   const dispatch = useDispatch<AppDispatch>();
   const boards = useSelector((state: RootState) => state.boards.boards);
-  const activeCard = useSelector((state: RootState) => {
-    const lists = state.boards.activeBoard?.lists || [];
-    return lists.find((list) => list.cards?.some((c) => c.id === cardId))?.cards?.find((c) => c.id === cardId) || null;
-  });
-  const [selectedPosition, setSelectedPosition] = useState(activeCard?.position ?? 1);
-
-  useEffect(() => {
-    setCardTitle(activeCard?.title ?? '');
-  }, [activeCard]);
+  const [selectedPosition, setSelectedPosition] = useState(cardData?.position ?? 1);
+  const [cardTitle, setCardTitle] = useState(cardData.title!);
   useEffect(() => {
     if (!boards.length) {
       dispatch(fetchAllBoardsThunk());
     }
   }, [boards.length, dispatch]);
-
   useEffect(() => {
     const loadBoard = async (): Promise<void> => {
       try {
         const data = await getBoard(selectedBoardId);
         setCurrentBoard(data);
+        const currendListId = data.lists?.find((list) => list.position === 1)?.id;
+        setSelectedListId(currendListId!);
       } catch {
         toast.error(`cant load boardData id:${selectedBoardId}`);
       }
@@ -64,22 +58,23 @@ export function CardTransferModal({
     }
   }, [selectedBoardId]);
 
-  if (!isOpen || !activeCard) return null;
+  if (!isOpen) return null;
   if (!boards.length) return <div>Loading...</div>;
 
   const handleTransfer = async (): Promise<void> => {
     const payload: ITransferCardData = {
-      cardData: { ...activeCard, list_id: listId },
+      cardData: { ...cardData, list_id: listId },
       mode,
       fromBoardId: boardId,
       toBoardId: selectedBoardId,
       toListId: selectedListId,
       position: selectedPosition,
     };
-    transferCard(payload, dispatch);
     onClose();
+    requestAnimationFrame(async () => {
+      await transferCard(payload, dispatch);
+    });
   };
-
   const config = {
     move: {
       headerText: 'Перемістити картку',
@@ -92,14 +87,14 @@ export function CardTransferModal({
       showTitleInput: true,
     },
   };
-
   const current = config[mode];
   const lists = currentBoard?.lists ?? [];
   const cardsNumber = lists.find((list) => list.id === selectedListId)?.cards?.length ?? 0;
   const getPositionsLength = (): number => {
-    if (mode === 'copy') return cardsNumber + 1;
-    if (selectedListId !== listId) return cardsNumber + 1;
-    return cardsNumber;
+    if (mode === 'move' && selectedListId === listId) {
+      return cardsNumber;
+    }
+    return cardsNumber + 1;
   };
   const positions = Array.from({ length: getPositionsLength() }, (_, index) => index + 1);
   return (
@@ -117,7 +112,7 @@ export function CardTransferModal({
             <i className="fa-solid fa-xmark" />
           </button>
         </div>
-        {current.showTitleInput && (
+        {current.showTitleInput ? (
           <>
             <span>Назва</span>
             <ChangeTitleForm
@@ -125,40 +120,56 @@ export function CardTransferModal({
               onCancel={() => {}}
               currentTitle={cardTitle}
             />
-            <span>Скопіювати в...</span>
+            <span className="card-move__action_title">Скопіювати в...</span>
           </>
+        ) : (
+          <span className="card-move__action_title">Виберіть місце призначення</span>
         )}
         <div className="card-move__board_selector">
-          <label>Дошка</label>
-          <select value={selectedBoardId} onChange={(e) => setSelectedBoardId(Number(e.target.value))}>
+          <label className="card-move__selector_name">Дошка</label>
+          <select
+            className="card-move__selector"
+            value={selectedBoardId}
+            onChange={(e) => setSelectedBoardId(Number(e.target.value))}
+          >
             {boards.map((board) => (
               <option key={board.id} value={board.id}>
-                {board.title}
+                {boardId === board.id ? `${board.title} (поточне)` : board.title}
               </option>
             ))}
           </select>
         </div>
-        <div className="card-move__list_selector">
-          <label>Список</label>
-          <select value={selectedListId} onChange={(e) => setSelectedListId(Number(e.target.value))}>
-            {lists.map((list) => (
-              <option key={list.id} value={list.id}>
-                {list.title}
-              </option>
-            ))}
-          </select>
+        <div className="card-move__destination_wrapper">
+          <div className="card-move__list_selector">
+            <label className="card-move__selector_name">Список</label>
+            <select
+              className="card-move__selector"
+              value={selectedListId}
+              onChange={(e) => setSelectedListId(Number(e.target.value))}
+            >
+              {lists.map((list) => (
+                <option key={list.id} value={list.id}>
+                  {listId === list.id ? `${list.title} (поточне)` : list.title}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="card-move__card-position_selector">
+            <label className="card-move__selector_name">Положення</label>
+            <select
+              className="card-move__selector"
+              value={selectedPosition}
+              onChange={(e) => setSelectedPosition(Number(e.target.value))}
+            >
+              {positions.map((pos) => (
+                <option key={pos} value={pos}>
+                  {cardData.position === pos ? `${pos} (поточне)` : pos}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="card-move__card-position_selector">
-          <label>Положення</label>
-          <select value={selectedPosition} onChange={(e) => setSelectedPosition(Number(e.target.value))}>
-            {positions.map((pos) => (
-              <option key={pos} value={pos}>
-                {pos}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button className="card-move__move" onClick={handleTransfer}>
+        <button className="card-move__move-button" onClick={handleTransfer}>
           {current.buttonText}
         </button>
       </div>
