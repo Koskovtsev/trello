@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { createUser, loginUser } from '../../../api/boardsService';
 import './registration.scss';
@@ -12,6 +12,7 @@ export function Registration(): JSX.Element {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const validateEmail = (enteredEmail: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(enteredEmail);
@@ -70,6 +71,7 @@ export function Registration(): JSX.Element {
     if (newUserId) {
       const response = await loginUser(payload);
       localStorage.setItem('token', response.token);
+      navigate(`/`);
       // eslint-disable-next-line no-console
       console.log(
         `Реєстраці, авторизація, пейлоад: ${JSON.stringify(payload)}, новий юзер айді:${newUserId}, token: ${response.token}`

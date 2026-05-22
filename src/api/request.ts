@@ -16,11 +16,15 @@ instance.interceptors.request.use((config) => {
   NProgress.start();
   const token = localStorage.getItem('token');
 
-  if (token) {
+  const url = config.url || '';
+
+  const isAuthRoute = url.includes('/login') || url.includes('/user');
+
+  if (token && !isAuthRoute) {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
   // eslint-disable-next-line no-console
-  // console.log(`${JSON.stringify(config)}, автрізейшн:${JSON.stringify(config.headers.Authorization)}, token: ${token}`);
+  console.log(`${JSON.stringify(config)}, автрізейшн:${JSON.stringify(config.headers.Authorization)}, token: ${token}`);
   return config;
 });
 
