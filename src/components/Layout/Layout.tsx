@@ -3,6 +3,7 @@ import './layout.scss';
 
 export function Layout(): JSX.Element {
   const location = useLocation();
+  const isAuthorized = !!localStorage.getItem('token');
   const isHomePage = location.pathname === '/';
   return (
     <div className="app-container">
@@ -42,6 +43,20 @@ export function Layout(): JSX.Element {
           </svg>
           <span className="header__logo-text">Trello</span>
         </Link>
+        {!isAuthorized ? (
+          <>
+            <Link to="/registration/" className="auth-link">
+              Реєстрація
+            </Link>
+            <Link to="/login/" className="auth-link">
+              Вхід
+            </Link>
+          </>
+        ) : (
+          <Link to="/login/" className="auth-link" onClick={() => localStorage.clear()}>
+            Вийти
+          </Link>
+        )}
       </header>
       <main>
         <Outlet />

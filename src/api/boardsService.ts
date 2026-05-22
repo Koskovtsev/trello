@@ -66,3 +66,16 @@ export async function deleteCard(boardId: number, cardId: number): Promise<strin
   const response = await api.delete<unknown, { result: string }>(`board/${boardId}/card/${cardId}`);
   return response.result;
 }
+
+export async function createUser(userData: { email: string; password: string }): Promise<number> {
+  const response = await api.post<unknown, { id: number }>(`user`, userData);
+  return response.id;
+}
+
+export async function loginUser(userData: {
+  email: string;
+  password: string;
+}): Promise<{ result: string; token: string }> {
+  const response = await api.post<unknown, { result: string; token: string }>(`login`, userData);
+  return response;
+}

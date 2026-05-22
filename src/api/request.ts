@@ -8,12 +8,19 @@ const instance = axios.create({
   baseURL: api.baseURL,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: 'Bearer 123', // до цього ми ще повернемося якось потім
+    // Authorization: `Bearer 123`, // до цього ми ще повернемося якось потім
   },
 });
 
 instance.interceptors.request.use((config) => {
   NProgress.start();
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    config.headers.set('Authorization', `Bearer ${token}`);
+  }
+  // eslint-disable-next-line no-console
+  // console.log(`${JSON.stringify(config)}, автрізейшн:${JSON.stringify(config.headers.Authorization)}, token: ${token}`);
   return config;
 });
 
@@ -24,6 +31,13 @@ instance.interceptors.response.use(
   },
   (error) => {
     NProgress.done();
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+
+      if (window.location.pathname !== '#/login/') {
+        window.location.href = '#/login/';
+      }
+    }
     return Promise.reject(error);
   }
 );
