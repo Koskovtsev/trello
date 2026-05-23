@@ -72,10 +72,6 @@ export function Registration(): JSX.Element {
       const response = await loginUser(payload);
       localStorage.setItem('token', response.token);
       navigate(`/`);
-      // eslint-disable-next-line no-console
-      console.log(
-        `Реєстраці, авторизація, пейлоад: ${JSON.stringify(payload)}, новий юзер айді:${newUserId}, token: ${response.token}`
-      );
     }
   };
   return (

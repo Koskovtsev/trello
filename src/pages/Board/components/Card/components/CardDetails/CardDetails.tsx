@@ -32,6 +32,20 @@ export function CardDetails(): JSX.Element | null {
       lists.find((list) => list.cards?.some((c) => c.id === cardIdNum))?.cards?.find((c) => c.id === cardIdNum) || null
     );
   });
+  const handleClose = (): void => navigate(`/board/${boardIdNum}`);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
   const listId = useSelector((state: RootState) => {
     const parentList = state.boards.activeBoard?.lists?.find((list) => list.cards?.some((c) => c.id === cardIdNum));
     return parentList?.id;
@@ -51,7 +65,6 @@ export function CardDetails(): JSX.Element | null {
   const currentTexture = getTexture(activeCard.custom?.background ?? 'none');
   const cardUrl = `https://koskovtsev.github.io/trello/#/board/${boardIdNum}/card/${cardIdNum}`;
 
-  const handleClose = (): void => navigate(`/board/${boardIdNum}`);
   const { handleTextureModal } = useBoard(boardIdNum);
   const { handleDeleteCard, handleCheckedCard, handleChangeTitle, handleSaveDescription } = useCard({
     boardId: boardIdNum,

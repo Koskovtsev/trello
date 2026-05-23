@@ -24,7 +24,7 @@ instance.interceptors.request.use((config) => {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
   // eslint-disable-next-line no-console
-  console.log(`${JSON.stringify(config)}, автрізейшн:${JSON.stringify(config.headers.Authorization)}, token: ${token}`);
+  // console.log(`${JSON.stringify(config)}, автрізейшн:${JSON.stringify(config.headers.Authorization)}, token: ${token}`);
   return config;
 });
 

@@ -48,7 +48,7 @@ export function Board(): JSX.Element {
     setPreviewLists(lists);
   }, [lists, draggedListId]);
   useEffect(() => {
-    if (!activeBoard) return;
+    if (!activeBoard) return; // TODO: цей юзеффект для автоскролу, винести в окремий файл + він не працює.
     if (isInitialRender.current) {
       isInitialRender.current = false;
       prevListsLength.current = lists.length;
@@ -62,7 +62,7 @@ export function Board(): JSX.Element {
       prevListsLength.current = lists.length;
     }
     prevListsLength.current = lists.length;
-  }, [isVisibleAddListForm, lists.length]); // TODO: цей юзеффект для автоскролу, винести в окремий файл + він не працює.
+  }, [isVisibleAddListForm, lists.length]);
 
   if (!activeBoard) return <>загрузка</>;
   const refreshBoard = async (): Promise<void> => {
@@ -147,10 +147,6 @@ export function Board(): JSX.Element {
     setDragType(null);
     setPreviewLists(lists);
   };
-  // const handleListAdded = (): void => {
-  //   // eslint-disable-next-line no-console
-  //   console.log(`додаємо список`);
-  // };
   return (
     <>
       <div className="board" ref={scrollToEnd} style={{ backgroundImage: `url(${currentTexture})` }}>
@@ -208,13 +204,6 @@ export function Board(): JSX.Element {
             </button>
           )}
           {isVisibleAddListForm && (
-            // <AddListForm
-            //   onClose={() => setVisibleAddListForm(false)}
-            //   position={lists.length + 1}
-            //   boardId={id}
-            //   title={draftTitle}
-            //   setTitle={setDraftTitle}
-            // />
             <AddItemModal
               active={isVisibleAddListForm}
               setActive={setVisibleAddListForm}

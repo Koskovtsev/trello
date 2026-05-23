@@ -49,12 +49,7 @@ export function Login(): JSX.Element {
     if (response.result === 'Authorized') {
       localStorage.setItem('token', response.token);
       navigate(`/`);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(`неавторизовано. відповідь: ${JSON.stringify(response)}`);
     }
-    // eslint-disable-next-line no-console
-    console.log(`Авторизація. пейлоад: ${JSON.stringify(payload)}, token: ${response.token}`);
   };
   return (
     <div className="reg__wrapper">

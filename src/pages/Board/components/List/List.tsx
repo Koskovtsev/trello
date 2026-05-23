@@ -55,7 +55,6 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     dragType,
   } = props;
   const [isVisibleChangeTitleForm, setVisibleChangeTitleForm] = useState(false);
-  // const modalRef = useRef<HTMLDivElement>(null);
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const currentTexture = getTexture(boardData.custom?.listTextures?.[id ?? 0] ?? 'gray');
   const dispatch = useDispatch<AppDispatch>();
@@ -110,9 +109,6 @@ export function List(props: IAddCardChangesProps): JSX.Element {
       await dispatch(processListMoveThunk(draggedItem)).unwrap();
     }
   };
-  // useClickOutside(modalRef, () => {
-  //   setVisibleAddCardForm(false);
-  // });
   return (
     <div
       className="empty-list"

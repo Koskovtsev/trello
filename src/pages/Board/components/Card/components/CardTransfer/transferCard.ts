@@ -4,7 +4,6 @@ import { AppDispatch } from '../../../../../../store/store';
 import {
   createCardThunk,
   deleteCardThunk,
-  // fetchBoardThunk,
   processCardMoveThunk,
   updateGroupCardsThunk,
 } from '../../../../../../store/boards/thunks';

@@ -74,5 +74,9 @@
         font-size: 20px;
         font-style: normal;
         text-decoration: none;
+
+        &:hover {
+            transform: scale(1.1);
+        }
     }
 }
