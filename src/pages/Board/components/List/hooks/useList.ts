@@ -1,5 +1,7 @@
 import toast from 'react-hot-toast';
-import { deleteList, putListUpdates } from '../../../../../api/boardsService';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../../store/store';
+import { deleteListThunk, updateListThunk } from '../../../../../store/boards/thunks';
 
 interface IUseListData {
   deleteListById(): Promise<void>;
@@ -9,17 +11,20 @@ interface IUseListData {
 interface IUseListProps {
   boardId: number;
   listId: number;
-  onRefreshList(): void;
+  // onRefreshList(): void;
 }
-export function useList({ boardId, listId, onRefreshList }: IUseListProps): IUseListData {
+export function useList({ boardId, listId }: IUseListProps): IUseListData {
+  const dispatch = useDispatch<AppDispatch>();
+
   const deleteListById = async (): Promise<void> => {
     try {
-      const response = await deleteList(boardId, listId);
-      if (response === 'Deleted') {
-        onRefreshList();
-      } else {
-        toast.error(`Error deleting list`);
-      }
+      const payload = {
+        boardId,
+        listData: {
+          id: listId,
+        },
+      };
+      await dispatch(deleteListThunk(payload)).unwrap();
     } catch (error) {
       toast.error(`Error deleting list`);
     }
@@ -27,9 +32,14 @@ export function useList({ boardId, listId, onRefreshList }: IUseListProps): IUse
 
   const changeTitle = async (title: string): Promise<void> => {
     try {
-      const listData = { title };
-      const response = await putListUpdates(boardId, listId, listData);
-      if (response === 'Updated') onRefreshList();
+      const payload = {
+        boardId,
+        listData: {
+          id: listId,
+          title,
+        },
+      };
+      await dispatch(updateListThunk(payload)).unwrap();
     } catch (error) {
       toast.error(`Error changing list title`);
     }

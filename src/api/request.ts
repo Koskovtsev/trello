@@ -23,8 +23,6 @@ instance.interceptors.request.use((config) => {
   if (token && !isAuthRoute) {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
-  // eslint-disable-next-line no-console
-  // console.log(`${JSON.stringify(config)}, автрізейшн:${JSON.stringify(config.headers.Authorization)}, token: ${token}`);
   return config;
 });
 
@@ -33,13 +31,32 @@ instance.interceptors.response.use(
     NProgress.done();
     return response.data;
   },
-  (error) => {
+  async (error) => {
     NProgress.done();
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-
-      if (window.location.pathname !== '#/login/') {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest.isRetryRequest) {
+      originalRequest.isRetryRequest = true;
+      const refToken = localStorage.getItem('refreshToken');
+      if (!refToken && window.location.hash !== '#/login/') {
+        window.location.replace('#/login/');
+        return Promise.reject(error);
+      }
+      try {
+        const payload = { refreshToken: refToken };
+        const response = await axios.post<{ result: string; token: string; refreshToken: string }>(
+          `${api.baseURL}/refresh`,
+          payload
+        );
+        if (response.data.result === 'Authorized') {
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('refreshToken', response.data.refreshToken);
+          originalRequest.headers.set('Authorization', `Bearer ${response.data.token}`);
+          return await instance(originalRequest);
+        }
+      } catch (refreshError) {
+        localStorage.clear();
         window.location.href = '#/login/';
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);

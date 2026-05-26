@@ -25,7 +25,6 @@ type DragType = 'list' | 'card' | null;
 interface IAddCardChangesProps extends IList {
   boardData: IBoard;
   boardId: number;
-  onDataUpdate(): void;
   onHover(id: number): void;
   onDragStarted(id: number | null, type: DragType): void;
   onDragEnded(): void;
@@ -43,7 +42,6 @@ export function List(props: IAddCardChangesProps): JSX.Element {
     cards,
     boardData,
     boardId,
-    onDataUpdate,
     onHover,
     onDragStarted,
     onDragEnded,
@@ -58,7 +56,7 @@ export function List(props: IAddCardChangesProps): JSX.Element {
   const [isVisibleAddCardForm, setVisibleAddCardForm] = useState(false);
   const currentTexture = getTexture(boardData.custom?.listTextures?.[id ?? 0] ?? 'gray');
   const dispatch = useDispatch<AppDispatch>();
-  const { deleteListById, changeTitle } = useList({ boardId, listId: id!, onRefreshList: onDataUpdate });
+  const { deleteListById, changeTitle } = useList({ boardId, listId: id! });
   const { handleTextureModal } = useBoard(boardId);
   if (!cards) return <>загрузка</>;
   // TODO: подумать чи можна зменшити чи перенести в інше місце драг-Н-дроп функції.

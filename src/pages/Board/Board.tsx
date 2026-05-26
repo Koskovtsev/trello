@@ -18,6 +18,8 @@ import './components/List/list.scss';
 type DragType = 'list' | 'card' | null;
 
 export function Board(): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [isVisibleAddListForm, setVisibleAddListForm] = useState(false);
   const [isChangeTitle, setIsChangeTitle] = useState(false);
   const [draftTitle, setDraftTitle] = useState('');
@@ -25,26 +27,27 @@ export function Board(): JSX.Element {
   const [draggedListId, setDraggedListId] = useState<number | null>(null);
   const [draggedCardId, setDraggedCardId] = useState<number | null>(null);
   const [sourceData, setSourceData] = useState<{ listId: number; pos: number } | null>(null);
+  const [previewLists, setPreviewLists] = useState<IList[]>([]);
+
   const activeBoard = useSelector((state: RootState) => state.boards.activeBoard);
-  const dispatch = useDispatch<AppDispatch>();
+  const currentTexture = getTexture(activeBoard?.custom?.background ?? '');
+  const { boardId } = useParams<{ boardId: string }>();
+  const id = Number(boardId);
+  const { handleChangeTitle, handleTextureModal, handleListAdded } = useBoard(id);
+  const lists = activeBoard?.lists ?? [];
+  const title = activeBoard?.title ?? '';
+
   const scrollToEnd = useRef<HTMLDivElement>(null);
   const isInitialRender = useRef(true);
   const prevListsLength = useRef(0);
-  const { boardId } = useParams<{ boardId: string }>();
-  const id = Number(boardId);
-  const currentTexture = getTexture(activeBoard?.custom?.background ?? '');
-  const { handleChangeTitle, handleTextureModal, handleListAdded } = useBoard(id);
+
   useEffect(() => {
     if (boardId) {
       dispatch(fetchBoardThunk(Number(boardId))).unwrap();
     }
   }, [boardId, dispatch]);
-  const lists = activeBoard?.lists ?? [];
-  const title = activeBoard?.title ?? '';
-  const [previewLists, setPreviewLists] = useState<IList[]>([]);
   useEffect(() => {
     if (draggedListId !== null) return;
-
     setPreviewLists(lists);
   }, [lists, draggedListId]);
   useEffect(() => {
@@ -65,15 +68,15 @@ export function Board(): JSX.Element {
   }, [isVisibleAddListForm, lists.length]);
 
   if (!activeBoard) return <>загрузка</>;
-  const refreshBoard = async (): Promise<void> => {
-    if (boardId) {
-      await dispatch(fetchBoardThunk(Number(boardId))).unwrap();
-    }
-  };
-
+  // const refreshBoard = async (bId: number): Promise<void> => {
+  //   if (bId) {
+  //     await dispatch(fetchBoardThunk(Number(bId))).unwrap();
+  //   }
+  // };
   if (!activeBoard) {
     return <div className="loading">Завантаження...</div>;
   }
+
   function reorder(list: IList[], fromIndex: number, toindex: number): IList[] {
     const cloned = structuredClone(list);
     const [removed] = cloned.splice(fromIndex, 1);
@@ -84,6 +87,7 @@ export function Board(): JSX.Element {
     }));
     return reorderedList;
   }
+
   function handleCardHover(hoveredCardId: number | null, targetListId: number): void {
     if (dragType !== 'card' || draggedCardId === hoveredCardId) return;
     setPreviewLists((prevList: IList[]) => {
@@ -108,19 +112,21 @@ export function Board(): JSX.Element {
       return clone;
     });
   }
+
   function handleListHover(hoveredId: number): void {
     if (dragType !== 'list' || draggedListId === hoveredId) return;
     const draggedIndex = previewLists.findIndex((list) => list.id === draggedListId);
     const targetIndex = previewLists.findIndex((list) => list.id === hoveredId);
-
     if (draggedIndex === -1 || targetIndex === -1) return;
     setPreviewLists(reorder(previewLists, targetIndex, draggedIndex!));
   }
+
   const handleCardDrag = (cardId: number, cardData: ICard, listId: number): void => {
     setDragType('card');
     setDraggedCardId(cardId);
     setSourceData({ listId, pos: cardData.position! });
   };
+
   const handleDragEnd = async (): Promise<void> => {
     if (sourceData && draggedCardId) {
       let targetListId = 0;
@@ -147,6 +153,7 @@ export function Board(): JSX.Element {
     setDragType(null);
     setPreviewLists(lists);
   };
+
   return (
     <>
       <div className="board" ref={scrollToEnd} style={{ backgroundImage: `url(${currentTexture})` }}>
@@ -181,7 +188,7 @@ export function Board(): JSX.Element {
               {...elem}
               boardData={activeBoard}
               boardId={id}
-              onDataUpdate={refreshBoard}
+              // onDataUpdate={refreshBoard}
               onHover={(listIndex) => handleListHover(listIndex)}
               onDragStarted={(listId, type) => {
                 setDragType(type);

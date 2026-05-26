@@ -68,14 +68,14 @@ export async function deleteCard(boardId: number, cardId: number): Promise<strin
 }
 
 export async function createUser(userData: { email: string; password: string }): Promise<number> {
-  const response = await api.post<unknown, { id: number }>(`user`, userData);
+  const response = await api.post<unknown, { id: number }>(`user/`, userData);
   return response.id;
 }
 
 export async function loginUser(userData: {
   email: string;
   password: string;
-}): Promise<{ result: string; token: string }> {
-  const response = await api.post<unknown, { result: string; token: string }>(`login`, userData);
+}): Promise<{ result: string; token: string; refreshToken: string }> {
+  const response = await api.post<unknown, { result: string; token: string; refreshToken: string }>(`login/`, userData);
   return response;
 }

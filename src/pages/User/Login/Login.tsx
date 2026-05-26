@@ -48,6 +48,7 @@ export function Login(): JSX.Element {
     const response = await loginUser(payload);
     if (response.result === 'Authorized') {
       localStorage.setItem('token', response.token);
+      localStorage.setItem('refreshToken', response.refreshToken);
       navigate(`/`);
     }
   };

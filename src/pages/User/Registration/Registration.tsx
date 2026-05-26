@@ -71,6 +71,7 @@ export function Registration(): JSX.Element {
     if (newUserId) {
       const response = await loginUser(payload);
       localStorage.setItem('token', response.token);
+      localStorage.setItem('refreshToken', response.refreshToken);
       navigate(`/`);
     }
   };
