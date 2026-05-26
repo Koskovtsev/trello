@@ -90,7 +90,9 @@ export function Registration(): JSX.Element {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setEmailError(!validateEmail(e.target.value));
+              if (emailError) {
+                setEmailError(!validateEmail(e.target.value));
+              }
             }}
             onBlur={() => setEmailError(!validateEmail(email))}
             required

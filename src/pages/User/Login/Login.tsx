@@ -1,4 +1,5 @@
 import toast from 'react-hot-toast';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { loginUser } from '../../../api/boardsService';
@@ -32,6 +33,9 @@ export function Login(): JSX.Element {
     }
     return isValid;
   };
+  function isAxiosError(error: unknown): error is import('axios').AxiosError {
+    return axios.isAxiosError(error);
+  }
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -45,31 +49,52 @@ export function Login(): JSX.Element {
       email: normalizedEmail,
       password: password.trim(),
     };
-    const response = await loginUser(payload);
-    if (response.result === 'Authorized') {
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      navigate(`/`);
+    try {
+      const response = await loginUser(payload);
+      if (response.result === 'Authorized') {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('refreshToken', response.refreshToken);
+        const redirectPath = localStorage.getItem('redirectAfterLogin');
+        navigate(redirectPath || '/');
+        localStorage.removeItem('redirectAfterLogin');
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          toast.error('Не вірно введено логін чи пароль');
+        } else {
+          toast.error('Щось пішло не так, спробуйте пізніше');
+        }
+      } else {
+        toast.error('Невідома помилка');
+      }
     }
   };
   return (
     <div className="reg__wrapper">
       <div className="reg__window">
-        <span className="reg__title">Вхід</span>
+        <div className="reg__header">
+          <span className="reg__title">Вхід</span>
+        </div>
         <form className="reg__main" onSubmit={handleSubmit} noValidate>
           <span className="reg__input_title">E-mail</span>
           <input
-            className={`login__input login__input_email ${emailError ? `error` : ``}`}
+            className={`reg__input reg__input_email ${emailError ? `error` : ``}`}
             type="email"
             autoComplete="email"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setEmailError(!validateEmail(e.target.value));
+              if (emailError) {
+                setEmailError(!validateEmail(e.target.value));
+              }
             }}
             onBlur={() => setEmailError(!validateEmail(email))}
             required
           />
+          <div className="reg__error_container">
+            {emailError && <span className="reg__error_message">виправте E-mail</span>}
+          </div>
           <span className="reg__input_title">Пароль</span>
           <div className="reg__password-wrapper">
             <input
@@ -91,6 +116,9 @@ export function Login(): JSX.Element {
             >
               <i className={showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'} />
             </button>
+          </div>
+          <div className="reg__error_container">
+            {passwordError && <span className="reg__error_message">пароль занадто малий</span>}
           </div>
           <button className="reg__confirm-button">Авторизація</button>
         </form>

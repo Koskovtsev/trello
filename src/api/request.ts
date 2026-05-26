@@ -31,15 +31,23 @@ instance.interceptors.response.use(
     NProgress.done();
     return response.data;
   },
-  async (error) => {
+  async (error): Promise<unknown> => {
     NProgress.done();
+
+    const status = error.response?.status;
+    if (status === 400) {
+      return Promise.reject(error.response?.data);
+    }
+
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest.isRetryRequest) {
       originalRequest.isRetryRequest = true;
       const refToken = localStorage.getItem('refreshToken');
-      if (!refToken && window.location.hash !== '#/login/') {
-        window.location.replace('#/login/');
-        return Promise.reject(error);
+      if (!refToken) {
+        if (window.location.hash !== '#/login/') {
+          window.location.replace('#/login/');
+          return new Promise(() => {});
+        }
       }
       try {
         const payload = { refreshToken: refToken };

@@ -1,5 +1,6 @@
 import { Toaster } from 'react-hot-toast';
 import { Route, Routes } from 'react-router-dom';
+import { RequireAuth } from './components/RequireAuth';
 import { Board } from './pages/Board/Board';
 import { Home } from './pages/Home/Home';
 import { Layout } from './components/Layout/Layout';
@@ -15,11 +16,32 @@ function App(): JSX.Element {
       <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route
+            index
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          />
           <Route path="/registration/" element={<Registration />} />
           <Route path="/login/" element={<Login />} />
-          <Route path="/board/:boardId" element={<Board />}>
-            <Route path="card/:cardId" element={<CardDetails />} />
+          <Route
+            path="/board/:boardId"
+            element={
+              <RequireAuth>
+                <Board />
+              </RequireAuth>
+            }
+          >
+            <Route
+              path="card/:cardId"
+              element={
+                <RequireAuth>
+                  <CardDetails />
+                </RequireAuth>
+              }
+            />
           </Route>
         </Route>
       </Routes>
