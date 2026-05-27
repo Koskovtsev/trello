@@ -195,7 +195,6 @@ export function CardDetails(): JSX.Element | null {
       <CardTransferModal
         isOpen={isMoveModalOpen}
         onClose={() => {
-          handleClose();
           setMoveModalActive(false);
         }}
         listId={listId}

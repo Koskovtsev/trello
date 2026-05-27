@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { AppDispatch, RootState } from '../../../../../../store/store';
 import { fetchAllBoardsThunk } from '../../../../../../store/boards/thunks';
@@ -8,8 +9,8 @@ import { IBoard } from '../../../../../../common/interfaces/IBoard';
 import { ChangeTitleForm } from '../../../ChangeTitle/ChangeTitleForm';
 import { transferCard } from './transferCard';
 import { ITransferCardData } from '../../../../../../common/interfaces/ITransferCardData';
-import './cardTransferModal.scss';
 import { ICard } from '../../../../../../common/interfaces/ICard';
+import './cardTransferModal.scss';
 
 type Mode = 'move' | 'copy';
 
@@ -30,13 +31,17 @@ export function CardTransferModal({
   mode,
   cardData,
 }: CardMoveProps): JSX.Element | null {
+  const isInitialBoard = useRef(true);
   const [selectedBoardId, setSelectedBoardId] = useState(boardId);
   const [currentBoard, setCurrentBoard] = useState<IBoard | null>(null);
   const [selectedListId, setSelectedListId] = useState(listId);
-  const dispatch = useDispatch<AppDispatch>();
-  const boards = useSelector((state: RootState) => state.boards.boards);
   const [selectedPosition, setSelectedPosition] = useState(cardData?.position ?? 1);
   const [cardTitle, setCardTitle] = useState(cardData.title!);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const boards = useSelector((state: RootState) => state.boards.boards);
+
   useEffect(() => {
     if (!boards.length) {
       dispatch(fetchAllBoardsThunk());
@@ -47,8 +52,13 @@ export function CardTransferModal({
       try {
         const data = await getBoard(selectedBoardId);
         setCurrentBoard(data);
-        const currendListId = data.lists?.find((list) => list.position === 1)?.id;
-        setSelectedListId(currendListId!);
+        if (selectedBoardId !== boardId) {
+          isInitialBoard.current = false;
+        }
+        if (!isInitialBoard.current) {
+          const currentListId = data.lists?.find((list) => list.position === 1)?.id;
+          setSelectedListId(currentListId!);
+        }
       } catch {
         toast.error(`cant load boardData id:${selectedBoardId}`);
       }
@@ -57,7 +67,6 @@ export function CardTransferModal({
       loadBoard();
     }
   }, [selectedBoardId]);
-
   if (!isOpen) return null;
   if (!boards.length) return <div>Loading...</div>;
 
@@ -71,6 +80,7 @@ export function CardTransferModal({
       position: selectedPosition,
     };
     onClose();
+    navigate(`/board/${boardId}`);
     requestAnimationFrame(async () => {
       await transferCard(payload, dispatch);
     });
@@ -89,6 +99,7 @@ export function CardTransferModal({
   };
   const current = config[mode];
   const lists = currentBoard?.lists ?? [];
+  const isBoardEmpty = !lists.length;
   const cardsNumber = lists.find((list) => list.id === selectedListId)?.cards?.length ?? 0;
   const getPositionsLength = (): number => {
     if (mode === 'move' && selectedListId === listId) {
@@ -143,33 +154,47 @@ export function CardTransferModal({
           <div className="card-move__list_selector">
             <label className="card-move__selector_name">Список</label>
             <select
-              className="card-move__selector"
+              className={`card-move__selector ${isBoardEmpty ? 'card-move__selector_blocked' : ''}`}
               value={selectedListId}
               onChange={(e) => setSelectedListId(Number(e.target.value))}
+              disabled={isBoardEmpty}
             >
-              {lists.map((list) => (
-                <option key={list.id} value={list.id}>
-                  {listId === list.id ? `${list.title} (поточне)` : list.title}
-                </option>
-              ))}
+              {isBoardEmpty ? (
+                <option>Немає списків</option>
+              ) : (
+                lists.map((list) => (
+                  <option key={list.id} value={list.id}>
+                    {listId === list.id ? `${list.title} (поточне)` : list.title}
+                  </option>
+                ))
+              )}
             </select>
           </div>
           <div className="card-move__card-position_selector">
             <label className="card-move__selector_name">Положення</label>
             <select
-              className="card-move__selector"
+              className={`card-move__selector ${isBoardEmpty ? 'card-move__selector_blocked' : ''}`}
               value={selectedPosition}
               onChange={(e) => setSelectedPosition(Number(e.target.value))}
+              disabled={isBoardEmpty}
             >
-              {positions.map((pos) => (
-                <option key={pos} value={pos}>
-                  {cardData.position === pos ? `${pos} (поточне)` : pos}
-                </option>
-              ))}
+              {isBoardEmpty ? (
+                <option>Немає списків</option>
+              ) : (
+                positions.map((pos) => (
+                  <option key={pos} value={pos}>
+                    {cardData.position === pos ? `${pos} (поточне)` : pos}
+                  </option>
+                ))
+              )}
             </select>
           </div>
         </div>
-        <button className="card-move__move-button" onClick={handleTransfer}>
+        <button
+          className={`card-move__move-button ${isBoardEmpty ? 'card-move__move-button_blocked' : ''}`}
+          onClick={handleTransfer}
+          disabled={isBoardEmpty}
+        >
           {current.buttonText}
         </button>
       </div>

@@ -48,7 +48,10 @@ export function DescriptionMarkdown({ initialValue = '', onSave }: Props): JSX.E
             </button>
             <button
               className="markdown-editor__button markdown-editor__button--cancel"
-              onClick={() => setIsEditing(false)}
+              onClick={() => {
+                setIsEditing(false);
+                setText(initialValue);
+              }}
             >
               Скасувати
             </button>

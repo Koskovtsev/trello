@@ -59,6 +59,10 @@
         &:focus {
             border-color: $color-brand-blue;
         }
+
+        &_blocked {
+            cursor: not-allowed;
+        }
     }
 
     &__destination_wrapper {
@@ -117,6 +121,14 @@
 
         &:hover {
             background-color: $color-brand-white-blue;
+        }
+
+        &_blocked {
+            
+            cursor: not-allowed;
+            &:hover {
+            background-color: $color-brand-blue;
+        }
         }
     }
 }
