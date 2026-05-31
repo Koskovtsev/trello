@@ -9,6 +9,7 @@ import {
   updateCardThunk,
 } from '../../../../../store/boards/thunks';
 import { IDragCardPayload } from '../../../../../common/interfaces/IDragCardPayload';
+import { useBoardInfo } from '../../../context/BoardInfoContext';
 
 interface IUseCardData {
   handleCheckedCard(): void;
@@ -24,12 +25,12 @@ interface IUseCardData {
   ): Promise<void>;
 }
 interface IUseCardProps {
-  boardId: number;
   listId?: number;
   cardId: number;
   cardData?: ICard;
 }
-export function useCard({ boardId, listId, cardId, cardData }: IUseCardProps): IUseCardData {
+export function useCard({ listId, cardId, cardData }: IUseCardProps): IUseCardData {
+  const { boardId } = useBoardInfo();
   const dispatch = useDispatch<AppDispatch>();
   const handleCheckedCard = async (): Promise<void> => {
     if (!cardData) return;

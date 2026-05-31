@@ -67,7 +67,6 @@ export function CardDetails(): JSX.Element | null {
 
   const { handleTextureModal } = useBoard(boardIdNum);
   const { handleDeleteCard, handleCheckedCard, handleChangeTitle, handleSaveDescription } = useCard({
-    boardId: boardIdNum,
     listId,
     cardId: cardIdNum,
     cardData: activeCard,

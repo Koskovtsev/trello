@@ -11,7 +11,6 @@ interface IUseListData {
 interface IUseListProps {
   boardId: number;
   listId: number;
-  // onRefreshList(): void;
 }
 export function useList({ boardId, listId }: IUseListProps): IUseListData {
   const dispatch = useDispatch<AppDispatch>();

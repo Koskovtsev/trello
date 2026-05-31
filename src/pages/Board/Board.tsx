@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useParams } from 'react-router-dom';
 import { List } from './components/List/List';
@@ -12,10 +12,17 @@ import { IList } from '../../common/interfaces/IList';
 import { ICard } from '../../common/interfaces/ICard';
 import { IDragCardPayload } from '../../common/interfaces/IDragCardPayload';
 import { AddItemModal } from '../Home/components/AddBoard/AddItemModal';
+import { BoardInfoContext } from './context/BoardInfoContext';
+import { DragDropContext } from './context/DragDropContext';
 import './board.scss';
 import './components/List/list.scss';
 
 type DragType = 'list' | 'card' | null;
+export interface IDragDropContext {
+  draggedListId: number | null;
+  draggedCardId: number | null;
+  dragType: DragType;
+}
 
 export function Board(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,8 +45,6 @@ export function Board(): JSX.Element {
   const title = activeBoard?.title ?? '';
 
   const scrollToEnd = useRef<HTMLDivElement>(null);
-  const isInitialRender = useRef(true);
-  const prevListsLength = useRef(0);
 
   useEffect(() => {
     if (boardId) {
@@ -50,32 +55,14 @@ export function Board(): JSX.Element {
     if (draggedListId !== null) return;
     setPreviewLists(lists);
   }, [lists, draggedListId]);
-  useEffect(() => {
-    if (!activeBoard) return; // TODO: цей юзеффект для автоскролу, винести в окремий файл + він не працює.
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      prevListsLength.current = lists.length;
-      return;
-    }
-    const isNewListAdded = lists.length > prevListsLength.current;
-    if (isVisibleAddListForm || isNewListAdded) {
-      if (scrollToEnd.current) {
-        scrollToEnd.current.scrollLeft = scrollToEnd.current.scrollWidth;
-      }
-      prevListsLength.current = lists.length;
-    }
-    prevListsLength.current = lists.length;
-  }, [isVisibleAddListForm, lists.length]);
 
-  if (!activeBoard) return <>загрузка</>;
-  // const refreshBoard = async (bId: number): Promise<void> => {
-  //   if (bId) {
-  //     await dispatch(fetchBoardThunk(Number(bId))).unwrap();
-  //   }
-  // };
-  if (!activeBoard) {
-    return <div className="loading">Завантаження...</div>;
-  }
+  const boardContextValue = useMemo(
+    () => ({
+      boardId: id,
+      activeBoard: activeBoard!,
+    }),
+    [id, activeBoard]
+  );
 
   function reorder(list: IList[], fromIndex: number, toindex: number): IList[] {
     const cloned = structuredClone(list);
@@ -153,77 +140,85 @@ export function Board(): JSX.Element {
     setDragType(null);
     setPreviewLists(lists);
   };
-
+  const dragDropValue = useMemo(
+    () =>
+      ({
+        draggedListId,
+        draggedCardId,
+        dragType,
+      }) as IDragDropContext,
+    [draggedListId, draggedCardId, dragType]
+  );
+  if (!activeBoard) return <>загрузка</>;
+  if (!activeBoard) {
+    return <div className="loading">Завантаження...</div>;
+  }
   return (
-    <>
-      <div className="board" ref={scrollToEnd} style={{ backgroundImage: `url(${currentTexture})` }}>
-        <div className="board__title_wrapper">
-          {!isChangeTitle && (
-            <div className="board__title" title={title} onClick={() => setIsChangeTitle(true)}>
-              {title}
-            </div>
-          )}
-          {isChangeTitle && (
-            <ChangeTitleForm
-              onTitleChanged={(newTitle) => {
-                handleChangeTitle(newTitle);
-                setIsChangeTitle(false);
-              }}
-              currentTitle={title ?? ''}
-              onCancel={() => setIsChangeTitle(false)}
-            />
-          )}
-          <button
-            className="list__button_custom-icon"
-            aria-label="Change Texture"
-            onClick={(e) => handleTextureModal(e, { type: 'board', boardId: id })}
-          >
-            <span className="icon-wrapper" />
-          </button>
-        </div>
-        <div className="board__list">
-          {previewLists.map((elem, index) => (
-            <List
-              key={elem.id}
-              {...elem}
-              boardData={activeBoard}
-              boardId={id}
-              // onDataUpdate={refreshBoard}
-              onHover={(listIndex) => handleListHover(listIndex)}
-              onDragStarted={(listId, type) => {
-                setDragType(type);
-                setDraggedListId(listId);
-              }}
-              currentPosition={index + 1}
-              currentDraggedListId={draggedListId!}
-              onCardDragStarted={(cardId, cardData, listId) => {
-                handleCardDrag(cardId!, cardData, listId);
-              }}
-              onCardHover={(cardId, listId) => handleCardHover(cardId!, listId)}
-              onDragEnded={handleDragEnd}
-              draggedCardId={draggedCardId!}
-              dragType={dragType}
-            />
-          ))}
-          {!isVisibleAddListForm && (
-            <button className="board__add_button" onClick={() => setVisibleAddListForm(true)}>
-              ➕ Додайде ще один список
+    <BoardInfoContext.Provider value={boardContextValue!}>
+      <DragDropContext.Provider value={dragDropValue}>
+        <div className="board" ref={scrollToEnd} style={{ backgroundImage: `url(${currentTexture})` }}>
+          <div className="board__title_wrapper">
+            {!isChangeTitle && (
+              <div className="board__title" title={title} onClick={() => setIsChangeTitle(true)}>
+                {title}
+              </div>
+            )}
+            {isChangeTitle && (
+              <ChangeTitleForm
+                onTitleChanged={(newTitle) => {
+                  handleChangeTitle(newTitle);
+                  setIsChangeTitle(false);
+                }}
+                currentTitle={title ?? ''}
+                onCancel={() => setIsChangeTitle(false)}
+              />
+            )}
+            <button
+              className="list__button_custom-icon"
+              aria-label="Change Texture"
+              onClick={(e) => handleTextureModal(e, { type: 'board', boardId: id })}
+            >
+              <span className="icon-wrapper" />
             </button>
-          )}
-          {isVisibleAddListForm && (
-            <AddItemModal
-              active={isVisibleAddListForm}
-              setActive={setVisibleAddListForm}
-              onBoardAdded={(listTitle, listTexture) => handleListAdded(listTitle, listTexture, lists.length + 1)}
-              title={draftTitle}
-              setTitle={setDraftTitle}
-              modalType="list"
-            />
-          )}
+          </div>
+          <div className="board__list">
+            {previewLists.map((elem, index) => (
+              <List
+                key={elem.id}
+                {...elem}
+                onDragEnded={handleDragEnd}
+                onHover={(listId) => handleListHover(listId)}
+                onCardHover={(cardId, listId) => handleCardHover(cardId!, listId)}
+                currentPosition={index + 1}
+                onDragStarted={(listId, type) => {
+                  setDragType(type);
+                  setDraggedListId(listId);
+                }}
+                onCardDragStarted={(cardId, cardData, listId) => {
+                  handleCardDrag(cardId!, cardData, listId);
+                }}
+              />
+            ))}
+            {!isVisibleAddListForm && (
+              <button className="board__add_button" onClick={() => setVisibleAddListForm(true)}>
+                ➕ Додайде ще один список
+              </button>
+            )}
+            {isVisibleAddListForm && (
+              <AddItemModal
+                active={isVisibleAddListForm}
+                setActive={setVisibleAddListForm}
+                onBoardAdded={(listTitle, listTexture) => handleListAdded(listTitle, listTexture, lists.length + 1)}
+                title={draftTitle}
+                setTitle={setDraftTitle}
+                modalType="list"
+              />
+            )}
+          </div>
         </div>
-      </div>
-      <ChangeTextureModal />
-      <Outlet />
-    </>
+        <ChangeTextureModal />
+        <Outlet />
+      </DragDropContext.Provider>
+    </BoardInfoContext.Provider>
   );
 }
