@@ -41,8 +41,8 @@ export function ChangeTextureModal(): JSX.Element | null {
     default:
       break;
   }
-  const handleTexturePick = (texture: string): void => {
-    dispatch(applyTexture(texture));
+  const handleTexturePick = async (texture: string): Promise<void> => {
+    await dispatch(applyTexture(texture)).unwrap();
     dispatch(closeTextureModal());
   };
   return (

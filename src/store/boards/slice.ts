@@ -41,7 +41,8 @@ const boardSlice = createSlice({
       const builderState = state;
       const updatedBoard = action.payload.boardData;
       if (!updatedBoard || !builderState.activeBoard) return;
-      if (builderState.activeBoard.id === updatedBoard.id) {
+      if (!builderState.activeBoard.id || builderState.activeBoard.id === action.payload.boardId) {
+        // checks: undefined === undefined or id === id
         builderState.activeBoard = {
           ...state.activeBoard,
           ...updatedBoard,
