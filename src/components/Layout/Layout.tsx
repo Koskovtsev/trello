@@ -1,10 +1,15 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { UserDropdown } from '../../pages/User/UserMenu/UserDropdown';
 import './layout.scss';
 
 export function Layout(): JSX.Element {
   const location = useLocation();
   const isAuthorized = !!localStorage.getItem('token');
   const isHomePage = location.pathname === '/';
+  const userName = localStorage.getItem('user_name');
+  const userIcon = userName?.slice(0, 1) ?? 'a';
+  const [isUserDropdownShow, setUserDropdownShow] = useState(false);
   return (
     <div className="app-container">
       <header className="App-header">
@@ -53,9 +58,12 @@ export function Layout(): JSX.Element {
             </Link>
           </>
         ) : (
-          <Link to="/login/" className="auth-link" onClick={() => localStorage.clear()}>
-            Вийти
-          </Link>
+          <>
+            <button className="user" onClick={() => setUserDropdownShow(true)}>
+              {`${userIcon}`}
+            </button>
+            {isUserDropdownShow && <UserDropdown isOpen={setUserDropdownShow} />}
+          </>
         )}
       </header>
       <main>

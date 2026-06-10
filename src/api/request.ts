@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import NProgress from 'nprogress';
+import toast from 'react-hot-toast';
 import { api } from '../common/constants';
 
 NProgress.configure({ showSpinner: false, speed: 400, minimum: 0.1 });
@@ -8,19 +9,17 @@ const instance = axios.create({
   baseURL: api.baseURL,
   headers: {
     'Content-Type': 'application/json',
-    // Authorization: `Bearer 123`, // до цього ми ще повернемося якось потім
   },
 });
 
 instance.interceptors.request.use((config) => {
   NProgress.start();
+  const publicRoutes = ['/login', '/user', '/user/forgot-password', '/user/reset-password'];
   const token = localStorage.getItem('token');
-
   const url = config.url || '';
-
-  const isAuthRoute = url.includes('/login') || url.includes('/user');
-
-  if (token && !isAuthRoute) {
+  const path = url.split('?')[0];
+  const isPublicRoute = publicRoutes.includes(path);
+  if (token && !isPublicRoute) {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
   return config;
@@ -36,9 +35,12 @@ instance.interceptors.response.use(
 
     const status = error.response?.status;
     if (status === 400) {
+      return Promise.reject(error);
+    }
+    if (status >= 500) {
+      toast.error('Server Error');
       return Promise.reject(error.response?.data);
     }
-
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest.isRetryRequest) {
       originalRequest.isRetryRequest = true;
@@ -64,7 +66,7 @@ instance.interceptors.response.use(
       } catch (refreshError) {
         localStorage.clear();
         window.location.href = '#/login/';
-        return Promise.reject(refreshError);
+        return new Promise(() => {});
       }
     }
     return Promise.reject(error);

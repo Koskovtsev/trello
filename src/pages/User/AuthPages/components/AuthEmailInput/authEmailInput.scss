@@ -1,0 +1,39 @@
+@use '/src/styles/variables' as *;
+
+.auth {
+    &__error_container {
+        height: 18px;
+    }
+    &__error_message {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #f00;
+    }
+    &__input {
+        display: block;
+        padding: 0 5px;
+        height: 30px;
+        border-radius: $border-radius-medium;
+        width: 100%;
+        box-sizing: border-box;
+
+        &_title {
+            color: $color-gray-text;
+            font-size: 16px;
+        }
+
+        &_email {
+            margin-bottom: 6px;
+        }
+
+        &.error {
+            border: 2px solid $color-button-hover-red;
+            outline: none;
+
+            &:focus {
+                border: 2px solid $color-button-hover-red;
+            }
+        }
+    }
+}

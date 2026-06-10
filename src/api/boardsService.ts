@@ -72,6 +72,11 @@ export async function createUser(userData: { email: string; password: string }):
   return response.id;
 }
 
+export async function changePass(userData: { oldPassword: string; newPassword: string }): Promise<string> {
+  const response = await api.put<unknown, { result: string }>(`user/password/`, userData);
+  return response.result;
+}
+
 export async function loginUser(userData: {
   email: string;
   password: string;

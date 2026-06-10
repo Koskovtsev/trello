@@ -2,11 +2,15 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { createUser, loginUser } from '../../api/boardsService';
+import { createUser, loginUser } from '../../../api/boardsService';
 import './authPage.scss';
 
 interface AuthPageProps {
   type: 'login' | 'register';
+}
+
+interface BackendError {
+  error: string;
 }
 
 export function AuthPage({ type }: AuthPageProps): JSX.Element {
@@ -80,6 +84,9 @@ export function AuthPage({ type }: AuthPageProps): JSX.Element {
       const response = await loginUser(payload);
       localStorage.setItem('token', response.token);
       localStorage.setItem('refreshToken', response.refreshToken);
+      const username = payload.email.split('@')[0].toLowerCase();
+      localStorage.setItem('user_name', username);
+      localStorage.setItem('user_email', payload.email);
       navigate(`/`);
     }
   };
@@ -91,6 +98,9 @@ export function AuthPage({ type }: AuthPageProps): JSX.Element {
     if (response.result === 'Authorized') {
       localStorage.setItem('token', response.token);
       localStorage.setItem('refreshToken', response.refreshToken);
+      const username = payload.email.split('@')[0].toLowerCase();
+      localStorage.setItem('user_name', username);
+      localStorage.setItem('user_email', payload.email);
       const redirectPath = localStorage.getItem('redirectAfterLogin');
       navigate(redirectPath || '/');
       localStorage.removeItem('redirectAfterLogin');
@@ -120,7 +130,21 @@ export function AuthPage({ type }: AuthPageProps): JSX.Element {
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.response?.status === 400) {
-          toast.error('Не вірно введено логін чи пароль');
+          let serverMessage = 'Помилка при реєстрації';
+          const data = error.response?.data;
+          if (data) {
+            if (typeof data === 'string') {
+              try {
+                const parsed = JSON.parse(data);
+                serverMessage = parsed.error || serverMessage;
+              } catch {
+                serverMessage = data;
+              }
+            } else {
+              serverMessage = (data as BackendError).error || serverMessage;
+            }
+          }
+          toast.error(serverMessage);
         } else {
           toast.error('Щось пішло не так, спробуйте пізніше');
         }

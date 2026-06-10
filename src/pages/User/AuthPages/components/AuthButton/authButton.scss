@@ -1,0 +1,17 @@
+@use '/src/styles/variables' as *;
+
+.auth {
+     &__confirm-button {
+        height: 30px;
+        width: 100%;
+        border-radius: $border-radius-medium;
+        border: none;
+        margin: 10px 0;
+        background-color: $color-brand-blue;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-brand-white-blue;
+        }
+    }
+}

@@ -4,8 +4,10 @@ import { RequireAuth } from './components/RequireAuth';
 import { Board } from './pages/Board/Board';
 import { Home } from './pages/Home/Home';
 import { Layout } from './components/Layout/Layout';
-import { AuthPage } from './pages/User/AuthPage';
 import { CardDetails } from './pages/Board/components/Card/components/CardDetails/CardDetails';
+import { Register } from './pages/User/AuthPages/Register';
+import { Login } from './pages/User/AuthPages/Login';
+import { ChangePassword } from './pages/User/AuthPages/ChangePassword';
 import './styles.scss';
 import 'nprogress/nprogress.css';
 
@@ -23,8 +25,9 @@ function App(): JSX.Element {
               </RequireAuth>
             }
           />
-          <Route path="/registration/" element={<AuthPage type="register" />} />
-          <Route path="/login/" element={<AuthPage type="login" />} />
+          <Route path="/registration/" element={<Register />} />
+          <Route path="/login/" element={<Login />} />
+          <Route path="/password/" element={<ChangePassword />} />
           <Route
             path="/board/:boardId"
             element={

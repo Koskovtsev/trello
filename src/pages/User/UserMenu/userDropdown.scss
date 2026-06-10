@@ -1,0 +1,85 @@
+@use '/src/styles/variables' as *;
+
+.user {
+
+    &__window {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        top: 52px;
+        right: 0;
+        width: 280px;
+        margin-right: 5px;
+        background: $color-brand-hover-bg;
+        border-radius: $border-radius-medium;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 20px 0;
+        z-index: 1001;
+        min-width: 150px;
+
+        .logout-link {
+            color: $color-gray-text;
+            font-size: 20px;
+            font-style: normal;
+            text-decoration: none;
+            padding: 0 20px 3px 20px;
+            &:hover {
+                background-color: $color-brang-bg-default;
+                color: $color-header-logo-hover-white;
+            }
+
+        }
+    }
+    &__profile {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px;
+        position: relative;
+        
+        &::after {
+            content: '';
+            position: absolute;
+            left: 10px; 
+            right: 10px;
+            top: 0;
+            bottom: 0;
+            border-top: 1px solid $color-brang-bg-default;
+            border-bottom: 1px solid $color-brang-bg-default;
+            pointer-events: none;
+        }
+    }
+    &__logo {
+        color: $color-gray-text;
+        padding: 0;
+        background-color: #5c34ec;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 18px;
+        text-transform: uppercase;
+        cursor: default;
+    }
+    &__title {
+        color: $color-gray-text;
+        
+
+        &_wrapper {
+            display: flex;
+            flex-direction: column;
+            padding: 0 20px;
+        }
+    }
+    &__header_title {
+        padding: 0 20px;
+        color: $color-gray-text;
+        text-transform: uppercase;
+    }
+
+}

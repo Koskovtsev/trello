@@ -1,0 +1,69 @@
+@use '/src/styles/variables' as *;
+
+.auth {
+    &__wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 100px;
+    }
+
+    &__window {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 300px;
+        background-color: $color-brand-bg-dark;
+        border: 1px solid $color-brang-bg-default;
+        border-radius: $border-radius-large;
+        padding: 20px;
+    }
+
+    &__title {
+        color: $color-gray-text;
+    }
+
+    &__main {
+        display: flex;
+        width: 100%;
+        justify-content: start;
+        flex-direction: column;
+        margin: 20px;
+        gap: 2px;
+    }
+
+     &__password-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+
+    &__login {
+        &_wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        &_title {
+            color: $color-gray-text;
+            font-size: 16px;
+        }
+
+        &_button {
+            height: 30px;
+            background-color: transparent;
+            color: $color-gray-text;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            text-decoration: underline;
+            cursor: pointer;
+
+            &:hover {
+                color: $color-brand-white-blue;
+            }
+        }
+    }
+}

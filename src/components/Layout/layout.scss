@@ -79,4 +79,21 @@
             transform: scale(1.1);
         }
     }
+     .user {
+        position: relative;
+        background: #5c34ec;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        width: 35px;
+        height: 35px;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        // padding: 5px 10px;
+        font-size: 14px;
+        font-weight: 600;
+        color: $color-gray-text;
+        text-transform: uppercase;
+    }
 }

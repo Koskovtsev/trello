@@ -1,6 +1,6 @@
 @use '/src/styles/variables' as *;
 
-.reg {
+.reg, .pass {
     &__wrapper {
         display: flex;
         justify-content: center;
@@ -67,7 +67,6 @@
         color: #f00;
     }
 
-
     &__password-wrapper {
         position: relative;
         width: 100%;
@@ -80,7 +79,6 @@
         border-radius: $border-radius-medium;
         width: 100%;
         box-sizing: border-box;
-
 
         &_title {
             color: $color-gray-text;
@@ -169,5 +167,5 @@
                 color: $color-brand-white-blue;
             }
         }
-    }
+    }   
 }
