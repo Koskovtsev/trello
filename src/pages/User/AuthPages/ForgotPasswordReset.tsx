@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { AuthButton } from './components/AuthButton/AuthButton';
 import { AuthLayout } from './components/AuthLayout/AuthLayout';
 import { AuthPasswordMatchGroup } from './components/AuthPasswordMatchGroup/AuthPasswordMatchGroup';
-import { changePass } from '../../../api/boardsService';
+import { resetPassword } from '../../../api/boardsService';
 import { authHelpers } from './utils/authHelpers';
 import { usePasswordValidation } from './hooks/usePasswordValidation';
 
-export function ResetPassword(): JSX.Element {
+export function ForgotPasswordReset(): JSX.Element {
   const {
     password,
     passwordError,
@@ -31,11 +31,10 @@ export function ResetPassword(): JSX.Element {
       return;
     }
     const payload = {
-      oldPassword: password.trim(),
       newPassword: password.trim(),
     };
     try {
-      const response = await changePass(payload);
+      const response = await resetPassword(payload);
       if (response === 'Updated') {
         const redirectPath = localStorage.getItem('redirectAfterLogin');
         navigate(redirectPath || '/');
@@ -46,7 +45,11 @@ export function ResetPassword(): JSX.Element {
     }
   };
   return (
-    <AuthLayout title="Відновити пароль" footer={<AuthButton>Відновити пароль</AuthButton>} onSubmit={handleSubmit}>
+    <AuthLayout
+      title="Створити новий пароль"
+      footer={<AuthButton>Створити новий пароль</AuthButton>}
+      onSubmit={handleSubmit}
+    >
       <AuthPasswordMatchGroup
         value={password}
         confirmValue={confirmPassword}

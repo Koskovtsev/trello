@@ -84,3 +84,13 @@ export async function loginUser(userData: {
   const response = await api.post<unknown, { result: string; token: string; refreshToken: string }>(`login/`, userData);
   return response;
 }
+
+export async function forgotPassword(emailData: { email: string }): Promise<string> {
+  const response = await api.post<unknown, { result: string }>(`user/forgot-password/`, emailData);
+  return response.result;
+}
+
+export async function resetPassword(passwordData: { newPassword: string }): Promise<string> {
+  const response = await api.put<unknown, { result: string }>(`user/reset-password/`, passwordData);
+  return response.result;
+}

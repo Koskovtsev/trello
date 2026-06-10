@@ -61,6 +61,12 @@ export function Login(): JSX.Element {
                 Зареєструватися
               </Link>
             </div>
+            <div className="auth__login_wrapper">
+              <span className="auth__login_title">Забули пароль?</span>
+              <Link to="/forgot-password-email/" className="auth__login_button">
+                Скинути пароль
+              </Link>
+            </div>
           </div>
         </>
       }

@@ -8,6 +8,8 @@ import { CardDetails } from './pages/Board/components/Card/components/CardDetail
 import { Register } from './pages/User/AuthPages/Register';
 import { Login } from './pages/User/AuthPages/Login';
 import { ChangePassword } from './pages/User/AuthPages/ChangePassword';
+import { ForgotPasswordEmail } from './pages/User/AuthPages/ForgotPasswordEmail';
+import { ForgotPasswordReset } from './pages/User/AuthPages/ForgotPasswordReset';
 import './styles.scss';
 import 'nprogress/nprogress.css';
 
@@ -28,6 +30,8 @@ function App(): JSX.Element {
           <Route path="/registration/" element={<Register />} />
           <Route path="/login/" element={<Login />} />
           <Route path="/password/" element={<ChangePassword />} />
+          <Route path="/forgot-password-email/" element={<ForgotPasswordEmail />} />
+          <Route path="/forgot-password-reset/" element={<ForgotPasswordReset />} />
           <Route
             path="/board/:boardId"
             element={
