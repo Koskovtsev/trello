@@ -18,7 +18,7 @@ export function ForgotPasswordEmail(): JSX.Element {
     }
     try {
       const payload = {
-        email: email.trim(),
+        email: email.trim().toLocaleLowerCase(),
       };
       await forgotPassword(payload);
     } catch (error) {

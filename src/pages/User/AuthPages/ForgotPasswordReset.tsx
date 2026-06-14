@@ -24,8 +24,7 @@ export function ForgotPasswordReset(): JSX.Element {
   const { parseResetPassBackendError } = authHelpers();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [token, setToken] = useState('');
-  setToken(searchParams.get('token') ?? '');
+  const token = searchParams.get('token') ?? '';
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     const isValid = validateRegisterPassword();
