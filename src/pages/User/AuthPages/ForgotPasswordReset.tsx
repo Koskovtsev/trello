@@ -1,5 +1,6 @@
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthButton } from './components/AuthButton/AuthButton';
 import { AuthLayout } from './components/AuthLayout/AuthLayout';
 import { AuthPasswordMatchGroup } from './components/AuthPasswordMatchGroup/AuthPasswordMatchGroup';
@@ -22,6 +23,9 @@ export function ForgotPasswordReset(): JSX.Element {
   } = usePasswordValidation();
   const { parseResetPassBackendError } = authHelpers();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [token, setToken] = useState('');
+  setToken(searchParams.get('token') ?? '');
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     const isValid = validateRegisterPassword();
@@ -31,6 +35,7 @@ export function ForgotPasswordReset(): JSX.Element {
       return;
     }
     const payload = {
+      token,
       newPassword: password.trim(),
     };
     try {
