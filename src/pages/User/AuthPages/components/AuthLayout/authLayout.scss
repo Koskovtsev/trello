@@ -66,4 +66,9 @@
             }
         }
     }
+    &__success-message {
+        font-size: 16px;
+        color: $color-gray-text;
+        text-align: center;
+    }
 }
