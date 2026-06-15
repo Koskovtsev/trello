@@ -1,5 +1,4 @@
 import toast from 'react-hot-toast';
-import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthButton } from './components/AuthButton/AuthButton';
 import { AuthLayout } from './components/AuthLayout/AuthLayout';
