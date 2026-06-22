@@ -6,8 +6,10 @@ export function RequireAuth({ children }: { children: JSX.Element }): JSX.Elemen
   const location = useLocation();
 
   if (!token) {
-    const fullPath = location.pathname + location.search;
-    localStorage.setItem('redirectAfterLogin', fullPath);
+    if (location.pathname !== '/' && location.pathname !== '/login/') {
+      const fullPath = location.pathname + location.search;
+      localStorage.setItem('redirectAfterLogin', fullPath);
+    }
     return <Navigate to="/login/" replace />;
   }
 

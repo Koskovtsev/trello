@@ -66,9 +66,15 @@
             }
         }
     }
-    &__success-message {
+    &__success-message, &__alternative-auth {
         font-size: 16px;
         color: $color-gray-text;
         text-align: center;
+    }
+
+    &__alternative-auth {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 20px;
     }
 }

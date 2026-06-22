@@ -53,7 +53,12 @@ export function Board(): JSX.Element {
   }, [boardId, dispatch]);
   useEffect(() => {
     if (draggedListId !== null) return;
-    setPreviewLists(lists);
+    setPreviewLists((prev) => {
+      if (JSON.stringify(prev) === JSON.stringify(lists)) {
+        return prev;
+      }
+      return lists;
+    });
   }, [lists, draggedListId]);
 
   const boardContextValue = useMemo(
@@ -133,7 +138,7 @@ export function Board(): JSX.Element {
         targetPosition,
         boardId: id,
       };
-      dispatch(processCardMoveThunk(cardMovePayload));
+      await dispatch(processCardMoveThunk(cardMovePayload));
     }
     setDraggedListId(null);
     setDraggedCardId(null);

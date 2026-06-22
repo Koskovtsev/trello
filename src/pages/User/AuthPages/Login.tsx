@@ -8,6 +8,8 @@ import { AuthPasswordInput } from './components/AuthPasswordInput/AuthPasswordIn
 import { authHelpers } from './utils/authHelpers';
 import { useEmailValidation } from './hooks/useEmailValidation';
 import { usePasswordValidation } from './hooks/usePasswordValidation';
+import { AuthGoogle } from './components/AuthGoogle/AuthGoogle';
+import { AuthGithub } from './components/AuthGithub/AuthGithub';
 
 export function Login(): JSX.Element {
   const { email, emailError, isValidEmail, handleEmailChange, handleEmailBlur } = useEmailValidation();
@@ -31,8 +33,8 @@ export function Login(): JSX.Element {
       localStorage.setItem('user_name', username);
       localStorage.setItem('user_email', payload.email);
       const redirectPath = localStorage.getItem('redirectAfterLogin');
+      if (redirectPath) localStorage.removeItem('redirectAfterLogin');
       navigate(redirectPath || '/');
-      localStorage.removeItem('redirectAfterLogin');
     }
   };
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
@@ -72,6 +74,9 @@ export function Login(): JSX.Element {
       }
       onSubmit={handleSubmit}
     >
+      <AuthGoogle />
+      <AuthGithub />
+      <span className="auth__alternative-auth">Або</span>
       <AuthEmailInput value={email} onChange={handleEmailChange} emailError={emailError} onBlur={handleEmailBlur} />
       <AuthPasswordInput
         value={password}
